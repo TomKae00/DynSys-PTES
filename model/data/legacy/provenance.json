@@ -1,0 +1,15 @@
+{
+  "repository": "TomKae00/DynSys-PTES",
+  "commit": "48e49c0b8dc6415611cf0ed6ce985ea3b2d1ef50",
+  "files": {
+    "htf_demand_2019.csv": "Data/HT_PTES_data.xlsx: first demand column; no SOC-proxy flows imported",
+    "cop_2024.csv": "Data/dh_cop_profiles_hj_taastrup.csv: City2 and groundwater columns",
+    "monthly_reference_2024.csv": "Data/veks_and_mc_heat_chp_2024_hourly.csv: monthly reference price only"
+  },
+  "warning": "Inherited research inputs; the demand is 2019, COP profiles are modelled, tariff is an inherited reference requiring contractual verification. Naive profiles are treated as fixed CET seasonal templates, not timestamped 2024 observations.",
+  "sha256": {
+    "cop_2024.csv": "a9754554bbc3be73e1939feeaa4eac5c2334de4ec2c783fd0b1097ec02a9b124",
+    "monthly_reference_2024.csv": "61df200a01931eb070394ae386ebe66bd32d21f7dadf5d9f1cbea3996beba20f",
+    "htf_demand_2019.csv": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166"
+  }
+}

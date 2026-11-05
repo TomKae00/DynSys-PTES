@@ -1,0 +1,75 @@
+# All costs DKK/MWh, powers MW and inventories MWh. Fixed capacities only.
+year: 2024
+demand_boundary: assumed_gross_including_htf
+network_loss_fraction: 0.02  # scenario, not a calibrated loss estimate
+objective: system
+settlement_boundary: discharge_service
+response:
+  charging_policy: curtailable  # announced charging is an upper bound; fixed reproduces the old experiment
+integer_operation: true
+solver:
+  backend: highs  # PyPSA/Linopy solver; gurobi is optional
+  threads: 4
+  time_limit: 120
+  mip_rel_gap: 0.0001
+ptes:
+  energy_mwh: 3300
+  power_mw: 23  # effective scenario; test design 30 separately
+  min_charge_mw: 10
+  min_discharge_mw: 5
+  ramp_mw_h: 12
+  reversal_hours: 2
+  loss_per_hour: 0.000275  # provisional effective loss, NOT a fitted parameter
+  charge_efficiency: 1.0
+  discharge_efficiency: 1.0
+  initial_mwh: 1500
+  terminal_mwh: 1500
+  pump_mwh_el_per_mwh_heat: 0.0  # unverified: omitted, recorded in every summary
+hx:
+  capacity_mw: 100
+  minimum_mw: 0.5
+heat_pumps:
+  policy: endogenous  # set must_run for the stakeholder operating-policy sensitivity
+  city2:
+    capacity_mw: 1.34
+    cop_column: city2_cop
+  groundwater:
+    capacity_mw: 1.50
+    cop_column: groundwater_cop
+  minimum_fraction: 0.25
+  minimum_up_hours: 2
+  minimum_down_hours: 2
+  startup_dkk_per_mw: 79.3058394  # inherited 10.63 EUR/MW * 7.46038
+  electricity_adder_dkk_mwh: 125  # illustrative grid/tax adder, not a verified contract
+upstream:
+  gas_mw: 1032.2
+  oil_mw: 1039.5
+  bio_mw: 41
+  electric_mw: 200
+  shared_peak_mw: 2032.9  # FFH50 2025 CTR/HOFOR + VEKS; shared fuel envelope
+  gas_efficiency: 0.92
+  oil_efficiency: 0.90
+  bio_efficiency: 0.90
+  electric_efficiency: 0.99
+  gas_dkk_mwh_fuel: 350
+  oil_dkk_mwh_fuel: 600
+  bio_dkk_mwh_fuel: 200
+  boiler_vom_dkk_mwh: 5
+  electricity_adder_dkk_mwh: 125
+  # Existing small HPs aggregated as a deliberately conservative scenario.
+  heat_pump_mw: 20
+  heat_pump_cop: 3.2
+  waste_capacity_mw: 519.5  # ARC 190 + ARGO 136.5 + VF 192; alternatives not added
+  waste_power_heat_ratio: 0.25  # aggregate approximation, sensitivity required
+  waste_vom_dkk_mwh_heat: 10
+  waste_policy: observed_upper_bound  # historical aggregate output is availability, not dispatch
+  accumulators:
+    AMV:
+      energy_mwh: 1000
+      power_mw: 300
+      loss_per_hour: 0.0001
+    AVV:
+      energy_mwh: 2200
+      power_mw: 330
+      loss_per_hour: 0.0001
+discharge_discount_dkk_mwh: 0
