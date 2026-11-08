@@ -94,6 +94,13 @@ def candidate_credit(central, spec):
         # than assuming that a supplied discount is the economic foundation.
         price = level + scale * discharge_price
         return (direct_tariff(central, spec) - price).rename("discharge_discount_dkk_mwh")
+    if family == "shared_value":
+        # HTF receives a share (scale) of the positive storage value spread as its
+        # discharge credit; hours where holding heat is worth more give no credit.
+        signal = value_signals(central).discharge_value_spread_dkk_mwh
+        upper = float(spec.get("upper", np.inf))
+        credit = (scale * signal).clip(lower=float(spec.get("lower", 0.0)), upper=upper)
+        return credit.rename("discharge_discount_dkk_mwh")
     credit = pd.Series(level, index=central.dispatch.index, dtype=float)
     if family != "constant":
         signal = value_signals(central).discharge_value_spread_dkk_mwh

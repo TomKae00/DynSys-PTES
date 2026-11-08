@@ -138,6 +138,11 @@ def test_absolute_heat_prices_and_monthly_controls_use_correct_boundaries():
     with pytest.raises(ValueError, match="within finite"):
         candidate_prices(central, {"family": "bounded_mean_matched_value", "level": 11})
 
+    # Half of the positive value spread (50, 240, -20, 70, 310) goes to HTF; no premium.
+    shared = candidate_prices(central, {"family": "shared_value", "scale": 0.5})
+    np.testing.assert_allclose(shared.discharge_discount_dkk_mwh, [25, 120, 0, 35, 155])
+    np.testing.assert_allclose(shared.reference_tariff_dkk_mwh, d.reference_tariff_dkk_mwh)
+
 
 def test_study_reconciles_costs_and_preserves_matched_cases(config, plants):
     config["ptes"].update(
