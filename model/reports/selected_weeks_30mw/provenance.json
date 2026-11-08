@@ -1,0 +1,3719 @@
+{
+  "snapshot": "Selected 2024 weeks; corrected 30 MW charging/discharging, pumping 0.005 per flow",
+  "scope": "Frozen aggregate evidence, not raw annual data or an annual welfare result",
+  "source_runs": {
+    "findings_30_30_pump005": {
+      "study_csv_sha256": "605b9b043394e1fef3952021d67cca54b2e696e95687eb5ccf27a0188a718de4",
+      "study_json_sha256": "0c7d97fd8a30bdb84ffe045aed522d6d6b1d60403ea730b863b9d6d4a04c8f47",
+      "runtime_and_inputs": {
+        "shoulder__pump005_30_30": {
+          "runtime": {
+            "python": "3.11.14",
+            "numpy": "2.3.5",
+            "pandas": "2.2.3",
+            "pypsa": "1.0.4",
+            "linopy": "0.5.8",
+            "xarray": "2025.6.1",
+            "highs": "1.15.1",
+            "source_sha256": "0e3e52f04578541461065a8578568af9057d3166b648ad41bf07b035cc02dc59",
+            "gurobi": "13.0.3"
+          },
+          "input_provenance": {
+            "kind": "prepared_inputs",
+            "path": "/home/tom/PycharmProjects/DynSys/model/data/processed/inputs_2024.csv",
+            "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af",
+            "local_profiles_sha256": "68fcff6843f6ecdaf742d6952e3b798bb03afce77dff7d3398f0310aa3a8acd3",
+            "local_profile_generation": {
+              "method": "Historical HTF netpoint curves, 24h ambient average, 50C return, Lorenz approximation",
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2023_12_31.nc": "faa6274f106cee4d0e17737a24c30ec707d62d29d126597b751a51c15c7c56d5",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_01.nc": "554d1366b25b3fa347e1c184798549f302a38f937f5681c61518a36c69b4440e",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_02.nc": "a2bee97b2c21dc41b915811f0c1571b186624abb0c91391f73d9dd43c3975690",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_03.nc": "5a8b7fb50db6bf3b342a7fd5d872ac9372a39f9d46f289a676afe4b87c4f7272",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_04.nc": "56a57ad41568c16422b469eaa88655b7e8e65a6e37072114579fadc0ea6bbadc",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_05.nc": "fef3c7d57ee54eb2fd1254e9f248896d47c6fa4295e53cdac40a77cd2be9b134",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_06.nc": "bb3002f66a029266abd39e0ec7515124dd788e2b062a6e6a90ab3660b2a4820b",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_07.nc": "457c544927e1ec8627f9ac47c85278ea7aa92f013136896702c036d428ac0bce",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_08.nc": "833ddc73047fb40047fe3dd8f78bd716bb7ed42ad839cb489e35b851b0f3eaba",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_09.nc": "17d22827922bced27b1ca39dd5114ecc19cabe6ad6293fe5d4572ef3462948ef",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_10.nc": "9cd8d9459efef31fc032c7f77c065bba4bfb367a3e4536df1960e9771de6134d",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_11.nc": "ccdad1d688d6e68a8e1bb18862c531b34a74e81077fc55675ff14ca0fb62f1d2",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_12.nc": "747af963ce3ce89138f9aee11daa2b67369749c72f09ebb107ffe6c7ce3a2dde"
+              },
+              "warning": "Modelled temperatures and COPs; not measured HTF operating profiles"
+            },
+            "command_arguments": [
+              "study",
+              "--solver",
+              "gurobi",
+              "--study-spec",
+              "model/config/tariff_findings_30mw.yaml",
+              "--local-profiles",
+              "model/results/review_profiles_2024/local_profiles.csv",
+              "--figures",
+              "--output",
+              "model/results/findings_30_30_pump005"
+            ],
+            "preparation_report": {
+              "year": 2024,
+              "hours": 8784,
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "varmelast": {
+                  "url": "https://www.varmelast.dk/api/v1/heatdata/historical?from=2024-01-01&to=2024-12-31&intervalMinutes=60&contextSite=varmelast_dk",
+                  "retrieved_utc": "2026-11-05T22:38:56.076698+00:00",
+                  "sha256": "6cdc62904ff3d82e4c44da01246103c5106859c8847153f858a7d72bf9567c0a",
+                  "bytes": 9778827
+                },
+                "dk2": {
+                  "url": "https://api.energidataservice.dk/dataset/Elspotprices?start=2023-12-30&end=2025-01-02&filter=%7B%22PriceArea%22%3A+%5B%22DK2%22%5D%7D&limit=10000",
+                  "retrieved_utc": "2026-11-05T22:38:56.928217+00:00",
+                  "sha256": "be23fef944ab3dad400bfc6d74936fc94834aa7606f9e1525b26c75e03bc1907",
+                  "bytes": 1187618
+                },
+                "cop_2024.csv": {
+                  "sha256": "a9754554bbc3be73e1939feeaa4eac5c2334de4ec2c783fd0b1097ec02a9b124"
+                },
+                "monthly_reference_2024.csv": {
+                  "sha256": "61df200a01931eb070394ae386ebe66bd32d21f7dadf5d9f1cbea3996beba20f"
+                },
+                "htf_demand_2019.csv": {
+                  "sha256": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166"
+                },
+                "provenance.json": {
+                  "sha256": "b163dbe1cab044d49f05826445590ca55345cb26277a2595c0de248adb3d32e3"
+                }
+              },
+              "repairs": [
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 830.4917602539167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 760.5098546344583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 720.7840270995833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 710.64827728275
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 685.3879216511666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 656.1082013448749
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 652.50077819825
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 676.1983006795833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 681.8459383647083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 724.923400878875
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 769.1214523315
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 791.6968205769999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.1658503214167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 787.6307754515833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.295865376625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.5647862752083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 763.6908671060833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 768.2593663533751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 772.4006729125833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 796.636227925625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 824.9907836914999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 845.9569727580833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 866.8205362956667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 840.2631098429999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.50294494625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 747.1763992308333
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 678.1288553874167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 653.7164128621666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 608.4512964885832
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 586.14890035
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 584.9484685262083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 598.2092081705416
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 659.4529711405
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 701.4242706299583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 745.8779220581666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 797.2120895385
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 822.2522888183751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 807.9804814655834
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 771.0495300293334
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 292.6787910461667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 574.9253285727084
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-02-08 07:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 594.681317647375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 342.44973882041666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.5454432169166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 299.71440633145835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 289.443997701
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.76760164895836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.1198972066667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 276.0721047719583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 272.26192792254164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 274.540676117
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 291.0627911885
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 297.2553132375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.22621091216666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 317.6131172179167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.3495292663333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 312.71506309508334
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 315.07736651108337
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.41882387795835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.44805018104165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.95980517070836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 331.2218939462917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 344.2734057109167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 362.4534441630417
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 376.08509063725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 361.5093955994166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 330.06389109295833
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 316.2047659556667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 294.64849344891667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 279.7533893584583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.6828835805
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.89533170054165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 263.79854456579164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 268.8738409677917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.6083869934167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.54149373375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 301.94074249275
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.28470738725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 320.334396362375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 314.0471375783333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 303.38738695779165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-05-12 06:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 204.34600194295834
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-07-18 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 103.1994628905
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 233.183490753125
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.04118601483333
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.6565093994167
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 270.62441380816665
+                }
+              ],
+              "warnings": [
+                "2019 HTF demand remapped; modelled COPs; inherited monthly reference",
+                "CTR+VEKS metering boundary is not verified",
+                "FFH50 is a planning study, not measured 2024 plant operation"
+              ]
+            },
+            "study_spec_sha256": "fa7470f7dc0acdfe6c188c7216d96d8197e92efb9e8223e5722b1112e06b63a6"
+          },
+          "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+          "case_inputs_sha256": "042b7717ac808c03776a477d17cc8fe32e23993d91b53fe35542c0ba107cb754"
+        },
+        "summer__pump005_30_30": {
+          "runtime": {
+            "python": "3.11.14",
+            "numpy": "2.3.5",
+            "pandas": "2.2.3",
+            "pypsa": "1.0.4",
+            "linopy": "0.5.8",
+            "xarray": "2025.6.1",
+            "highs": "1.15.1",
+            "source_sha256": "0e3e52f04578541461065a8578568af9057d3166b648ad41bf07b035cc02dc59",
+            "gurobi": "13.0.3"
+          },
+          "input_provenance": {
+            "kind": "prepared_inputs",
+            "path": "/home/tom/PycharmProjects/DynSys/model/data/processed/inputs_2024.csv",
+            "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af",
+            "local_profiles_sha256": "68fcff6843f6ecdaf742d6952e3b798bb03afce77dff7d3398f0310aa3a8acd3",
+            "local_profile_generation": {
+              "method": "Historical HTF netpoint curves, 24h ambient average, 50C return, Lorenz approximation",
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2023_12_31.nc": "faa6274f106cee4d0e17737a24c30ec707d62d29d126597b751a51c15c7c56d5",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_01.nc": "554d1366b25b3fa347e1c184798549f302a38f937f5681c61518a36c69b4440e",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_02.nc": "a2bee97b2c21dc41b915811f0c1571b186624abb0c91391f73d9dd43c3975690",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_03.nc": "5a8b7fb50db6bf3b342a7fd5d872ac9372a39f9d46f289a676afe4b87c4f7272",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_04.nc": "56a57ad41568c16422b469eaa88655b7e8e65a6e37072114579fadc0ea6bbadc",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_05.nc": "fef3c7d57ee54eb2fd1254e9f248896d47c6fa4295e53cdac40a77cd2be9b134",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_06.nc": "bb3002f66a029266abd39e0ec7515124dd788e2b062a6e6a90ab3660b2a4820b",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_07.nc": "457c544927e1ec8627f9ac47c85278ea7aa92f013136896702c036d428ac0bce",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_08.nc": "833ddc73047fb40047fe3dd8f78bd716bb7ed42ad839cb489e35b851b0f3eaba",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_09.nc": "17d22827922bced27b1ca39dd5114ecc19cabe6ad6293fe5d4572ef3462948ef",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_10.nc": "9cd8d9459efef31fc032c7f77c065bba4bfb367a3e4536df1960e9771de6134d",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_11.nc": "ccdad1d688d6e68a8e1bb18862c531b34a74e81077fc55675ff14ca0fb62f1d2",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_12.nc": "747af963ce3ce89138f9aee11daa2b67369749c72f09ebb107ffe6c7ce3a2dde"
+              },
+              "warning": "Modelled temperatures and COPs; not measured HTF operating profiles"
+            },
+            "command_arguments": [
+              "study",
+              "--solver",
+              "gurobi",
+              "--study-spec",
+              "model/config/tariff_findings_30mw.yaml",
+              "--local-profiles",
+              "model/results/review_profiles_2024/local_profiles.csv",
+              "--figures",
+              "--output",
+              "model/results/findings_30_30_pump005"
+            ],
+            "preparation_report": {
+              "year": 2024,
+              "hours": 8784,
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "varmelast": {
+                  "url": "https://www.varmelast.dk/api/v1/heatdata/historical?from=2024-01-01&to=2024-12-31&intervalMinutes=60&contextSite=varmelast_dk",
+                  "retrieved_utc": "2026-11-05T22:38:56.076698+00:00",
+                  "sha256": "6cdc62904ff3d82e4c44da01246103c5106859c8847153f858a7d72bf9567c0a",
+                  "bytes": 9778827
+                },
+                "dk2": {
+                  "url": "https://api.energidataservice.dk/dataset/Elspotprices?start=2023-12-30&end=2025-01-02&filter=%7B%22PriceArea%22%3A+%5B%22DK2%22%5D%7D&limit=10000",
+                  "retrieved_utc": "2026-11-05T22:38:56.928217+00:00",
+                  "sha256": "be23fef944ab3dad400bfc6d74936fc94834aa7606f9e1525b26c75e03bc1907",
+                  "bytes": 1187618
+                },
+                "cop_2024.csv": {
+                  "sha256": "a9754554bbc3be73e1939feeaa4eac5c2334de4ec2c783fd0b1097ec02a9b124"
+                },
+                "monthly_reference_2024.csv": {
+                  "sha256": "61df200a01931eb070394ae386ebe66bd32d21f7dadf5d9f1cbea3996beba20f"
+                },
+                "htf_demand_2019.csv": {
+                  "sha256": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166"
+                },
+                "provenance.json": {
+                  "sha256": "b163dbe1cab044d49f05826445590ca55345cb26277a2595c0de248adb3d32e3"
+                }
+              },
+              "repairs": [
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 830.4917602539167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 760.5098546344583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 720.7840270995833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 710.64827728275
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 685.3879216511666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 656.1082013448749
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 652.50077819825
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 676.1983006795833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 681.8459383647083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 724.923400878875
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 769.1214523315
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 791.6968205769999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.1658503214167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 787.6307754515833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.295865376625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.5647862752083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 763.6908671060833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 768.2593663533751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 772.4006729125833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 796.636227925625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 824.9907836914999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 845.9569727580833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 866.8205362956667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 840.2631098429999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.50294494625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 747.1763992308333
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 678.1288553874167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 653.7164128621666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 608.4512964885832
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 586.14890035
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 584.9484685262083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 598.2092081705416
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 659.4529711405
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 701.4242706299583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 745.8779220581666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 797.2120895385
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 822.2522888183751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 807.9804814655834
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 771.0495300293334
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 292.6787910461667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 574.9253285727084
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-02-08 07:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 594.681317647375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 342.44973882041666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.5454432169166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 299.71440633145835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 289.443997701
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.76760164895836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.1198972066667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 276.0721047719583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 272.26192792254164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 274.540676117
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 291.0627911885
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 297.2553132375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.22621091216666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 317.6131172179167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.3495292663333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 312.71506309508334
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 315.07736651108337
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.41882387795835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.44805018104165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.95980517070836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 331.2218939462917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 344.2734057109167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 362.4534441630417
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 376.08509063725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 361.5093955994166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 330.06389109295833
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 316.2047659556667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 294.64849344891667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 279.7533893584583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.6828835805
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.89533170054165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 263.79854456579164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 268.8738409677917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.6083869934167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.54149373375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 301.94074249275
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.28470738725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 320.334396362375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 314.0471375783333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 303.38738695779165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-05-12 06:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 204.34600194295834
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-07-18 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 103.1994628905
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 233.183490753125
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.04118601483333
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.6565093994167
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 270.62441380816665
+                }
+              ],
+              "warnings": [
+                "2019 HTF demand remapped; modelled COPs; inherited monthly reference",
+                "CTR+VEKS metering boundary is not verified",
+                "FFH50 is a planning study, not measured 2024 plant operation"
+              ]
+            },
+            "study_spec_sha256": "fa7470f7dc0acdfe6c188c7216d96d8197e92efb9e8223e5722b1112e06b63a6"
+          },
+          "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+          "case_inputs_sha256": "4fdf6ea5f6cb4bce17777482fbf2fa4299143b3b4c97a1ab54b943e6bd1cac63"
+        },
+        "winter__pump005_30_30": {
+          "runtime": {
+            "python": "3.11.14",
+            "numpy": "2.3.5",
+            "pandas": "2.2.3",
+            "pypsa": "1.0.4",
+            "linopy": "0.5.8",
+            "xarray": "2025.6.1",
+            "highs": "1.15.1",
+            "source_sha256": "0e3e52f04578541461065a8578568af9057d3166b648ad41bf07b035cc02dc59",
+            "gurobi": "13.0.3"
+          },
+          "input_provenance": {
+            "kind": "prepared_inputs",
+            "path": "/home/tom/PycharmProjects/DynSys/model/data/processed/inputs_2024.csv",
+            "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af",
+            "local_profiles_sha256": "68fcff6843f6ecdaf742d6952e3b798bb03afce77dff7d3398f0310aa3a8acd3",
+            "local_profile_generation": {
+              "method": "Historical HTF netpoint curves, 24h ambient average, 50C return, Lorenz approximation",
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2023_12_31.nc": "faa6274f106cee4d0e17737a24c30ec707d62d29d126597b751a51c15c7c56d5",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_01.nc": "554d1366b25b3fa347e1c184798549f302a38f937f5681c61518a36c69b4440e",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_02.nc": "a2bee97b2c21dc41b915811f0c1571b186624abb0c91391f73d9dd43c3975690",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_03.nc": "5a8b7fb50db6bf3b342a7fd5d872ac9372a39f9d46f289a676afe4b87c4f7272",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_04.nc": "56a57ad41568c16422b469eaa88655b7e8e65a6e37072114579fadc0ea6bbadc",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_05.nc": "fef3c7d57ee54eb2fd1254e9f248896d47c6fa4295e53cdac40a77cd2be9b134",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_06.nc": "bb3002f66a029266abd39e0ec7515124dd788e2b062a6e6a90ab3660b2a4820b",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_07.nc": "457c544927e1ec8627f9ac47c85278ea7aa92f013136896702c036d428ac0bce",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_08.nc": "833ddc73047fb40047fe3dd8f78bd716bb7ed42ad839cb489e35b851b0f3eaba",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_09.nc": "17d22827922bced27b1ca39dd5114ecc19cabe6ad6293fe5d4572ef3462948ef",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_10.nc": "9cd8d9459efef31fc032c7f77c065bba4bfb367a3e4536df1960e9771de6134d",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_11.nc": "ccdad1d688d6e68a8e1bb18862c531b34a74e81077fc55675ff14ca0fb62f1d2",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_12.nc": "747af963ce3ce89138f9aee11daa2b67369749c72f09ebb107ffe6c7ce3a2dde"
+              },
+              "warning": "Modelled temperatures and COPs; not measured HTF operating profiles"
+            },
+            "command_arguments": [
+              "study",
+              "--solver",
+              "gurobi",
+              "--study-spec",
+              "model/config/tariff_findings_30mw.yaml",
+              "--local-profiles",
+              "model/results/review_profiles_2024/local_profiles.csv",
+              "--figures",
+              "--output",
+              "model/results/findings_30_30_pump005"
+            ],
+            "preparation_report": {
+              "year": 2024,
+              "hours": 8784,
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "varmelast": {
+                  "url": "https://www.varmelast.dk/api/v1/heatdata/historical?from=2024-01-01&to=2024-12-31&intervalMinutes=60&contextSite=varmelast_dk",
+                  "retrieved_utc": "2026-11-05T22:38:56.076698+00:00",
+                  "sha256": "6cdc62904ff3d82e4c44da01246103c5106859c8847153f858a7d72bf9567c0a",
+                  "bytes": 9778827
+                },
+                "dk2": {
+                  "url": "https://api.energidataservice.dk/dataset/Elspotprices?start=2023-12-30&end=2025-01-02&filter=%7B%22PriceArea%22%3A+%5B%22DK2%22%5D%7D&limit=10000",
+                  "retrieved_utc": "2026-11-05T22:38:56.928217+00:00",
+                  "sha256": "be23fef944ab3dad400bfc6d74936fc94834aa7606f9e1525b26c75e03bc1907",
+                  "bytes": 1187618
+                },
+                "cop_2024.csv": {
+                  "sha256": "a9754554bbc3be73e1939feeaa4eac5c2334de4ec2c783fd0b1097ec02a9b124"
+                },
+                "monthly_reference_2024.csv": {
+                  "sha256": "61df200a01931eb070394ae386ebe66bd32d21f7dadf5d9f1cbea3996beba20f"
+                },
+                "htf_demand_2019.csv": {
+                  "sha256": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166"
+                },
+                "provenance.json": {
+                  "sha256": "b163dbe1cab044d49f05826445590ca55345cb26277a2595c0de248adb3d32e3"
+                }
+              },
+              "repairs": [
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 830.4917602539167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 760.5098546344583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 720.7840270995833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 710.64827728275
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 685.3879216511666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 656.1082013448749
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 652.50077819825
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 676.1983006795833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 681.8459383647083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 724.923400878875
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 769.1214523315
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 791.6968205769999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.1658503214167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 787.6307754515833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.295865376625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.5647862752083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 763.6908671060833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 768.2593663533751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 772.4006729125833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 796.636227925625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 824.9907836914999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 845.9569727580833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 866.8205362956667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 840.2631098429999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.50294494625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 747.1763992308333
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 678.1288553874167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 653.7164128621666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 608.4512964885832
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 586.14890035
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 584.9484685262083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 598.2092081705416
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 659.4529711405
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 701.4242706299583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 745.8779220581666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 797.2120895385
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 822.2522888183751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 807.9804814655834
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 771.0495300293334
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 292.6787910461667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 574.9253285727084
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-02-08 07:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 594.681317647375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 342.44973882041666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.5454432169166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 299.71440633145835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 289.443997701
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.76760164895836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.1198972066667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 276.0721047719583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 272.26192792254164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 274.540676117
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 291.0627911885
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 297.2553132375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.22621091216666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 317.6131172179167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.3495292663333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 312.71506309508334
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 315.07736651108337
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.41882387795835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.44805018104165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.95980517070836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 331.2218939462917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 344.2734057109167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 362.4534441630417
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 376.08509063725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 361.5093955994166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 330.06389109295833
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 316.2047659556667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 294.64849344891667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 279.7533893584583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.6828835805
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.89533170054165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 263.79854456579164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 268.8738409677917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.6083869934167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.54149373375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 301.94074249275
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.28470738725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 320.334396362375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 314.0471375783333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 303.38738695779165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-05-12 06:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 204.34600194295834
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-07-18 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 103.1994628905
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 233.183490753125
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.04118601483333
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.6565093994167
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 270.62441380816665
+                }
+              ],
+              "warnings": [
+                "2019 HTF demand remapped; modelled COPs; inherited monthly reference",
+                "CTR+VEKS metering boundary is not verified",
+                "FFH50 is a planning study, not measured 2024 plant operation"
+              ]
+            },
+            "study_spec_sha256": "fa7470f7dc0acdfe6c188c7216d96d8197e92efb9e8223e5722b1112e06b63a6"
+          },
+          "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+          "case_inputs_sha256": "cab2750bac7f5c87b222b402510a6da95ad720c69102b4645ade7da1dc3e1d4f"
+        }
+      }
+    },
+    "findings_30_30_pump005_lossless": {
+      "study_csv_sha256": "78fe1b671d43d0a9eee0ca03e9219483ef674b21e64002c2134a5a78a9afdd9c",
+      "study_json_sha256": "134fb530c6679db05b7dc0766b91a5cb50feddd34a5d5466d863b81fcd405d28",
+      "runtime_and_inputs": {
+        "shoulder__lossless_pump005_30_30": {
+          "runtime": {
+            "python": "3.11.14",
+            "numpy": "2.3.5",
+            "pandas": "2.2.3",
+            "pypsa": "1.0.4",
+            "linopy": "0.5.8",
+            "xarray": "2025.6.1",
+            "highs": "1.15.1",
+            "source_sha256": "0e3e52f04578541461065a8578568af9057d3166b648ad41bf07b035cc02dc59",
+            "gurobi": "13.0.3"
+          },
+          "input_provenance": {
+            "kind": "prepared_inputs",
+            "path": "/home/tom/PycharmProjects/DynSys/model/data/processed/inputs_2024.csv",
+            "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af",
+            "local_profiles_sha256": "68fcff6843f6ecdaf742d6952e3b798bb03afce77dff7d3398f0310aa3a8acd3",
+            "local_profile_generation": {
+              "method": "Historical HTF netpoint curves, 24h ambient average, 50C return, Lorenz approximation",
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2023_12_31.nc": "faa6274f106cee4d0e17737a24c30ec707d62d29d126597b751a51c15c7c56d5",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_01.nc": "554d1366b25b3fa347e1c184798549f302a38f937f5681c61518a36c69b4440e",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_02.nc": "a2bee97b2c21dc41b915811f0c1571b186624abb0c91391f73d9dd43c3975690",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_03.nc": "5a8b7fb50db6bf3b342a7fd5d872ac9372a39f9d46f289a676afe4b87c4f7272",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_04.nc": "56a57ad41568c16422b469eaa88655b7e8e65a6e37072114579fadc0ea6bbadc",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_05.nc": "fef3c7d57ee54eb2fd1254e9f248896d47c6fa4295e53cdac40a77cd2be9b134",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_06.nc": "bb3002f66a029266abd39e0ec7515124dd788e2b062a6e6a90ab3660b2a4820b",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_07.nc": "457c544927e1ec8627f9ac47c85278ea7aa92f013136896702c036d428ac0bce",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_08.nc": "833ddc73047fb40047fe3dd8f78bd716bb7ed42ad839cb489e35b851b0f3eaba",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_09.nc": "17d22827922bced27b1ca39dd5114ecc19cabe6ad6293fe5d4572ef3462948ef",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_10.nc": "9cd8d9459efef31fc032c7f77c065bba4bfb367a3e4536df1960e9771de6134d",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_11.nc": "ccdad1d688d6e68a8e1bb18862c531b34a74e81077fc55675ff14ca0fb62f1d2",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_12.nc": "747af963ce3ce89138f9aee11daa2b67369749c72f09ebb107ffe6c7ce3a2dde"
+              },
+              "warning": "Modelled temperatures and COPs; not measured HTF operating profiles"
+            },
+            "command_arguments": [
+              "study",
+              "--solver",
+              "gurobi",
+              "--study-spec",
+              "/tmp/dynsys-findings-lossless.yaml",
+              "--local-profiles",
+              "model/results/review_profiles_2024/local_profiles.csv",
+              "--figures",
+              "--output",
+              "model/results/findings_30_30_pump005_lossless"
+            ],
+            "preparation_report": {
+              "year": 2024,
+              "hours": 8784,
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "varmelast": {
+                  "url": "https://www.varmelast.dk/api/v1/heatdata/historical?from=2024-01-01&to=2024-12-31&intervalMinutes=60&contextSite=varmelast_dk",
+                  "retrieved_utc": "2026-11-05T22:38:56.076698+00:00",
+                  "sha256": "6cdc62904ff3d82e4c44da01246103c5106859c8847153f858a7d72bf9567c0a",
+                  "bytes": 9778827
+                },
+                "dk2": {
+                  "url": "https://api.energidataservice.dk/dataset/Elspotprices?start=2023-12-30&end=2025-01-02&filter=%7B%22PriceArea%22%3A+%5B%22DK2%22%5D%7D&limit=10000",
+                  "retrieved_utc": "2026-11-05T22:38:56.928217+00:00",
+                  "sha256": "be23fef944ab3dad400bfc6d74936fc94834aa7606f9e1525b26c75e03bc1907",
+                  "bytes": 1187618
+                },
+                "cop_2024.csv": {
+                  "sha256": "a9754554bbc3be73e1939feeaa4eac5c2334de4ec2c783fd0b1097ec02a9b124"
+                },
+                "monthly_reference_2024.csv": {
+                  "sha256": "61df200a01931eb070394ae386ebe66bd32d21f7dadf5d9f1cbea3996beba20f"
+                },
+                "htf_demand_2019.csv": {
+                  "sha256": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166"
+                },
+                "provenance.json": {
+                  "sha256": "b163dbe1cab044d49f05826445590ca55345cb26277a2595c0de248adb3d32e3"
+                }
+              },
+              "repairs": [
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 830.4917602539167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 760.5098546344583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 720.7840270995833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 710.64827728275
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 685.3879216511666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 656.1082013448749
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 652.50077819825
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 676.1983006795833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 681.8459383647083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 724.923400878875
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 769.1214523315
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 791.6968205769999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.1658503214167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 787.6307754515833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.295865376625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.5647862752083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 763.6908671060833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 768.2593663533751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 772.4006729125833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 796.636227925625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 824.9907836914999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 845.9569727580833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 866.8205362956667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 840.2631098429999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.50294494625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 747.1763992308333
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 678.1288553874167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 653.7164128621666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 608.4512964885832
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 586.14890035
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 584.9484685262083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 598.2092081705416
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 659.4529711405
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 701.4242706299583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 745.8779220581666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 797.2120895385
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 822.2522888183751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 807.9804814655834
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 771.0495300293334
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 292.6787910461667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 574.9253285727084
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-02-08 07:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 594.681317647375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 342.44973882041666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.5454432169166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 299.71440633145835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 289.443997701
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.76760164895836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.1198972066667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 276.0721047719583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 272.26192792254164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 274.540676117
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 291.0627911885
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 297.2553132375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.22621091216666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 317.6131172179167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.3495292663333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 312.71506309508334
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 315.07736651108337
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.41882387795835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.44805018104165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.95980517070836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 331.2218939462917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 344.2734057109167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 362.4534441630417
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 376.08509063725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 361.5093955994166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 330.06389109295833
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 316.2047659556667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 294.64849344891667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 279.7533893584583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.6828835805
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.89533170054165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 263.79854456579164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 268.8738409677917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.6083869934167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.54149373375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 301.94074249275
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.28470738725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 320.334396362375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 314.0471375783333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 303.38738695779165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-05-12 06:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 204.34600194295834
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-07-18 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 103.1994628905
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 233.183490753125
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.04118601483333
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.6565093994167
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 270.62441380816665
+                }
+              ],
+              "warnings": [
+                "2019 HTF demand remapped; modelled COPs; inherited monthly reference",
+                "CTR+VEKS metering boundary is not verified",
+                "FFH50 is a planning study, not measured 2024 plant operation"
+              ]
+            },
+            "study_spec_sha256": "da145c064fb721facd28aa4c678c0e0b11ea5287d4c458dc1be9fd1fa5b9c4a8"
+          },
+          "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+          "case_inputs_sha256": "042b7717ac808c03776a477d17cc8fe32e23993d91b53fe35542c0ba107cb754"
+        },
+        "summer__lossless_pump005_30_30": {
+          "runtime": {
+            "python": "3.11.14",
+            "numpy": "2.3.5",
+            "pandas": "2.2.3",
+            "pypsa": "1.0.4",
+            "linopy": "0.5.8",
+            "xarray": "2025.6.1",
+            "highs": "1.15.1",
+            "source_sha256": "0e3e52f04578541461065a8578568af9057d3166b648ad41bf07b035cc02dc59",
+            "gurobi": "13.0.3"
+          },
+          "input_provenance": {
+            "kind": "prepared_inputs",
+            "path": "/home/tom/PycharmProjects/DynSys/model/data/processed/inputs_2024.csv",
+            "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af",
+            "local_profiles_sha256": "68fcff6843f6ecdaf742d6952e3b798bb03afce77dff7d3398f0310aa3a8acd3",
+            "local_profile_generation": {
+              "method": "Historical HTF netpoint curves, 24h ambient average, 50C return, Lorenz approximation",
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2023_12_31.nc": "faa6274f106cee4d0e17737a24c30ec707d62d29d126597b751a51c15c7c56d5",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_01.nc": "554d1366b25b3fa347e1c184798549f302a38f937f5681c61518a36c69b4440e",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_02.nc": "a2bee97b2c21dc41b915811f0c1571b186624abb0c91391f73d9dd43c3975690",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_03.nc": "5a8b7fb50db6bf3b342a7fd5d872ac9372a39f9d46f289a676afe4b87c4f7272",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_04.nc": "56a57ad41568c16422b469eaa88655b7e8e65a6e37072114579fadc0ea6bbadc",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_05.nc": "fef3c7d57ee54eb2fd1254e9f248896d47c6fa4295e53cdac40a77cd2be9b134",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_06.nc": "bb3002f66a029266abd39e0ec7515124dd788e2b062a6e6a90ab3660b2a4820b",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_07.nc": "457c544927e1ec8627f9ac47c85278ea7aa92f013136896702c036d428ac0bce",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_08.nc": "833ddc73047fb40047fe3dd8f78bd716bb7ed42ad839cb489e35b851b0f3eaba",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_09.nc": "17d22827922bced27b1ca39dd5114ecc19cabe6ad6293fe5d4572ef3462948ef",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_10.nc": "9cd8d9459efef31fc032c7f77c065bba4bfb367a3e4536df1960e9771de6134d",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_11.nc": "ccdad1d688d6e68a8e1bb18862c531b34a74e81077fc55675ff14ca0fb62f1d2",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_12.nc": "747af963ce3ce89138f9aee11daa2b67369749c72f09ebb107ffe6c7ce3a2dde"
+              },
+              "warning": "Modelled temperatures and COPs; not measured HTF operating profiles"
+            },
+            "command_arguments": [
+              "study",
+              "--solver",
+              "gurobi",
+              "--study-spec",
+              "/tmp/dynsys-findings-lossless.yaml",
+              "--local-profiles",
+              "model/results/review_profiles_2024/local_profiles.csv",
+              "--figures",
+              "--output",
+              "model/results/findings_30_30_pump005_lossless"
+            ],
+            "preparation_report": {
+              "year": 2024,
+              "hours": 8784,
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "varmelast": {
+                  "url": "https://www.varmelast.dk/api/v1/heatdata/historical?from=2024-01-01&to=2024-12-31&intervalMinutes=60&contextSite=varmelast_dk",
+                  "retrieved_utc": "2026-11-05T22:38:56.076698+00:00",
+                  "sha256": "6cdc62904ff3d82e4c44da01246103c5106859c8847153f858a7d72bf9567c0a",
+                  "bytes": 9778827
+                },
+                "dk2": {
+                  "url": "https://api.energidataservice.dk/dataset/Elspotprices?start=2023-12-30&end=2025-01-02&filter=%7B%22PriceArea%22%3A+%5B%22DK2%22%5D%7D&limit=10000",
+                  "retrieved_utc": "2026-11-05T22:38:56.928217+00:00",
+                  "sha256": "be23fef944ab3dad400bfc6d74936fc94834aa7606f9e1525b26c75e03bc1907",
+                  "bytes": 1187618
+                },
+                "cop_2024.csv": {
+                  "sha256": "a9754554bbc3be73e1939feeaa4eac5c2334de4ec2c783fd0b1097ec02a9b124"
+                },
+                "monthly_reference_2024.csv": {
+                  "sha256": "61df200a01931eb070394ae386ebe66bd32d21f7dadf5d9f1cbea3996beba20f"
+                },
+                "htf_demand_2019.csv": {
+                  "sha256": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166"
+                },
+                "provenance.json": {
+                  "sha256": "b163dbe1cab044d49f05826445590ca55345cb26277a2595c0de248adb3d32e3"
+                }
+              },
+              "repairs": [
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 830.4917602539167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 760.5098546344583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 720.7840270995833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 710.64827728275
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 685.3879216511666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 656.1082013448749
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 652.50077819825
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 676.1983006795833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 681.8459383647083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 724.923400878875
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 769.1214523315
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 791.6968205769999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.1658503214167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 787.6307754515833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.295865376625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.5647862752083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 763.6908671060833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 768.2593663533751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 772.4006729125833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 796.636227925625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 824.9907836914999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 845.9569727580833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 866.8205362956667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 840.2631098429999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.50294494625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 747.1763992308333
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 678.1288553874167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 653.7164128621666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 608.4512964885832
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 586.14890035
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 584.9484685262083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 598.2092081705416
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 659.4529711405
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 701.4242706299583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 745.8779220581666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 797.2120895385
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 822.2522888183751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 807.9804814655834
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 771.0495300293334
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 292.6787910461667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 574.9253285727084
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-02-08 07:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 594.681317647375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 342.44973882041666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.5454432169166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 299.71440633145835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 289.443997701
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.76760164895836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.1198972066667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 276.0721047719583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 272.26192792254164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 274.540676117
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 291.0627911885
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 297.2553132375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.22621091216666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 317.6131172179167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.3495292663333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 312.71506309508334
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 315.07736651108337
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.41882387795835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.44805018104165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.95980517070836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 331.2218939462917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 344.2734057109167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 362.4534441630417
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 376.08509063725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 361.5093955994166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 330.06389109295833
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 316.2047659556667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 294.64849344891667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 279.7533893584583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.6828835805
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.89533170054165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 263.79854456579164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 268.8738409677917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.6083869934167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.54149373375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 301.94074249275
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.28470738725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 320.334396362375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 314.0471375783333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 303.38738695779165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-05-12 06:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 204.34600194295834
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-07-18 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 103.1994628905
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 233.183490753125
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.04118601483333
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.6565093994167
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 270.62441380816665
+                }
+              ],
+              "warnings": [
+                "2019 HTF demand remapped; modelled COPs; inherited monthly reference",
+                "CTR+VEKS metering boundary is not verified",
+                "FFH50 is a planning study, not measured 2024 plant operation"
+              ]
+            },
+            "study_spec_sha256": "da145c064fb721facd28aa4c678c0e0b11ea5287d4c458dc1be9fd1fa5b9c4a8"
+          },
+          "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+          "case_inputs_sha256": "4fdf6ea5f6cb4bce17777482fbf2fa4299143b3b4c97a1ab54b943e6bd1cac63"
+        },
+        "winter__lossless_pump005_30_30": {
+          "runtime": {
+            "python": "3.11.14",
+            "numpy": "2.3.5",
+            "pandas": "2.2.3",
+            "pypsa": "1.0.4",
+            "linopy": "0.5.8",
+            "xarray": "2025.6.1",
+            "highs": "1.15.1",
+            "source_sha256": "0e3e52f04578541461065a8578568af9057d3166b648ad41bf07b035cc02dc59",
+            "gurobi": "13.0.3"
+          },
+          "input_provenance": {
+            "kind": "prepared_inputs",
+            "path": "/home/tom/PycharmProjects/DynSys/model/data/processed/inputs_2024.csv",
+            "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af",
+            "local_profiles_sha256": "68fcff6843f6ecdaf742d6952e3b798bb03afce77dff7d3398f0310aa3a8acd3",
+            "local_profile_generation": {
+              "method": "Historical HTF netpoint curves, 24h ambient average, 50C return, Lorenz approximation",
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2023_12_31.nc": "faa6274f106cee4d0e17737a24c30ec707d62d29d126597b751a51c15c7c56d5",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_01.nc": "554d1366b25b3fa347e1c184798549f302a38f937f5681c61518a36c69b4440e",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_02.nc": "a2bee97b2c21dc41b915811f0c1571b186624abb0c91391f73d9dd43c3975690",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_03.nc": "5a8b7fb50db6bf3b342a7fd5d872ac9372a39f9d46f289a676afe4b87c4f7272",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_04.nc": "56a57ad41568c16422b469eaa88655b7e8e65a6e37072114579fadc0ea6bbadc",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_05.nc": "fef3c7d57ee54eb2fd1254e9f248896d47c6fa4295e53cdac40a77cd2be9b134",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_06.nc": "bb3002f66a029266abd39e0ec7515124dd788e2b062a6e6a90ab3660b2a4820b",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_07.nc": "457c544927e1ec8627f9ac47c85278ea7aa92f013136896702c036d428ac0bce",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_08.nc": "833ddc73047fb40047fe3dd8f78bd716bb7ed42ad839cb489e35b851b0f3eaba",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_09.nc": "17d22827922bced27b1ca39dd5114ecc19cabe6ad6293fe5d4572ef3462948ef",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_10.nc": "9cd8d9459efef31fc032c7f77c065bba4bfb367a3e4536df1960e9771de6134d",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_11.nc": "ccdad1d688d6e68a8e1bb18862c531b34a74e81077fc55675ff14ca0fb62f1d2",
+                "/home/tom/PycharmProjects/DynSys/Data/era5_land_t2m_2024_12.nc": "747af963ce3ce89138f9aee11daa2b67369749c72f09ebb107ffe6c7ce3a2dde"
+              },
+              "warning": "Modelled temperatures and COPs; not measured HTF operating profiles"
+            },
+            "command_arguments": [
+              "study",
+              "--solver",
+              "gurobi",
+              "--study-spec",
+              "/tmp/dynsys-findings-lossless.yaml",
+              "--local-profiles",
+              "model/results/review_profiles_2024/local_profiles.csv",
+              "--figures",
+              "--output",
+              "model/results/findings_30_30_pump005_lossless"
+            ],
+            "preparation_report": {
+              "year": 2024,
+              "hours": 8784,
+              "timezone": "UTC",
+              "model_year_timezone": "Europe/Copenhagen",
+              "sources": {
+                "varmelast": {
+                  "url": "https://www.varmelast.dk/api/v1/heatdata/historical?from=2024-01-01&to=2024-12-31&intervalMinutes=60&contextSite=varmelast_dk",
+                  "retrieved_utc": "2026-11-05T22:38:56.076698+00:00",
+                  "sha256": "6cdc62904ff3d82e4c44da01246103c5106859c8847153f858a7d72bf9567c0a",
+                  "bytes": 9778827
+                },
+                "dk2": {
+                  "url": "https://api.energidataservice.dk/dataset/Elspotprices?start=2023-12-30&end=2025-01-02&filter=%7B%22PriceArea%22%3A+%5B%22DK2%22%5D%7D&limit=10000",
+                  "retrieved_utc": "2026-11-05T22:38:56.928217+00:00",
+                  "sha256": "be23fef944ab3dad400bfc6d74936fc94834aa7606f9e1525b26c75e03bc1907",
+                  "bytes": 1187618
+                },
+                "cop_2024.csv": {
+                  "sha256": "a9754554bbc3be73e1939feeaa4eac5c2334de4ec2c783fd0b1097ec02a9b124"
+                },
+                "monthly_reference_2024.csv": {
+                  "sha256": "61df200a01931eb070394ae386ebe66bd32d21f7dadf5d9f1cbea3996beba20f"
+                },
+                "htf_demand_2019.csv": {
+                  "sha256": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166"
+                },
+                "provenance.json": {
+                  "sha256": "b163dbe1cab044d49f05826445590ca55345cb26277a2595c0de248adb3d32e3"
+                }
+              },
+              "repairs": [
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 830.4917602539167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 760.5098546344583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 720.7840270995833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 710.64827728275
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 685.3879216511666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 656.1082013448749
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 652.50077819825
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 676.1983006795833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 681.8459383647083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 724.923400878875
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 769.1214523315
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 791.6968205769999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.1658503214167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 787.6307754515833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.295865376625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 776.5647862752083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 763.6908671060833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 768.2593663533751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 772.4006729125833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 796.636227925625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 824.9907836914999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 845.9569727580833
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 866.8205362956667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 840.2631098429999
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 794.50294494625
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 747.1763992308333
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 678.1288553874167
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 653.7164128621666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 608.4512964885832
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 586.14890035
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 584.9484685262083
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 598.2092081705416
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 659.4529711405
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 701.4242706299583
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 745.8779220581666
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 797.2120895385
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 822.2522888183751
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 807.9804814655834
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 771.0495300293334
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 292.6787910461667
+                },
+                {
+                  "series": "ctr_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 574.9253285727084
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-02-08 07:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 594.681317647375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 342.44973882041666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.5454432169166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 299.71440633145835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 289.443997701
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.76760164895836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.1198972066667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 276.0721047719583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 272.26192792254164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 274.540676117
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 291.0627911885
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 297.2553132375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.22621091216666
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 317.6131172179167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.3495292663333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 312.71506309508334
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-01 23:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 315.07736651108337
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 00:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 313.41882387795835
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 01:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.44805018104165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 02:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 318.95980517070836
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 03:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 331.2218939462917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 04:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 344.2734057109167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 05:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 362.4534441630417
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 06:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 376.08509063725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 07:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 361.5093955994166
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 08:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 330.06389109295833
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 09:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 316.2047659556667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 10:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 294.64849344891667
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 11:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 279.7533893584583
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 12:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.6828835805
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 13:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 258.89533170054165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 14:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 263.79854456579164
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 15:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 268.8738409677917
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 16:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 271.6083869934167
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 17:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 280.54149373375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 18:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 301.94074249275
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 19:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 319.28470738725
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 20:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 320.334396362375
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 21:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 314.0471375783333
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-04-02 22:00:00+00:00",
+                  "method": "adjacent_week_mean_gap_at_most_48h",
+                  "replacement": 303.38738695779165
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-05-12 06:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 204.34600194295834
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-07-18 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 103.1994628905
+                },
+                {
+                  "series": "veks_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 233.183490753125
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 10:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.04118601483333
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-05-15 11:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 299.6565093994167
+                },
+                {
+                  "series": "waste_available_mw",
+                  "timestamp": "2024-10-27 01:00:00+00:00",
+                  "method": "linear_gap_at_most_3h",
+                  "replacement": 270.62441380816665
+                }
+              ],
+              "warnings": [
+                "2019 HTF demand remapped; modelled COPs; inherited monthly reference",
+                "CTR+VEKS metering boundary is not verified",
+                "FFH50 is a planning study, not measured 2024 plant operation"
+              ]
+            },
+            "study_spec_sha256": "da145c064fb721facd28aa4c678c0e0b11ea5287d4c458dc1be9fd1fa5b9c4a8"
+          },
+          "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+          "case_inputs_sha256": "cab2750bac7f5c87b222b402510a6da95ad720c69102b4645ade7da1dc3e1d4f"
+        }
+      }
+    }
+  },
+  "profile_location": "model/data/processed/profiles_2024/local_profiles.csv",
+  "archive_index": "model/results/archive/2026-11-08/index.json",
+  "path_relocations": {
+    "model/results/review_profiles_2024": "model/data/processed/profiles_2024"
+  }
+}

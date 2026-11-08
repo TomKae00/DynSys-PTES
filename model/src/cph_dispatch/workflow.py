@@ -4,10 +4,12 @@ from copy import deepcopy
 
 import numpy as np
 
-from .optimisation import build, solve
+from .optimisation import _optimise, build, feasibility, solve
+from .results import _solver_info
 
 
-def compare(frame, config, plants, *, discount, prices=False):
+def coordinated(frame, config, plants, *, prices=False):
+    """One tariff-independent announced schedule for a matched physical scenario."""
     if config["settlement_boundary"] != "discharge_service":
         raise ValueError("Coupled tariff comparison requires the discharge-service boundary")
     central_config = deepcopy(config)
@@ -15,8 +17,134 @@ def compare(frame, config, plants, *, discount, prices=False):
     central_config["discharge_discount_dkk_mwh"] = 0.0
     central_inputs = frame.drop(columns=["discharge_discount_dkk_mwh"], errors="ignore")
     central = solve(build(central_inputs, central_config, plants), prices=prices)
-    announced = frame.copy()
-    announced["scheduled_ptes_charge_mw"] = central.dispatch.ptes_charge_mw
+    return central
+
+
+def response(frame, config, plants, central, credit, *, direct_tariff=None):
+    """Local response and physical correction, keeping all actual local decisions fixed."""
+    inputs = frame.copy()
+    inputs["scheduled_ptes_charge_mw"] = central.dispatch.ptes_charge_mw
+    inputs["discharge_discount_dkk_mwh"] = credit
+    if direct_tariff is not None:
+        inputs["reference_tariff_dkk_mwh"] = direct_tariff
+    if not np.isfinite(inputs.discharge_discount_dkk_mwh).all():
+        raise ValueError("Tariff discount must cover every snapshot")
+    local_config = deepcopy(config)
+    local_config["objective"] = "local"
+    local_config["solver"]["mip_rel_gap"] = config.get("response", {}).get(
+        "local_mip_rel_gap", config["solver"]["mip_rel_gap"]
+    )
+    if np.isscalar(credit):
+        local_config["discharge_discount_dkk_mwh"] = float(credit)
+    local = solve(build(inputs, local_config, plants))
+    system_config = deepcopy(config)
+    system_config["objective"] = "system"
+    corrective = solve(build(inputs, system_config, plants, fixed_local=local.dispatch))
+    for column in ["hx_mw", "ptes_discharge_mw", "city2_heat_mw", "groundwater_heat_mw"]:
+        if not np.allclose(local.dispatch[column], corrective.dispatch[column], atol=1e-5):
+            raise RuntimeError("Corrective solve changed an actual local decision")
+    return local, corrective
+
+
+def case_metrics(central, local, corrective):
+    actual = corrective.dispatch
+    return {
+        "local_expenditure_dkk": local.summary["illustrative_settlement"]["local_expenditure_dkk"],
+        "supplier_local_heat_revenue_dkk": local.summary["illustrative_settlement"][
+            "supplier_local_heat_revenue_dkk"
+        ],
+        "local_real_cost_dkk": local.summary["illustrative_settlement"][
+            "local_electricity_and_startup_dkk"
+        ],
+        "corrective_system_cost_dkk": corrective.summary["objective_dkk"],
+        "system_cost_change_from_coordinated_dkk": corrective.summary["objective_dkk"]
+        - central.summary["objective_dkk"],
+        "system_solver_gap_dkk": corrective.summary["absolute_optimality_gap_dkk"],
+        "local_solver_gap_dkk": local.summary["absolute_optimality_gap_dkk"],
+        "ptes_charge_mwh": float(actual.ptes_charge_mw.sum()),
+        "ptes_discharge_mwh": float(actual.ptes_discharge_mw.sum()),
+        "ptes_equivalent_discharge_cycles": float(
+            actual.ptes_discharge_mw.sum() / corrective.summary["assumptions"]["ptes"]["energy_mwh"]
+        ),
+        "charging_curtailed_mwh": float(
+            (central.dispatch.ptes_charge_mw - actual.ptes_charge_mw).sum()
+        ),
+        "missed_scheduled_discharge_mwh": float(
+            (central.dispatch.ptes_discharge_mw - actual.ptes_discharge_mw).clip(lower=0).sum()
+        ),
+        "ptes_terminal_mwh": float(actual.ptes_energy_mwh.iloc[-1]),
+        "ptes_standing_loss_mwh": float(actual.ptes_standing_loss_mwh.sum()),
+    }
+
+
+def benefits(reference, candidate):
+    """Transfers cancel: local saving + aggregate upstream surplus = operating saving.
+
+    The aggregate is a hypothetical consolidated account, not VEKS/producer profit.
+    """
+    saving = reference["corrective_system_cost_dkk"] - candidate["corrective_system_cost_dkk"]
+    local = reference["local_expenditure_dkk"] - candidate["local_expenditure_dkk"]
+    revenue = (
+        candidate["supplier_local_heat_revenue_dkk"] - reference["supplier_local_heat_revenue_dkk"]
+    )
+    upstream = (
+        saving + revenue + candidate["local_real_cost_dkk"] - reference["local_real_cost_dkk"]
+    )
+    gap = reference["system_solver_gap_dkk"] + candidate["system_solver_gap_dkk"]
+    return {
+        "system_operating_cost_saving_dkk": saving,
+        "local_bill_saving_dkk": local,
+        "supplier_local_heat_revenue_change_dkk": revenue,
+        "aggregate_upstream_operating_surplus_change_dkk": upstream,
+        "stakeholder_reconciliation_residual_dkk": local + upstream - saving,
+        "combined_system_solver_gap_bound_dkk": gap,
+        "system_saving_lower_bound_dkk": saving - gap,
+        "system_saving_upper_bound_dkk": saving + gap,
+        "system_difference_exceeds_gap_bound": bool(abs(saving) > gap),
+    }
+
+
+def local_discharge_range(local, *, tolerance_dkk=0.01):
+    """Two secondary optimisations bound throughput within a declared expenditure band.
+
+    No tie-breaking cost is introduced in the main model. Integer restrictions and
+    announced charging remain active; extrema need not be pointwise hourly bounds.
+    """
+    if local.summary["objective_kind"] != "local" or tolerance_dkk < 0:
+        raise ValueError("Discharge-range diagnostic needs a local solve and nonnegative tolerance")
+    results = {}
+    for label, sign in [("minimum", 1), ("maximum", -1)]:
+        n = build(local.network._cph_inputs, local.network._cph_config, local.network._cph_plants)
+
+        def secondary(network):
+            m = network.model
+            primary = m.objective.expression
+            m.add_constraints(
+                primary <= local.summary["objective_dkk"] + tolerance_dkk,
+                name="near_optimal_htf_expenditure",
+            )
+            total = (
+                m["Link-p"].sel(name="ptes_discharge").sum()
+                * n._cph_config["ptes"]["discharge_efficiency"]
+            )
+            m.add_objective(sign * total, overwrite=True)
+
+        _optimise(n, model_callback=secondary)
+        feasibility(n)
+        results[label + "_mwh"] = float(n.links_t.p1.ptes_discharge.sum() * -1)
+        # The solver-info helper's numeric gap has the current objective's units:
+        # here MWh rather than DKK, because this is a secondary throughput solve.
+        results[label + "_solver_gap_mwh"] = _solver_info(n)["absolute_optimality_gap_dkk"]
+    results["expenditure_band_dkk"] = tolerance_dkk
+    results["primary_solver_gap_dkk"] = local.summary["absolute_optimality_gap_dkk"]
+    results["interpretation"] = (
+        "Extrema within accepted HTF expenditure plus tolerance; not predicted behaviour or hourly bounds"
+    )
+    return results
+
+
+def compare(frame, config, plants, *, discount, prices=False, response_range=False):
+    central = coordinated(frame, config, plants, prices=prices)
     solutions = {"central": central}
     metrics = {
         "framework": "PyPSA",
@@ -25,59 +153,16 @@ def compare(frame, config, plants, *, discount, prices=False):
         "cases": {},
     }
     for label, credit in [("reference", 0.0), ("candidate", discount)]:
-        inputs = announced.copy()
-        inputs["discharge_discount_dkk_mwh"] = credit
-        if not np.isfinite(inputs.discharge_discount_dkk_mwh).all():
-            raise ValueError("Tariff discount must cover every snapshot")
-        local_config = deepcopy(config)
-        local_config["objective"] = "local"
-        if np.isscalar(credit):
-            local_config["discharge_discount_dkk_mwh"] = float(credit)
-        local = solve(build(inputs, local_config, plants))
-        corrective = solve(build(inputs, central_config, plants, fixed_local=local.dispatch))
-        for column in ["hx_mw", "ptes_discharge_mw", "city2_heat_mw", "groundwater_heat_mw"]:
-            if not np.allclose(local.dispatch[column], corrective.dispatch[column], atol=1e-5):
-                raise RuntimeError("Corrective solve changed an actual local decision")
+        local, corrective = response(frame, config, plants, central, credit)
         solutions[label + "_local"] = local
         solutions[label + "_corrective"] = corrective
-        actual = corrective.dispatch
-        metrics["cases"][label] = {
-            "local_expenditure_dkk": local.summary["illustrative_settlement"][
-                "local_expenditure_dkk"
-            ],
-            "supplier_local_heat_revenue_dkk": local.summary["illustrative_settlement"][
-                "supplier_local_heat_revenue_dkk"
-            ],
-            "corrective_system_cost_dkk": corrective.summary["objective_dkk"],
-            "system_cost_change_from_coordinated_dkk": corrective.summary["objective_dkk"]
-            - central.summary["objective_dkk"],
-            "ptes_charge_mwh": float(actual.ptes_charge_mw.sum()),
-            "ptes_discharge_mwh": float(actual.ptes_discharge_mw.sum()),
-            "charging_curtailed_mwh": float(
-                (announced.scheduled_ptes_charge_mw - actual.ptes_charge_mw).sum()
-            ),
-            "missed_scheduled_discharge_mwh": float(
-                (central.dispatch.ptes_discharge_mw - actual.ptes_discharge_mw).clip(lower=0).sum()
-            ),
-            "ptes_terminal_mwh": float(actual.ptes_energy_mwh.iloc[-1]),
-        }
+        metrics["cases"][label] = case_metrics(central, local, corrective)
     reference, candidate = metrics["cases"]["reference"], metrics["cases"]["candidate"]
-    metrics["candidate_vs_reference"] = {
-        "system_operating_cost_saving_dkk": reference["corrective_system_cost_dkk"]
-        - candidate["corrective_system_cost_dkk"],
-        "local_bill_saving_dkk": reference["local_expenditure_dkk"]
-        - candidate["local_expenditure_dkk"],
-        "supplier_local_heat_revenue_change_dkk": candidate["supplier_local_heat_revenue_dkk"]
-        - reference["supplier_local_heat_revenue_dkk"],
-    }
-    gap_bound = sum(
-        solutions[k + "_corrective"].summary["absolute_optimality_gap_dkk"]
-        for k in ["reference", "candidate"]
-    )
-    metrics["candidate_vs_reference"]["combined_system_solver_gap_bound_dkk"] = gap_bound
-    metrics["candidate_vs_reference"]["system_difference_exceeds_gap_bound"] = bool(
-        abs(metrics["candidate_vs_reference"]["system_operating_cost_saving_dkk"]) > gap_bound
-    )
+    metrics["candidate_vs_reference"] = benefits(reference, candidate)
+    if response_range:
+        metrics["reference_near_optimal_discharge_range"] = local_discharge_range(
+            solutions["reference_local"]
+        )
     metrics["limitations"] = [
         "One-pass rational response benchmark; not a behavioural or market-equilibrium model",
         "Corrective electricity is valued at the same exogenous DK2 prices; no balancing-market settlement",

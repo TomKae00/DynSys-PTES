@@ -6,6 +6,7 @@ import json
 import logging
 import platform
 import sys
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -17,8 +18,10 @@ import pypsa
 import xarray as xr
 import yaml
 
-from .data import demo, prepare
+from .data import demo, prepare, year_index
 from .optimisation import build, solve
+from .profiles import build_profiles, hourly_series, read_era5
+from .study import evaluate_tariffs, study_cases
 from .workflow import compare
 
 
@@ -34,7 +37,16 @@ def _write_outputs(output, solutions, *, provenance, plants_hash, comparison=Non
         "linopy": linopy.__version__,
         "xarray": xr.__version__,
         "highs": highspy.Highs().version(),
+        "source_sha256": hashlib.sha256(
+            b"".join(
+                p.name.encode() + p.read_bytes() for p in sorted(Path(__file__).parent.glob("*.py"))
+            )
+        ).hexdigest(),
     }
+    try:
+        runtime["gurobi"] = version("gurobipy")
+    except PackageNotFoundError:
+        pass
     with TemporaryDirectory(prefix=".cph-", dir=output.parent) as temporary:
         staging = Path(temporary)
         for label, solution in solutions.items():
@@ -60,6 +72,14 @@ def _write_outputs(output, solutions, *, provenance, plants_hash, comparison=Non
             )
             solution.network.export_to_netcdf(folder / "network.nc")
             solution.dispatch.to_csv(folder / "dispatch.csv", index_label="timestamp")
+            solution.network._cph_inputs.to_csv(folder / "inputs.csv", index_label="timestamp")
+            solution.network._cph_plants.to_csv(folder / "plants.csv", index=False)
+            solution.summary["case_inputs_sha256"] = hashlib.sha256(
+                (folder / "inputs.csv").read_bytes()
+            ).hexdigest()
+            solution.summary["archived_plants_sha256"] = hashlib.sha256(
+                (folder / "plants.csv").read_bytes()
+            ).hexdigest()
             (folder / "summary.json").write_text(
                 json.dumps(solution.summary, indent=2, allow_nan=False)
             )
@@ -74,13 +94,32 @@ def _write_outputs(output, solutions, *, provenance, plants_hash, comparison=Non
 
 def _run(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["prepare", "solve", "demo", "compare"])
+    parser.add_argument(
+        "command", choices=["prepare", "profiles", "solve", "demo", "compare", "study", "report"]
+    )
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--config", type=Path)
     parser.add_argument("--inputs", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--year", type=int, default=2024)
     parser.add_argument("--repair", action="store_true")
+    parser.add_argument("--local-profiles", type=Path, help="Timestamped UTC temperature/COP CSV")
+    weather = parser.add_mutually_exclusive_group()
+    weather.add_argument(
+        "--ambient-csv", type=Path, help="UTC time,temperature_c input including warm-up"
+    )
+    weather.add_argument(
+        "--era5-files", type=Path, nargs="+", help="Existing ERA5-Land NetCDF files"
+    )
+    parser.add_argument(
+        "--study-spec", type=Path, help="YAML periods, sensitivities and tariff candidates"
+    )
+    parser.add_argument(
+        "--figures", action="store_true", help="Include tariff-response figures in a study"
+    )
+    parser.add_argument("--run", type=Path, help="Accepted result folder for report")
+    parser.add_argument("--observations", type=Path, help="Recorded hourly PTES CSV for context")
+    parser.add_argument("--observation-kind", choices=["soc_proxy", "metered"])
     parser.add_argument(
         "--synthetic", action="store_true", help="Explicit synthetic input for comparison demos"
     )
@@ -100,13 +139,82 @@ def _run(argv=None):
         "--schedule", type=Path, help="Central dispatch.csv with the charging schedule"
     )
     parser.add_argument("--prices", action="store_true", help="Fixed-commitment LP marginal values")
+    parser.add_argument(
+        "--response-range",
+        action="store_true",
+        help="Two extra solves bound near-optimal reference throughput",
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args(argv)
     logging.getLogger("pypsa").setLevel(logging.INFO if args.verbose else logging.WARNING)
     logging.getLogger("linopy").setLevel(logging.INFO if args.verbose else logging.WARNING)
+    if args.command == "profiles":
+        sources = args.era5_files or ([args.ambient_csv] if args.ambient_csv else [])
+        if not sources:
+            raise ValueError(
+                "Profiles require --ambient-csv or --era5-files; no implicit downloads"
+            )
+        if args.ambient_csv:
+            source = pd.read_csv(args.ambient_csv, index_col="time").temperature_c
+            ambient = hourly_series(source)
+        else:
+            ambient = read_era5(args.era5_files)
+        profiles = build_profiles(ambient, year_index(args.year))
+        output = args.output or args.root / f"data/processed/profiles_{args.year}"
+        output.parent.mkdir(parents=True, exist_ok=True)
+        if output.exists() and any(output.iterdir()):
+            raise ValueError("Profiles output must be empty")
+        with TemporaryDirectory(prefix=".profiles-", dir=output.parent) as temporary:
+            staging = Path(temporary)
+            profiles.to_csv(staging / "local_profiles.csv")
+            (staging / "provenance.json").write_text(
+                json.dumps(
+                    {
+                        "method": "Historical HTF netpoint curves, 24h ambient average, 50C return, Lorenz approximation",
+                        "timezone": "UTC",
+                        "model_year_timezone": "Europe/Copenhagen",
+                        "profile_source_sha256": hashlib.sha256(
+                            (Path(__file__).parent / "profiles.py").read_bytes()
+                        ).hexdigest(),
+                        "sources": {
+                            str(p.resolve()): hashlib.sha256(p.read_bytes()).hexdigest()
+                            for p in sources
+                        },
+                        "warning": "Modelled temperatures and COPs; not measured HTF operating profiles",
+                    },
+                    indent=2,
+                )
+            )
+            if output.exists():
+                output.rmdir()
+            staging.rename(output)
+        print(json.dumps({"hours": len(profiles), "output": str(output)}))
+        return
     if args.command == "prepare":
-        frame, report = prepare(args.root, args.year, repair=args.repair)
+        frame, report = prepare(
+            args.root, args.year, repair=args.repair, local_profiles=args.local_profiles
+        )
         print(json.dumps({"hours": len(frame), "repaired_cells": len(report["repairs"])}))
+        return
+    if args.command == "report":
+        from .plotting import report
+
+        if args.run is None:
+            raise ValueError("Report requires --run pointing to an accepted result folder")
+        # Prefer the plant inputs archived with new exports.
+        plant_path = args.run / "plants.csv"
+        if not plant_path.exists():
+            plant_path = args.run / "central/plants.csv"
+        if not plant_path.exists():
+            plant_path = args.root / "config/plants.csv"
+        report(
+            args.run,
+            args.output or args.run / "figures",
+            pd.read_csv(plant_path),
+            observations=args.observations,
+            observation_kind=args.observation_kind,
+        )
+        print(json.dumps({"figures": str(args.output or args.run / "figures")}))
         return
     config = yaml.safe_load((args.config or args.root / "config/base.yaml").read_text())
     config["year"] = args.year
@@ -164,17 +272,82 @@ def _run(argv=None):
             raise ValueError("Duplicate schedule timestamps")
         frame["scheduled_ptes_charge_mw"] = scheduled.ptes_charge_mw.reindex(frame.index)
         provenance["schedule_sha256"] = hashlib.sha256(args.schedule.read_bytes()).hexdigest()
+    if args.local_profiles is not None:
+        from .profiles import apply_profiles
+
+        frame = apply_profiles(frame, args.local_profiles)
+        provenance["local_profiles_sha256"] = hashlib.sha256(
+            args.local_profiles.read_bytes()
+        ).hexdigest()
+        profile_provenance = args.local_profiles.with_name("provenance.json")
+        if profile_provenance.exists():
+            provenance["local_profile_generation"] = json.loads(profile_provenance.read_text())
+    provenance["command_arguments"] = list(argv) if argv is not None else sys.argv[1:]
+    quality_path = args.root / f"data/processed/quality_{args.year}.json"
+    if not synthetic and args.inputs is None and quality_path.exists():
+        provenance["preparation_report"] = json.loads(quality_path.read_text())
     path = args.root / "config/plants.csv"
     plants = pd.read_csv(path)
     output = args.output or args.root / "results" / args.command
     if output.exists() and any(output.iterdir()):
         raise ValueError("Output directory already contains results; choose an empty directory")
-    if args.command == "compare":
+    if args.command == "study":
+        if args.study_spec is None:
+            raise ValueError("Study requires --study-spec")
+        spec = yaml.safe_load(args.study_spec.read_text())
+        provenance["study_spec_sha256"] = hashlib.sha256(args.study_spec.read_bytes()).hexdigest()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        rows, reports = [], {}
+        with TemporaryDirectory(prefix=".study-", dir=output.parent) as temporary:
+            staging = Path(temporary)
+            for name, inputs, settings in study_cases(frame, config, spec):
+                solutions, metrics, table = evaluate_tariffs(
+                    inputs, settings, plants, spec["tariffs"]
+                )
+                _write_outputs(
+                    staging / name,
+                    solutions,
+                    provenance=provenance,
+                    plants_hash=hashlib.sha256(path.read_bytes()).hexdigest(),
+                    comparison=metrics,
+                )
+                table.insert(0, "scenario", name)
+                rows.append(table)
+                reports[name] = {k: v for k, v in metrics.items() if k != "cases"}
+                print(
+                    json.dumps(
+                        {"scenario": name, "best_tested_tariff": metrics["best_tested_tariff"]}
+                    )
+                )
+            if not rows:
+                raise ValueError("Study must contain at least one period and sensitivity")
+            combined = pd.concat(rows, ignore_index=True)
+            combined.to_csv(staging / "study.csv", index=False)
+            (staging / "study.json").write_text(
+                json.dumps(
+                    {"specification": spec, "scenarios": reports, "provenance": provenance},
+                    indent=2,
+                    allow_nan=False,
+                )
+            )
+            if args.figures:
+                from .plotting import plot_study
+
+                plot_study(combined, staging)
+            if output.exists():
+                output.rmdir()
+            staging.rename(output)
+    elif args.command == "compare":
         if args.discount is None and "discharge_discount_dkk_mwh" not in frame:
             raise ValueError("Supply --discount or an hourly discharge_discount_dkk_mwh column")
         discount = frame.get("discharge_discount_dkk_mwh", args.discount)
         solutions, comparison = compare(
-            frame, config, plants, discount=discount, prices=args.prices
+            frame,
+            config,
+            plants,
+            discount=discount,
+            prices=args.prices,
+            response_range=args.response_range,
         )
         _write_outputs(
             output,

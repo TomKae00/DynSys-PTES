@@ -1,0 +1,23 @@
+# Identify the effect of absolute discharge prices and of changing direct pricing.
+# These are ex-post, frozen conditional-value candidates, not verified contracts.
+periods:
+  - {name: winter, start: '2024-01-08T00:00:00Z', hours: 168}
+  - {name: shoulder, start: '2024-04-15T00:00:00Z', hours: 168}
+  - {name: summer, start: '2024-07-15T00:00:00Z', hours: 168}
+sensitivities:
+  - name: pump_005
+    overrides: {ptes.pump_mwh_el_per_mwh_heat: 0.005}
+tariffs:
+  - {name: constant_credit_control, family: constant, level: 5}
+  - name: discharge_at_heat_value
+    family: heat_value_price
+    direct_basis: monthly_reference
+  - name: discharge_at_inventory_value
+    family: inventory_value_price
+    direct_basis: monthly_reference
+  - name: both_at_marginal_values
+    family: inventory_value_price
+    direct_basis: delivered_marginal
+  - name: direct_mean_matched
+    family: inventory_value_price
+    direct_basis: monthly_mean_matched_marginal

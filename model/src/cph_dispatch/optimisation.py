@@ -30,8 +30,15 @@ def validate_inputs(frame, config, plants):
         raise ValueError("Inputs contain non-finite values")
     if (frame[["regional_demand_mw", "htf_demand_mw", "waste_available_mw"]] < 0).any().any():
         raise ValueError("Negative heat demand or waste availability")
-    if (frame[["city2_cop", "groundwater_cop"]] <= 1).any().any():
-        raise ValueError("Heat-pump COP must exceed one")
+    cop = frame[["city2_cop", "groundwater_cop"]]
+    if ((cop != 0) & (cop <= 1)).any().any():
+        raise ValueError("Heat-pump COP must exceed one, or be zero for unavailable hours")
+    if config["heat_pumps"].get("policy") == "must_run" and cop.eq(0).any().any():
+        raise ValueError("Must-run HP output conflicts with unavailable (zero-COP) hours")
+    if not np.isfinite(
+        frame.get("discharge_discount_dkk_mwh", config["discharge_discount_dkk_mwh"])
+    ).all():
+        raise ValueError("Tariff discounts must be finite")
     if config["demand_boundary"] not in ("assumed_gross_including_htf", "residual_excluding_htf"):
         raise ValueError("Unresolved demand boundary; net withdrawals need historical HTF metering")
     if config["objective"] not in ("system", "local"):
@@ -60,6 +67,12 @@ def validate_inputs(frame, config, plants):
         if not 0 <= spec["loss_per_hour"] < 1:
             raise ValueError("Storage hourly loss must be in [0,1)")
     ptes = config["ptes"]
+    if ptes["pump_mwh_el_per_mwh_heat"] < 0:
+        raise ValueError("Pumping electricity coefficient must be nonnegative")
+    for mode in ["charge", "discharge"]:
+        power = ptes.get(mode + "_power_mw", ptes["power_mw"])
+        if power <= 0 or not 0 <= ptes["min_" + mode + "_mw"] <= power:
+            raise ValueError("PTES flow minima must lie within the corresponding power limit")
     if not all(0 <= ptes[k] <= ptes["energy_mwh"] for k in ["initial_mwh", "terminal_mwh"]):
         raise ValueError("PTES boundary inventories exceed capacity")
     if not all(0 < ptes[k] <= 1 for k in ["charge_efficiency", "discharge_efficiency"]):
@@ -214,7 +227,7 @@ def build(frame, config, plants, *, fixed_local=None):
         bus0="heat_cph",
         bus1="ptes_inventory",
         efficiency=delivery * ptes["charge_efficiency"],
-        p_nom=ptes["power_mw"] / delivery,
+        p_nom=ptes.get("charge_power_mw", ptes["power_mw"]) / delivery,
         marginal_cost=delivery
         * ((pump * adder if charge_pumping else 0) + (tariff if not system and owned else 0)),
         carrier="heat",
@@ -226,7 +239,7 @@ def build(frame, config, plants, *, fixed_local=None):
         bus0="ptes_inventory",
         bus1="heat_htf",
         efficiency=ptes["discharge_efficiency"],
-        p_nom=ptes["power_mw"] / ptes["discharge_efficiency"],
+        p_nom=ptes.get("discharge_power_mw", ptes["power_mw"]) / ptes["discharge_efficiency"],
         marginal_cost=ptes["discharge_efficiency"]
         * (pump * adder + (0 if system else -discount + (0 if owned else tariff))),
         carrier="heat",
@@ -235,9 +248,10 @@ def build(frame, config, plants, *, fixed_local=None):
     hp = config["heat_pumps"]
     for name in ["city2", "groundwater"]:
         spec = hp[name]
-        cop = d[spec["cop_column"]]
+        available = d[spec["cop_column"]] > 1
+        cop = d[spec["cop_column"]].where(available, 1.0)
         electrical_nominal = spec["capacity_mw"] / float(cop.min())
-        maximum = spec["capacity_mw"] / (electrical_nominal * cop)
+        maximum = available * spec["capacity_mw"] / (electrical_nominal * cop)
         committed = hp.get("policy", "endogenous") == "endogenous"
         if hp.get("policy", "endogenous") not in ("endogenous", "must_run"):
             raise ValueError("Heat pump policy must be endogenous or must_run")
@@ -441,7 +455,8 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
         ("charge", c, yc, ptes["min_charge_mw"]),
         ("discharge", d, yd, ptes["min_discharge_mw"]),
     ]:
-        m.add_constraints(flow <= ptes["power_mw"] * status, name="ptes_" + label + "_maximum")
+        maximum = ptes.get(label + "_power_mw", ptes["power_mw"])
+        m.add_constraints(flow <= maximum * status, name="ptes_" + label + "_maximum")
         m.add_constraints(flow >= minimum * status, name="ptes_" + label + "_minimum")
         m.add_constraints(
             flow.diff("snapshot") <= ptes["ramp_mw_h"], name="ptes_" + label + "_ramp_up"
@@ -540,10 +555,12 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
         m.add_constraints(m[name] == values, name="fixed_mode_" + name)
 
 
-def _optimise(n, *, relax=False, fixed_modes=None):
+def _optimise(n, *, relax=False, fixed_modes=None, model_callback=None):
     cfg = n._cph_config
     n.optimize.create_model(linearized_unit_commitment=relax or not cfg["integer_operation"])
     add_constraints(n, n.snapshots, relax=relax, fixed_modes=fixed_modes)
+    if model_callback is not None:
+        model_callback(n)
     settings = cfg["solver"]
     backend = settings.get("backend", "highs")
     if backend == "highs":
@@ -648,8 +665,16 @@ def solve(n, *, prices=False):
     summary.update(checks)
     if prices:
         dispatch["conditional_upstream_value_dkk_mwh"] = conditional_prices(n)
+        dispatch["conditional_delivered_heat_value_dkk_mwh"] = (
+            dispatch.conditional_upstream_value_dkk_mwh / n._cph_delivery
+        )
+        dispatch["conditional_inventory_value_dkk_mwh"] = (
+            n._cph_conditional_bus_prices.ptes_inventory.to_numpy()
+        )
         summary["price_method"] = (
             "Continuous PyPSA/Linopy solve with all commitment decisions fixed"
+            if n._cph_config["integer_operation"]
+            else "Continuous dispatch LP relaxation; fractional modes remain relaxed"
         )
         n.buses_t.marginal_price = n._cph_conditional_bus_prices.copy()
         n.meta["price_method"] = summary["price_method"]

@@ -1,0 +1,870 @@
+{
+  "interpretation": "Selected-week model experiments, not an annual or empirical welfare estimate",
+  "main_hourly_candidate": "hourly_5_g025",
+  "tested_hourly_gains": [
+    0.25,
+    1.0
+  ],
+  "solver_error_bars": "Combined corrective MILP gaps; excludes forecast, input and response uncertainty",
+  "source_sha256": {
+    "model/results/findings_30_30_pump005/study.csv": "605b9b043394e1fef3952021d67cca54b2e696e95687eb5ccf27a0188a718de4",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/reference_corrective/summary.json": "cdfccc3af5f345920832f3227d6645ee02ac0915face0b659b164a827423f52c",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/reference_corrective/dispatch.csv": "509405767018ac76c56699bd53b878b746d7e305633c3ed54875c1c4a0a94ed3",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/constant_5_corrective/summary.json": "dab7856b204d66e3a7632c4673ce5266c574e20164488c292866ac47c07513dd",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/constant_5_corrective/dispatch.csv": "eecb8b59388fc8103e47c2493fa83bfdcded12d5c31a235db593b6c9805e4293",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/constant_10_corrective/summary.json": "e67a37a1ba32e768151527e44a0a2a8b10c819e9173d93c61034cc5ce3420ad1",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/constant_10_corrective/dispatch.csv": "9fd31e84d45ccf6b801bdd0ea3af9dcbdb824611d3e7a0cf0d619bdcd729b82c",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/constant_50_corrective/summary.json": "878849faac113f5afd6269f003da2bd0448b5b94e4ff0181bdc5813cd656a3a2",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/constant_50_corrective/dispatch.csv": "cefbd6b0ca91ace35cc0de683e81023fb6d0d8ae883f72a41d04ab360648fc37",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/hourly_5_g025_corrective/summary.json": "9332149accec2af75037817f9d04211a1acdac7b5ddf0cbd04f9aeb981bddd45",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/hourly_5_g025_corrective/dispatch.csv": "0938a8aafc2abe29b7133eeb6a8a99d1e377e862cb5299d927820a1174b54039",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/hourly_5_g1_corrective/summary.json": "4374c7fe8b49fb75895d2d7879978181f3af231872844fd7e7f48626e25ade7a",
+    "model/results/findings_30_30_pump005/winter__pump005_30_30/hourly_5_g1_corrective/dispatch.csv": "9aa5c34d0ed4d490680b3606333bd1d1bfa02bcdf22f669e51fbf53ff15fb36c",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/reference_corrective/summary.json": "f8cbae3fcb3af218aa6aa570c37979f92133211938eee1e0fecb350a71c666ce",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/reference_corrective/dispatch.csv": "784bb28aa90a9454c71d9e9a4f5daf5e3973cc5d0e457c092e324b9445937cc4",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/constant_5_corrective/summary.json": "b2210fa4b24d9b195d17202be73b4a21830724da7692ff6ab234b6922cc91fcb",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/constant_5_corrective/dispatch.csv": "612a9d7e95d2d4cc575c1eeb51e86c9c4fff2e70f3ae4c1650c8fc5d28b96969",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/constant_10_corrective/summary.json": "b92bef8a30c5db96b950bd7fc416aee091517bc8dda186dd41997dcb55c2f6c1",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/constant_10_corrective/dispatch.csv": "4300250f05a26c27e79782128b072d75117f91b2e16308ada783cfb17449fdac",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/constant_50_corrective/summary.json": "23d617299c0706c39d213dd5c44468b4c488b4199ef340398ab6ca4dbca2730d",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/constant_50_corrective/dispatch.csv": "f2b10b2ab7f45f828d430dbf2dfdd06e78dd60a8a4b6b5ab4001061db89ee0df",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/hourly_5_g025_corrective/summary.json": "c0de788a30f522f1ba5fae995a3bc484780c4ca219c675b30107cdee8b0f1feb",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/hourly_5_g025_corrective/dispatch.csv": "797b62404746ae9ea30bef01fc0dc2ad0b96393d425dab660bae2bccee083da3",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/hourly_5_g1_corrective/summary.json": "2c2616ff02acee1085308a6d409bf41f51a5816d945940ea3fec416325e8f262",
+    "model/results/findings_30_30_pump005/shoulder__pump005_30_30/hourly_5_g1_corrective/dispatch.csv": "a796877a565ea7c56e1a7cfe0f9393da89208d52c40bb05148fdfff5577a6c4c",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/reference_corrective/summary.json": "5984b676cc810f98ceb3c11b84daaf4ac02d191827e59691495f0772efa2244a",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/reference_corrective/dispatch.csv": "8cbf8f015f2a0d4e0e64b322b2ab6ffe6bba689c44941613200dd2daf633d1bf",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/constant_5_corrective/summary.json": "0dafb24ed619e58c3648baed179111b75dac82858203465294140733f6bebf50",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/constant_5_corrective/dispatch.csv": "054cefec5da10785f81758c7c47edc61fecacf13aacbca8bb3a6488e4fd8f9f3",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/constant_10_corrective/summary.json": "47299f2a72b6b6ff0c00652a731ed7aa25c1ed807faf88eeb4617410ae02de4c",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/constant_10_corrective/dispatch.csv": "021f60917374c55dadc045b552dddb23ce99774121eb4cb74c850b86006b0bb5",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/constant_50_corrective/summary.json": "805559e38281740dc307943f49ff7673bce18083df145c3fa678bf499c53131e",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/constant_50_corrective/dispatch.csv": "e5717553e7e29b32f1ab5a0c3183cf2c7e5e6169a9cfe676880cf12e9b0caac5",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/hourly_5_g025_corrective/summary.json": "2cd752fbddc2a6c4f2eca95a74831475b3243f26ef163584465c286b6645b163",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/hourly_5_g025_corrective/dispatch.csv": "9a9ad382d060ba1f4e23676ba470fac6e4e85a9cdd93077ccfecd38aba58390d",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/hourly_5_g1_corrective/summary.json": "d985f98618de4f53266dcfafd93337b2e3a56d0ea2cc25a8034c42ea39589949",
+    "model/results/findings_30_30_pump005/summer__pump005_30_30/hourly_5_g1_corrective/dispatch.csv": "d1a0398e04c483e416ba3c73363ca6138051fb97e5d3bd6a9415c218f5332e97",
+    "model/results/findings_30_30_pump005_lossless/study.csv": "78fe1b671d43d0a9eee0ca03e9219483ef674b21e64002c2134a5a78a9afdd9c",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/reference_corrective/summary.json": "2d9b0ee1aed0dc2215eb9aec7ad14cd83cc4ff3bfa4c80c905cbcac2aa8174e1",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/reference_corrective/dispatch.csv": "83ddc2ebf967ae42954d4e189e00d1f2865017c8a3e58b1d4b51162f2c7ef493",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/constant_5_corrective/summary.json": "4b7415480ecedc9a4a487d80794a73a54d3a3ba62b326eadfa2b1050c1ba0af6",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/constant_5_corrective/dispatch.csv": "4db33a13d9237e3399c29a970592fecda2f4a4b838f113ae1e9a04e96fb53f0d",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/constant_10_corrective/summary.json": "637b1527f9000e7385bb7ad907ed68cab9b2a9c106c666cf036b2f9511ce384e",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/constant_10_corrective/dispatch.csv": "e771f6d29116e15b0ff1ffe2ebcd964adb21fa2693309b7459718be1f2616a1b",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/constant_50_corrective/summary.json": "554149d97e45f13285c239fac8d880d4579fff1925b680a45e14ef1779519f04",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/constant_50_corrective/dispatch.csv": "2265ad2ef14bd728b443dedd4427c93981f8f4d176d44a128ea46c9b9d77d436",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/hourly_5_g025_corrective/summary.json": "78ac5935d073efcb0b83399a6a1045573f9068a3ff208c6f24f3a7e9a920c063",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/hourly_5_g025_corrective/dispatch.csv": "61d9f6bdd3bb7e34ab8414645743a94fba0f8a37b0eb659839fb699e17f4b727",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/hourly_5_g1_corrective/summary.json": "eadc179f11321bc8165dc325b3e55a98992a711491f41bd283fceabfb1bf2b93",
+    "model/results/findings_30_30_pump005_lossless/winter__lossless_pump005_30_30/hourly_5_g1_corrective/dispatch.csv": "7b352484471820ec14f4b376d820d39f5f78b9dc77ff22838c587c573b61d0d1",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/reference_corrective/summary.json": "03cc030021cb859bfb19ce7212546b079603b76ab8575093cd15d569d09b700e",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/reference_corrective/dispatch.csv": "d00303cd684d90534a2691d3f626dfc69a0cab13c3fa6f8675174c404ca26755",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/constant_5_corrective/summary.json": "0bd2370d71b768227d36db30b3c2a5e9ce302c16fa030dff0f4a21c4b045073d",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/constant_5_corrective/dispatch.csv": "b4857322cb6ec241faaf3f63fe510011421a88edfe684014617aaa5de8d36fb6",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/constant_10_corrective/summary.json": "ca2be6e64d030d56d5ca70a580cdba8366f93f32d49e6b37bc59c227ce82a8c6",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/constant_10_corrective/dispatch.csv": "e1805f0e008a1839fa5306a4a11efd6c4f00a0da20e2b9f70a71d04a52f4578f",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/constant_50_corrective/summary.json": "58b6677f7a512a6439fc98e677ff26be333f3a473ca8e3518458c82cde4e2b2c",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/constant_50_corrective/dispatch.csv": "9e297248167a87e385d20ef012a90a74110ef98a5c1ce8a0a84598310475c70f",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/hourly_5_g025_corrective/summary.json": "13be09a9136db689a5157f6d50ea6ee6d2657bef85a78143880d4ea39f59a1a5",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/hourly_5_g025_corrective/dispatch.csv": "8d1171faa4366b7ff33a4c7ce4399896d1f249a82f21ec7be063298b5bc85b97",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/hourly_5_g1_corrective/summary.json": "c14c8bb9a504425321fef5817d218bc7288ba1d131da0aea44fe6bb52bef759d",
+    "model/results/findings_30_30_pump005_lossless/shoulder__lossless_pump005_30_30/hourly_5_g1_corrective/dispatch.csv": "e3c84a60c6f54947de7f4d09766f5c716800130431796a4b60613fe7d06c4c38",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/reference_corrective/summary.json": "122b451f09882c0cb179ed837ae1f64b501f622dc1d8958172a1495ac525643d",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/reference_corrective/dispatch.csv": "c68f798607f1d77d03d32d29c7787b6a2a77adbbf3b6733bf58023c225074c3e",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/constant_5_corrective/summary.json": "1d53e22bb941a411c2ee610fcb18f650c0b5863d08dacf545f38165a8002f700",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/constant_5_corrective/dispatch.csv": "6e946f56bae1ed3bb15416af8ac39d89a7c3d751d17cc98cabaa0d13ffe5e40b",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/constant_10_corrective/summary.json": "471c646dc5e57d167bd7d8aa884c55c19f649649be514f6f5b0f88e5b7023fb5",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/constant_10_corrective/dispatch.csv": "674849f75c4da213861009c96aa0b295fc681ef5fe2369e03dd002aa0313bf2d",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/constant_50_corrective/summary.json": "d679cab548c4c8a6e620a9cbcfa5c2d1a29a40efbd5a0da043dd3c3a96e5deef",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/constant_50_corrective/dispatch.csv": "e2ff8a627a61e97e427d831b8ff595b62b23e6682e01eadec42c3c46f16b81cc",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/hourly_5_g025_corrective/summary.json": "a3eac0fdd08face8c0a97a11b6d3819b2701a5eb4238c1c18f514623663c66e9",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/hourly_5_g025_corrective/dispatch.csv": "dd73756d2c5728551958362b22d0f2a55a9b38a4253ddbcf97f86bdf5204a3de",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/hourly_5_g1_corrective/summary.json": "3d62c262224f122cf2b70b3c90592c00c625301504ee8e323de64838693021f4",
+    "model/results/findings_30_30_pump005_lossless/summer__lossless_pump005_30_30/hourly_5_g1_corrective/dispatch.csv": "243f278b275bff18e8861b2455714b8a684b5a1e732cec690dccbd4a42696910"
+  },
+  "mechanisms": {
+    "base/winter__pump005_30_30/constant_5": {
+      "avoided_upstream_production_mwh": 22.84651072882116,
+      "ptes_loss_reduction_delivered_mwh": 22.39138039387015,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -0.001836612232652024,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 3.6998315522396297e-10,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 8691.607342898846,
+        "variable_om": 114.23255364922807,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -6123.337966112187,
+        "electricity_adders": -1324.277268158039,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": -8.456408977508545e-07,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/winter__pump005_30_30/constant_10": {
+      "avoided_upstream_production_mwh": 34.86625351081602,
+      "ptes_loss_reduction_delivered_mwh": 34.16083421603503,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.008259412836538554,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -1.5440093648066977e-11,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 13264.335574939847,
+        "variable_om": 174.3312675561756,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -8318.36653460702,
+        "electricity_adders": -1705.5593743179925,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 5.960464477539063e-08,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/winter__pump005_30_30/constant_50": {
+      "avoided_upstream_production_mwh": 40.04850017844001,
+      "ptes_loss_reduction_delivered_mwh": 39.21870205634248,
+      "additional_local_hp_heat_mwh": -2.842170943040401e-14,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.02941644783231187,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -3.539852855283243e-10,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 15235.842458769679,
+        "variable_om": 200.24250088632107,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -8460.70471610222,
+        "electricity_adders": -1708.7205416619545,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 1.2101372703909874e-06,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/winter__pump005_30_30/hourly_5_g025": {
+      "avoided_upstream_production_mwh": 43.886493345024064,
+      "ptes_loss_reduction_delivered_mwh": 42.97393427962963,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.035539999024193636,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -5.609805953099567e-10,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 16695.94855467975,
+        "variable_om": 219.43246671836823,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -8714.614412073046,
+        "electricity_adders": -1711.0675617926754,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 1.5492551028728485e-06,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/winter__pump005_30_30/hourly_5_g1": {
+      "avoided_upstream_production_mwh": 45.579333537607454,
+      "ptes_loss_reduction_delivered_mwh": 44.63291766775934,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.03553999902419394,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 5.331912689143792e-11,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 17339.963845804334,
+        "variable_om": 227.89666768722236,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -8935.402409705799,
+        "electricity_adders": -1712.1044264577795,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 6.265472620725632e-07,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/shoulder__pump005_30_30/constant_5": {
+      "avoided_upstream_production_mwh": -4.875428639177699,
+      "ptes_loss_reduction_delivered_mwh": -5.862775478064549,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.1069953223376405,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.306615508653522e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 425357.0624319762,
+        "variable_om": -1196.9484789720736,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -312.50235819947557,
+        "electricity_adders": 6570.324042776352,
+        "electricity_sales_credit": -342926.3519234732
+      },
+      "cost_reconciliation_residual_dkk": 1.0477378964424133e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/shoulder__pump005_30_30/constant_10": {
+      "avoided_upstream_production_mwh": -12.459750278794672,
+      "ptes_loss_reduction_delivered_mwh": -13.335340356565325,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.1477398854876188,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.521755414543804e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 454051.9138803631,
+        "variable_om": -1265.557186185848,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -879.3566132916312,
+        "electricity_adders": 6446.926820065142,
+        "electricity_sales_credit": -365534.64723335207
+      },
+      "cost_reconciliation_residual_dkk": 6.05359673500061e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/shoulder__pump005_30_30/constant_50": {
+      "avoided_upstream_production_mwh": -8.483990194101352,
+      "ptes_loss_reduction_delivered_mwh": -9.42492988890686,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.1332852072903101,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.547928256215528e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 420022.32165652514,
+        "variable_om": -1217.8480651690625,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -979.5537670149643,
+        "electricity_adders": 6444.482813522853,
+        "electricity_sales_credit": -330459.5139288753
+      },
+      "cost_reconciliation_residual_dkk": -2.270098775625229e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/shoulder__pump005_30_30/hourly_5_g025": {
+      "avoided_upstream_production_mwh": -14.636616716190474,
+      "ptes_loss_reduction_delivered_mwh": -15.50504869950504,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.1848615533873321,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.776746109769192e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 467045.63296690583,
+        "variable_om": -1536.4991845767945,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -703.3954215169651,
+        "electricity_adders": 6485.782887779482,
+        "electricity_sales_credit": -375884.325946331
+      },
+      "cost_reconciliation_residual_dkk": 6.111804395914078e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/shoulder__pump005_30_30/hourly_5_g1": {
+      "avoided_upstream_production_mwh": -14.398717735370155,
+      "ptes_loss_reduction_delivered_mwh": -15.239895406677562,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.15219594945561,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.542538789564787e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 470173.17454868555,
+        "variable_om": -1288.824795664288,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -895.3590855278599,
+        "electricity_adders": 6448.11716697146,
+        "electricity_sales_credit": -379323.81935138255
+      },
+      "cost_reconciliation_residual_dkk": 9.313225746154785e-10,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/summer__pump005_30_30/constant_5": {
+      "avoided_upstream_production_mwh": 12.902028045085899,
+      "ptes_loss_reduction_delivered_mwh": 13.793296230409524,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.1727640267540416,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -6.512124173241318e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -80576.78730928525,
+        "variable_om": -698.2567966402275,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1747.3773034209225,
+        "electricity_adders": -709.4444748010519,
+        "electricity_sales_credit": 94437.25282453
+      },
+      "cost_reconciliation_residual_dkk": 3.5943230614066124e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/summer__pump005_30_30/constant_10": {
+      "avoided_upstream_production_mwh": 13.155875174728862,
+      "ptes_loss_reduction_delivered_mwh": 14.115615631038551,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.2478142446897333,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -8.498091119690798e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -80576.78730928525,
+        "variable_om": -695.7183253437979,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1749.6717133732418,
+        "electricity_adders": -709.6459244264452,
+        "electricity_sales_credit": 94500.61353239417
+      },
+      "cost_reconciliation_residual_dkk": 6.781192496418953e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/summer__pump005_30_30/constant_50": {
+      "avoided_upstream_production_mwh": 15.28401487298106,
+      "ptes_loss_reduction_delivered_mwh": 16.68230705860404,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.73874743170445,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -1.248778858098376e-11,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -80576.78730928525,
+        "variable_om": -674.4369283611886,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1809.8699886680533,
+        "electricity_adders": -711.2501065686738,
+        "electricity_sales_credit": 95732.87095285952
+      },
+      "cost_reconciliation_residual_dkk": 1.8917489796876907e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/summer__pump005_30_30/hourly_5_g025": {
+      "avoided_upstream_production_mwh": 10.510185744613409,
+      "ptes_loss_reduction_delivered_mwh": 17.067229418997783,
+      "additional_local_hp_heat_mwh": -5.14500000000001,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.6553544788476042,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -6.10178574333986e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -80576.78730928525,
+        "variable_om": -722.1752196450252,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1278.5971505539092,
+        "electricity_adders": -528.2361917299286,
+        "electricity_sales_credit": 96744.81264328957
+      },
+      "cost_reconciliation_residual_dkk": 1.0331859812140465e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "base/summer__pump005_30_30/hourly_5_g1": {
+      "avoided_upstream_production_mwh": 10.510185744613409,
+      "ptes_loss_reduction_delivered_mwh": 17.067229418997798,
+      "additional_local_hp_heat_mwh": -5.14500000000001,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.6553544788476078,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -6.112443884376262e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -80576.78730928525,
+        "variable_om": -722.1752196450252,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1278.5971505539092,
+        "electricity_adders": -528.2361917299295,
+        "electricity_sales_credit": 96744.81264328957
+      },
+      "cost_reconciliation_residual_dkk": 1.0331859812140465e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/winter__lossless_pump005_30_30/constant_5": {
+      "avoided_upstream_production_mwh": 0.0,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.0,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 0.0,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 0.0,
+        "variable_om": 0.0,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": 0.0,
+        "electricity_adders": 0.0,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 0.0,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/winter__lossless_pump005_30_30/constant_10": {
+      "avoided_upstream_production_mwh": 0.0,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.0,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 0.0,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 0.0,
+        "variable_om": 0.0,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": 0.0,
+        "electricity_adders": 0.0,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 0.0,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/winter__lossless_pump005_30_30/constant_50": {
+      "avoided_upstream_production_mwh": 0.0,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.0,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 0.0,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 0.0,
+        "variable_om": 0.0,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": 0.0,
+        "electricity_adders": 0.0,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 0.0,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/winter__lossless_pump005_30_30/hourly_5_g025": {
+      "avoided_upstream_production_mwh": 0.0,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.0,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 0.0,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 0.0,
+        "variable_om": 0.0,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": 0.0,
+        "electricity_adders": 0.0,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 0.0,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/winter__lossless_pump005_30_30/hourly_5_g1": {
+      "avoided_upstream_production_mwh": 0.0,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 0.0,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 0.0,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 0.0,
+        "variable_om": 0.0,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": 0.0,
+        "electricity_adders": 0.0,
+        "electricity_sales_credit": 0.0
+      },
+      "cost_reconciliation_residual_dkk": 0.0,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/shoulder__lossless_pump005_30_30/constant_5": {
+      "avoided_upstream_production_mwh": 1.3921697361802217,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.3921697404812488,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.301027090036769e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 536859.8385195583,
+        "variable_om": -2668.970818143338,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1995.7084016003355,
+        "electricity_adders": 6154.478115664802,
+        "electricity_sales_credit": -438201.1412669644
+      },
+      "cost_reconciliation_residual_dkk": -3.259629011154175e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/shoulder__lossless_pump005_30_30/constant_10": {
+      "avoided_upstream_production_mwh": 1.3068543385888916,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.3068543428988555,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.309963941295791e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 556318.1820275187,
+        "variable_om": -3649.501963412855,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -2447.208480274072,
+        "electricity_adders": 6079.478115664802,
+        "electricity_sales_credit": -455289.43289687485
+      },
+      "cost_reconciliation_residual_dkk": -2.7706846594810486e-08,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/shoulder__lossless_pump005_30_30/constant_50": {
+      "avoided_upstream_production_mwh": 1.3068543385888916,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.3068543428988573,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.309965717652631e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 556318.1820275187,
+        "variable_om": -3649.501963412855,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -2447.208480274072,
+        "electricity_adders": 6079.478115664802,
+        "electricity_sales_credit": -455289.43289687485
+      },
+      "cost_reconciliation_residual_dkk": -2.7706846594810486e-08,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/shoulder__lossless_pump005_30_30/hourly_5_g025": {
+      "avoided_upstream_production_mwh": 1.3068442237272393,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.3068442280544073,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.327167957285383e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 556310.3204003274,
+        "variable_om": -3650.311110525392,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -2447.433413139748,
+        "electricity_adders": 6079.478115664802,
+        "electricity_sales_credit": -455279.15538018197
+      },
+      "cost_reconciliation_residual_dkk": -1.83936208486557e-08,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/shoulder__lossless_pump005_30_30/hourly_5_g1": {
+      "avoided_upstream_production_mwh": 1.3489783036056906,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": 1.3489783081554325,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -4.549741916548555e-09,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": 544142.2511544228,
+        "variable_om": -3469.0188165199943,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -2281.5771246431395,
+        "electricity_adders": 6116.978115664802,
+        "electricity_sales_credit": -443714.7669945583
+      },
+      "cost_reconciliation_residual_dkk": -1.3504177331924438e-08,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/summer__lossless_pump005_30_30/constant_5": {
+      "avoided_upstream_production_mwh": -1.497925344396208,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.4979253444102163,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 1.4008350035510375e-11,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -94054.21826942265,
+        "variable_om": -980.6283116444247,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -2152.641105012741,
+        "electricity_adders": -793.9947011375762,
+        "electricity_sales_credit": 112086.44988886267
+      },
+      "cost_reconciliation_residual_dkk": 2.4883775040507317e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/summer__lossless_pump005_30_30/constant_10": {
+      "avoided_upstream_production_mwh": -1.497925344403484,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.4979253444102234,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 6.73949784868455e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -94054.21826942265,
+        "variable_om": -980.6283116444247,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -2152.641105012741,
+        "electricity_adders": -793.9947011375762,
+        "electricity_sales_credit": 112086.44988886267
+      },
+      "cost_reconciliation_residual_dkk": 2.4883775040507317e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/summer__lossless_pump005_30_30/constant_50": {
+      "avoided_upstream_production_mwh": -1.497925344403484,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": 0.0,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.4979253444102163,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 6.732392421326949e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -94054.21826942265,
+        "variable_om": -980.6283116444247,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -2152.641105012739,
+        "electricity_adders": -793.9947011375752,
+        "electricity_sales_credit": 112086.44988886267
+      },
+      "cost_reconciliation_residual_dkk": 2.4883775040507317e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/summer__lossless_pump005_30_30/hourly_5_g025": {
+      "avoided_upstream_production_mwh": -7.19113923778059,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": -5.14500000000001,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.94113923777833,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": -2.248867758680717e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -94054.21826942265,
+        "variable_om": -1037.5604505781084,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1664.3493416770089,
+        "electricity_adders": -610.7402098235852,
+        "electricity_sales_credit": 114475.9085232839
+      },
+      "cost_reconciliation_residual_dkk": -2.240994945168495e-09,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    },
+    "lossless/summer__lossless_pump005_30_30/hourly_5_g1": {
+      "avoided_upstream_production_mwh": -7.20653251397016,
+      "ptes_loss_reduction_delivered_mwh": 0.0,
+      "additional_local_hp_heat_mwh": -5.14500000000001,
+      "ptes_inventory_change_difference_mwh": 0.0,
+      "regional_standing_loss_reduction_mwh": -1.9565325139798073,
+      "regional_inventory_change_difference_mwh": 0.0,
+      "production_reconciliation_residual_mwh": 9.658052135819162e-12,
+      "operating_saving_by_cost_component_dkk": {
+        "fuel": -94054.21826942265,
+        "variable_om": -1037.7143833400914,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -1664.9928795093656,
+        "electricity_adders": -610.7402098235843,
+        "electricity_sales_credit": 114476.88395671546
+      },
+      "cost_reconciliation_residual_dkk": 1.4551915228366852e-10,
+      "interpretation": "Operating savings under scenario costs/adders, not a full welfare estimate"
+    }
+  },
+  "settlements": {
+    "base/winter__pump005_30_30/constant_5": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 5.0,
+      "maximum_credit_dkk_mwh": 5.0,
+      "mean_hourly_discharge_price_dkk_mwh": 381.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": 5.0
+    },
+    "base/winter__pump005_30_30/constant_10": {
+      "mean_hourly_credit_dkk_mwh": 10.0,
+      "minimum_credit_dkk_mwh": 10.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 376.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": 9.999999999999998
+    },
+    "base/winter__pump005_30_30/constant_50": {
+      "mean_hourly_credit_dkk_mwh": 50.0,
+      "minimum_credit_dkk_mwh": 50.0,
+      "maximum_credit_dkk_mwh": 50.0,
+      "mean_hourly_discharge_price_dkk_mwh": 336.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": 50.0
+    },
+    "base/winter__pump005_30_30/hourly_5_g025": {
+      "mean_hourly_credit_dkk_mwh": 4.999999999999997,
+      "minimum_credit_dkk_mwh": 2.7275930883611363,
+      "maximum_credit_dkk_mwh": 7.237040303755624,
+      "mean_hourly_discharge_price_dkk_mwh": 381.856,
+      "discharge_weighted_credit_dkk_mwh": 6.478114608607149
+    },
+    "base/winter__pump005_30_30/hourly_5_g1": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 381.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": 9.799500757588863
+    },
+    "base/shoulder__pump005_30_30/constant_5": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 5.0,
+      "maximum_credit_dkk_mwh": 5.0,
+      "mean_hourly_discharge_price_dkk_mwh": 274.46799999999996,
+      "discharge_weighted_credit_dkk_mwh": 5.0
+    },
+    "base/shoulder__pump005_30_30/constant_10": {
+      "mean_hourly_credit_dkk_mwh": 10.0,
+      "minimum_credit_dkk_mwh": 10.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 269.46799999999996,
+      "discharge_weighted_credit_dkk_mwh": 10.0
+    },
+    "base/shoulder__pump005_30_30/constant_50": {
+      "mean_hourly_credit_dkk_mwh": 50.0,
+      "minimum_credit_dkk_mwh": 50.0,
+      "maximum_credit_dkk_mwh": 50.0,
+      "mean_hourly_discharge_price_dkk_mwh": 229.46800000000002,
+      "discharge_weighted_credit_dkk_mwh": 50.0
+    },
+    "base/shoulder__pump005_30_30/hourly_5_g025": {
+      "mean_hourly_credit_dkk_mwh": 5.000000000000001,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 274.46799999999996,
+      "discharge_weighted_credit_dkk_mwh": 9.125532836477687
+    },
+    "base/shoulder__pump005_30_30/hourly_5_g1": {
+      "mean_hourly_credit_dkk_mwh": 4.999999999999999,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 274.468,
+      "discharge_weighted_credit_dkk_mwh": 9.878424365955627
+    },
+    "base/summer__pump005_30_30/constant_5": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 5.0,
+      "maximum_credit_dkk_mwh": 5.0,
+      "mean_hourly_discharge_price_dkk_mwh": 147.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 5.0
+    },
+    "base/summer__pump005_30_30/constant_10": {
+      "mean_hourly_credit_dkk_mwh": 10.0,
+      "minimum_credit_dkk_mwh": 10.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 142.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 9.999999999999998
+    },
+    "base/summer__pump005_30_30/constant_50": {
+      "mean_hourly_credit_dkk_mwh": 50.0,
+      "minimum_credit_dkk_mwh": 50.0,
+      "maximum_credit_dkk_mwh": 50.0,
+      "mean_hourly_discharge_price_dkk_mwh": 102.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 50.0
+    },
+    "base/summer__pump005_30_30/hourly_5_g025": {
+      "mean_hourly_credit_dkk_mwh": 4.999999999999999,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 8.56978697680728,
+      "mean_hourly_discharge_price_dkk_mwh": 147.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 7.285882437115315
+    },
+    "base/summer__pump005_30_30/hourly_5_g1": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 147.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 8.63792347647198
+    },
+    "lossless/winter__lossless_pump005_30_30/constant_5": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 5.0,
+      "maximum_credit_dkk_mwh": 5.0,
+      "mean_hourly_discharge_price_dkk_mwh": 381.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": null
+    },
+    "lossless/winter__lossless_pump005_30_30/constant_10": {
+      "mean_hourly_credit_dkk_mwh": 10.0,
+      "minimum_credit_dkk_mwh": 10.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 376.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": null
+    },
+    "lossless/winter__lossless_pump005_30_30/constant_50": {
+      "mean_hourly_credit_dkk_mwh": 50.0,
+      "minimum_credit_dkk_mwh": 50.0,
+      "maximum_credit_dkk_mwh": 50.0,
+      "mean_hourly_discharge_price_dkk_mwh": 336.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": null
+    },
+    "lossless/winter__lossless_pump005_30_30/hourly_5_g025": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 4.9893478984866455,
+      "maximum_credit_dkk_mwh": 5.04835777049566,
+      "mean_hourly_discharge_price_dkk_mwh": 381.85599999999994,
+      "discharge_weighted_credit_dkk_mwh": null
+    },
+    "lossless/winter__lossless_pump005_30_30/hourly_5_g1": {
+      "mean_hourly_credit_dkk_mwh": 4.999999999999998,
+      "minimum_credit_dkk_mwh": 4.9573915939465785,
+      "maximum_credit_dkk_mwh": 5.193431081982634,
+      "mean_hourly_discharge_price_dkk_mwh": 381.8560000000001,
+      "discharge_weighted_credit_dkk_mwh": null
+    },
+    "lossless/shoulder__lossless_pump005_30_30/constant_5": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 5.0,
+      "maximum_credit_dkk_mwh": 5.0,
+      "mean_hourly_discharge_price_dkk_mwh": 274.46799999999996,
+      "discharge_weighted_credit_dkk_mwh": 5.0
+    },
+    "lossless/shoulder__lossless_pump005_30_30/constant_10": {
+      "mean_hourly_credit_dkk_mwh": 10.0,
+      "minimum_credit_dkk_mwh": 10.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 269.46799999999996,
+      "discharge_weighted_credit_dkk_mwh": 10.0
+    },
+    "lossless/shoulder__lossless_pump005_30_30/constant_50": {
+      "mean_hourly_credit_dkk_mwh": 50.0,
+      "minimum_credit_dkk_mwh": 50.0,
+      "maximum_credit_dkk_mwh": 50.0,
+      "mean_hourly_discharge_price_dkk_mwh": 229.46800000000002,
+      "discharge_weighted_credit_dkk_mwh": 50.0
+    },
+    "lossless/shoulder__lossless_pump005_30_30/hourly_5_g025": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 274.468,
+      "discharge_weighted_credit_dkk_mwh": 8.779229089187961
+    },
+    "lossless/shoulder__lossless_pump005_30_30/hourly_5_g1": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 274.46799999999996,
+      "discharge_weighted_credit_dkk_mwh": 9.998110987932517
+    },
+    "lossless/summer__lossless_pump005_30_30/constant_5": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 5.0,
+      "maximum_credit_dkk_mwh": 5.0,
+      "mean_hourly_discharge_price_dkk_mwh": 147.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 4.999999999999999
+    },
+    "lossless/summer__lossless_pump005_30_30/constant_10": {
+      "mean_hourly_credit_dkk_mwh": 10.0,
+      "minimum_credit_dkk_mwh": 10.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 142.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 10.0
+    },
+    "lossless/summer__lossless_pump005_30_30/constant_50": {
+      "mean_hourly_credit_dkk_mwh": 50.0,
+      "minimum_credit_dkk_mwh": 50.0,
+      "maximum_credit_dkk_mwh": 50.0,
+      "mean_hourly_discharge_price_dkk_mwh": 102.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 49.99999999999999
+    },
+    "lossless/summer__lossless_pump005_30_30/hourly_5_g025": {
+      "mean_hourly_credit_dkk_mwh": 5.0,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 8.71344128545015,
+      "mean_hourly_discharge_price_dkk_mwh": 147.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 7.159252812471235
+    },
+    "lossless/summer__lossless_pump005_30_30/hourly_5_g1": {
+      "mean_hourly_credit_dkk_mwh": 5.000000000000002,
+      "minimum_credit_dkk_mwh": 0.0,
+      "maximum_credit_dkk_mwh": 10.0,
+      "mean_hourly_discharge_price_dkk_mwh": 147.71200000000002,
+      "discharge_weighted_credit_dkk_mwh": 8.445373413452609
+    }
+  },
+  "baseline_errorbar": "Zero for reference compared with itself; incumbent uncertainty cancels exactly. Candidate bars retain conservative combined gaps."
+}

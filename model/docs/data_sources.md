@@ -75,6 +75,18 @@ must be replaced if true 2024 HTF demand becomes available. No SOC-difference pr
 is called measured charging/discharging. The earlier raw operational data and the
 reported annual charge/discharge totals have not been used to fit this model.
 
+The optional `profiles` pipeline now reproduces the root temperature/COP equations
+using explicitly supplied ambient CSV or existing ERA5-Land NetCDF files, including
+the moving-average warm-up. `--local-profiles` aligns those modelled profiles by
+actual UTC timestamps rather than treating them as fixed-CET templates. It does
+not change the 2019 demand assumption. Generation inputs are hashed; the root
+scripts remain unchanged. See [the migration audit](research_workflow.md).
+
+The local 2024 `ptes_operation_data_hourly.csv` charge/discharge columns exactly
+match positive/negative inventory differences. They are identified as SOC proxies,
+not independent measured flows. Historical comparison in `report` does not force
+those flows into the optimiser or alter demand to accommodate them.
+
 ## Dispatch-development report
 
 The [EML dispatch report, August 2024](https://www.varmelast.dk/-/media/varmelast/dokumenter/eml-lastfordeling-efter-kontraktpriser-v2.pdf)

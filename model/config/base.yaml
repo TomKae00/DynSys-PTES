@@ -6,15 +6,17 @@ objective: system
 settlement_boundary: discharge_service
 response:
   charging_policy: curtailable  # announced charging is an upper bound; fixed reproduces the old experiment
+  local_mip_rel_gap: 0.00000001  # small incentive differences need tighter HTF solves
 integer_operation: true
 solver:
-  backend: highs  # PyPSA/Linopy solver; gurobi is optional
-  threads: 4
+  backend: gurobi  # PyPSA/Linopy solver; gurobi is optional
+  threads: 8
   time_limit: 120
   mip_rel_gap: 0.0001
 ptes:
   energy_mwh: 3300
-  power_mw: 23  # effective scenario; test design 30 separately
+  power_mw: 30  # delivered heat limit for both flows unless explicitly overridden
+  discharge_power_mw: 30  # delivered PTES discharge heat, requested operating limit
   min_charge_mw: 10
   min_discharge_mw: 5
   ramp_mw_h: 12
@@ -24,7 +26,9 @@ ptes:
   discharge_efficiency: 1.0
   initial_mwh: 1500
   terminal_mwh: 1500
-  pump_mwh_el_per_mwh_heat: 0.0  # unverified: omitted, recorded in every summary
+  # Provisional user-selected coefficient PER charging/discharging MWh, not a fit.
+  # Task 45's OPEX estimate covers the whole store; see docs/annual_tariff_study.md.
+  pump_mwh_el_per_mwh_heat: 0.005
 hx:
   capacity_mw: 100
   minimum_mw: 0.5

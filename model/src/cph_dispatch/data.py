@@ -10,6 +10,8 @@ from urllib.request import urlopen
 import numpy as np
 import pandas as pd
 
+from .profiles import apply_profiles
+
 TZ = "Europe/Copenhagen"
 KEYS = {
     "ctr_mw": "BE-EO-CTR-EFF",
@@ -146,7 +148,7 @@ def seasonal_template(series, snapshots):
     return np.asarray(result, dtype=float)
 
 
-def prepare(root, year=2024, *, repair=False):
+def prepare(root, year=2024, *, repair=False, local_profiles=None):
     root = Path(root)
     raw = root / "data/raw"
     index = year_index(year)
@@ -197,15 +199,25 @@ def prepare(root, year=2024, *, repair=False):
     ]
     for f in legacy.glob("*"):
         sources[f.name] = {"sha256": hashlib.sha256(f.read_bytes()).hexdigest()}
+    if local_profiles is not None:
+        frame = apply_profiles(frame, local_profiles)
+        sources["local_profiles"] = {
+            "path": str(local_profiles),
+            "sha256": hashlib.sha256(Path(local_profiles).read_bytes()).hexdigest(),
+        }
+        profile_provenance = Path(local_profiles).with_name("provenance.json")
+        if profile_provenance.exists():
+            sources["local_profiles"]["generation"] = json.loads(profile_provenance.read_text())
     report = {
         "year": year,
         "hours": len(frame),
         "timezone": "UTC",
         "model_year_timezone": TZ,
+        "cop_method": "timestamped_utc_profiles" if local_profiles else "fixed_cet_legacy_template",
         "sources": sources,
         "repairs": repairs,
         "warnings": [
-            "2019 HTF demand remapped; modelled COPs; inherited monthly reference",
+            "2019 HTF demand remapped; COPs modelled, not measured; inherited monthly reference",
             "CTR+VEKS metering boundary is not verified",
             "FFH50 is a planning study, not measured 2024 plant operation",
         ],

@@ -1,0 +1,36 @@
+periods:
+- name: winter
+  start: '2024-01-08T00:00:00Z'
+  hours: 168
+- name: shoulder
+  start: '2024-04-15T00:00:00Z'
+  hours: 168
+- name: summer
+  start: '2024-07-15T00:00:00Z'
+  hours: 168
+sensitivities:
+- name: lossless_pump005_30_30
+  overrides:
+    ptes.loss_per_hour: 0.0
+tariffs:
+- name: constant_5
+  family: constant
+  level: 5
+- name: constant_10
+  family: constant
+  level: 10
+- name: constant_50
+  family: constant
+  level: 50
+- name: hourly_5_g025
+  family: bounded_mean_matched_value
+  level: 5
+  scale: 0.25
+  lower: 0
+  upper: 10
+- name: hourly_5_g1
+  family: bounded_mean_matched_value
+  level: 5
+  scale: 1
+  lower: 0
+  upper: 10

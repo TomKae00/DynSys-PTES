@@ -3,6 +3,79 @@
 from copy import deepcopy
 
 import numpy as np
+import pandas as pd
+
+
+def producer_costs(d, cfg, plants):
+    """Hourly joint heat/electricity cost accounting, not heat contract prices.
+
+    All CHP electricity revenue is credited here. Condensing income can make the
+    ratio negative; it is neither allocated heat cost nor a defensible billed rate.
+    """
+    rows = []
+    for plant in plants.itertuples():
+        heat = d[plant.name + "_heat_mw"]
+        power = d[plant.name + "_power_mw"]
+        cost = d[plant.name + "_fuel_mw"] * plant.fuel_dkk_mwh + heat * plant.vom_dkk_mwh_heat
+        revenue = power * d.electricity_dkk_mwh
+        rows.append(
+            pd.DataFrame(
+                {
+                    "producer": plant.name,
+                    "heat_mw": heat,
+                    "power_mw": power,
+                    "fuel_and_om_dkk": cost,
+                    "electricity_sales_dkk": revenue,
+                    "joint_net_cost_dkk": cost - revenue,
+                    "joint_net_cost_per_heat_dkk_mwh": (cost - revenue) / heat.where(heat > 1e-8),
+                }
+            )
+        )
+    return pd.concat(rows).rename_axis("timestamp").reset_index()
+
+
+def add_diagnostics(d, cfg, plants):
+    """Independent hourly balances and loss/net-flow reporting (one-hour snapshots)."""
+    d = d.copy()
+    p = cfg["ptes"]
+    previous = np.r_[p["initial_mwh"], d.ptes_energy_mwh.iloc[:-1]]
+    d["ptes_standing_loss_mwh"] = previous * p["loss_per_hour"]
+    d["ptes_conversion_loss_mwh"] = (1 - p["charge_efficiency"]) * d.ptes_charge_mw + (
+        1 / p["discharge_efficiency"] - 1
+    ) * d.ptes_discharge_mw
+    d["ptes_balance_residual_mwh"] = (
+        d.ptes_energy_mwh
+        - previous
+        + d.ptes_standing_loss_mwh
+        - p["charge_efficiency"] * d.ptes_charge_mw
+        + d.ptes_discharge_mw / p["discharge_efficiency"]
+    )
+    d["local_heat_balance_residual_mw"] = (
+        d.hx_mw + d.ptes_discharge_mw + d.city2_heat_mw + d.groundwater_heat_mw - d.htf_demand_mw
+    )
+    pump_rate = p["pump_mwh_el_per_mwh_heat"]
+    electric_cost = d.electricity_dkk_mwh + cfg["heat_pumps"]["electricity_adder_dkk_mwh"]
+    d["discharge_pump_cost_dkk_mwh_heat"] = pump_rate * electric_cost
+    if cfg["objective"] == "system":
+        r = 1 - cfg["network_loss_fraction"]
+        heat = sum(d[name + "_heat_mw"] for name in plants.name)
+        heat += sum(d[f + "_boiler_heat_mw"] for f in ["gas", "oil", "bio", "electric"])
+        heat += d.regional_hp_heat_mw + d.waste_heat_mw
+        d["upstream_heat_production_mw"] = heat
+        net_stores = 0.0
+        for name, spec in cfg["upstream"]["accumulators"].items():
+            previous = np.r_[spec["energy_mwh"] / 2, d[name + "_energy_mwh"].iloc[:-1]]
+            d[name + "_standing_loss_mwh"] = previous * spec["loss_per_hour"]
+            net = d[name + "_discharge_mw"] - d[name + "_charge_mw"]
+            d[name + "_net_discharge_mw"] = net
+            net_stores += net
+        residual = d.regional_demand_mw
+        if cfg["demand_boundary"] == "assumed_gross_including_htf":
+            residual = residual - d.htf_demand_mw
+        d["upstream_heat_balance_residual_mw"] = (
+            heat + net_stores - (residual + d.hx_mw + d.ptes_charge_mw) / r
+        )
+    return d
 
 
 def collect(n):
@@ -50,7 +123,7 @@ def collect(n):
             d[name + "_charge_mw"] = power(name + "_charge", 0)
             d[name + "_discharge_mw"] = power(name + "_discharge")
             d[name + "_energy_mwh"] = n.stores_t.e[name].to_numpy()
-    return d
+    return add_diagnostics(d, cfg, n._cph_plants)
 
 
 def _solver_info(n):
@@ -103,6 +176,7 @@ def summarise(n, d):
         "discharge_credit_dkk": credit,
         "supplier_local_heat_revenue_dkk": purchase - credit,
         "local_electricity_and_startup_dkk": local_electricity + starts,
+        "local_hp_startup_dkk": starts,
         "local_expenditure_dkk": purchase - credit + local_electricity + starts,
     }
     contributions = {}
@@ -123,7 +197,11 @@ def summarise(n, d):
     summary = {
         "framework": "PyPSA",
         "objective_kind": cfg["objective"],
-        "objective_definition": "Net operating expenditure, including scenario electricity adders",
+        "objective_definition": (
+            "Net operating expenditure, including scenario electricity adders"
+            if cfg["objective"] == "system"
+            else "HTF expenditure, including heat transfers"
+        ),
         "objective_dkk": float(n.objective),
         "hours": len(d),
         "variables": int(n.model.nvars),
@@ -132,13 +210,18 @@ def summarise(n, d):
         "ptes_discharge_mwh": float(d.ptes_discharge_mw.sum()),
         "ptes_equivalent_cycles": float(d.ptes_discharge_mw.sum() / cfg["ptes"]["energy_mwh"]),
         "ptes_terminal_mwh": float(d.ptes_energy_mwh.iloc[-1]),
+        "ptes_mean_inventory_mwh": float(d.ptes_energy_mwh.mean()),
+        "ptes_standing_loss_mwh": float(d.ptes_standing_loss_mwh.sum()),
+        "ptes_conversion_loss_mwh": float(d.ptes_conversion_loss_mwh.sum()),
+        "max_local_heat_balance_residual_mw": float(d.local_heat_balance_residual_mw.abs().max()),
+        "max_ptes_balance_residual_mwh": float(d.ptes_balance_residual_mwh.abs().max()),
         "cost_contributions_dkk": contributions,
         "illustrative_settlement": settlement,
         "assumptions": deepcopy(cfg),
         "warnings": [
             "Representative scenario; demand boundary and 2019 HTF template require validation",
             "Planning capacities and scenario fuel, grid, availability and loss assumptions",
-            "Pumping coefficient defaults to zero and settlement requires contractual verification",
+            "Pumping coefficient is provisional, applied per flow; settlement requires contractual verification",
             "Custom constraints must be rebuilt when re-solving an exported PyPSA network",
         ],
     }
@@ -207,6 +290,19 @@ def summarise(n, d):
         if not np.isclose(sum(breakdown.values()), n.objective, rtol=1e-8, atol=1e-4):
             raise RuntimeError("Independent economic accounting does not match the PyPSA objective")
         summary["operating_cost_breakdown_dkk"] = breakdown
+        summary["aggregate_upstream_operating_cost_dkk"] = (
+            float(n.objective) - local_electricity - starts
+        )
+        summary["max_upstream_heat_balance_residual_mw"] = float(
+            d.upstream_heat_balance_residual_mw.abs().max()
+        )
+        summary["regional_standing_loss_mwh"] = {
+            s: float(d[s + "_standing_loss_mwh"].sum()) for s in up["accumulators"]
+        }
+        heat_columns = [p + "_heat_mw" for p in n._cph_plants.name]
+        heat_columns += [f + "_boiler_heat_mw" for f in ["gas", "oil", "bio", "electric"]]
+        heat_columns += ["waste_heat_mw", "regional_hp_heat_mw"]
+        summary["heat_production_mwh"] = {k: float(d[k].sum()) for k in heat_columns}
         summary["waste_unused_availability_mwh"] = float(
             (np.minimum(d.waste_available_mw, up["waste_capacity_mw"]) - d.waste_heat_mw).sum()
         )

@@ -1,154 +1,161 @@
-# Copenhagen dispatch and HTF response in PyPSA
+# Copenhagen dispatch and HTF/PTES tariff model
 
-This package builds real **PyPSA networks**, using native buses, generators, loads,
-links and stores. Custom Linopy constraints implement CHP coupling and PTES rules.
-HiGHS and optional Gurobi are selected through PyPSA's solver interface. The former
-standalone sparse-matrix solver is not part of this branch.
+This package builds native **PyPSA networks with custom Linopy constraints**.
+Capacities are fixed; decisions concern hourly operation. Central scheduling,
+HTF's local response and upstream corrective dispatch are separate optimisations.
 
-The hourly optimisation has fixed capacities. Its inputs and financial assumptions
-represent a research scenario, not a calibrated reconstruction of Varmelast.
-See [formulation](docs/formulation.md), [data sources](docs/data_sources.md) and
-[validation](docs/validation.md) for the limits of numerical interpretation.
+## Current status
 
-## Install and run
+- Research solver: **Gurobi**, eight threads.
+- PTES: **3,300 MWh, 30 MW delivered charging and 30 MW delivered discharge**.
+- Pumping: **0.005 MWh electricity per charged/discharged MWh**, provisional.
+- Evidence: three selected 168-hour periods, constant/hourly tariff controls and
+  a zero-PTES-standing-loss sensitivity. No new annual integer result is claimed.
 
-From this directory, use Python 3.12 in a clean environment:
+Start with the [versioned results snapshot](reports/selected_weeks_30mw/README.md),
+[findings](docs/findings_30mw.md), [configuration index](config/README.md) and
+[local run index](results/README.md). Old pilots are archived, not current evidence.
+
+## Installation and checks
+
+From this directory, using Python 3.12:
 
 ```sh
 python -m venv .venv
 . .venv/bin/activate
 pip install -r requirements-tested.txt
-pip install -e . --no-deps
+pip install -e '.[gurobi,analysis]' --no-build-isolation
+ruff check src tests
+ruff format --check src tests
 pytest -q
-cph-dispatch demo --hours 48 --prices --output results/demo
 ```
 
-The tested PyPSA/Linopy/xarray versions are pinned together. The demo is explicitly
-synthetic and works offline; failed downloads never fall back to invented inputs.
-Generated inputs and results are ignored by git. Use an empty output directory for
-each run. The CLI publishes a result directory only after all its solves and exports
-succeed, and refuses to overwrite an existing result.
+The tested PyPSA/Linopy/xarray versions are pinned together. Gurobi needs a suitable
+licence; `--solver highs` explicitly selects the portable alternative. There is no
+automatic solver fallback. CI uses HiGHS and skips unavailable optional Gurobi checks.
 
-Prepare the 2024 public inputs and solve diagnostic weeks:
+The offline demo never substitutes synthetic data for failed real-data preparation:
 
 ```sh
-cph-dispatch prepare --year 2024
-# Strict preparation rejects gaps; the documented opt-in policy records each repair:
-cph-dispatch prepare --year 2024 --repair
-cph-dispatch solve --start 2024-01-08T00:00Z --hours 168 --prices --output results/winter
-cph-dispatch solve --start 2024-07-15T00:00Z --hours 168 --prices --output results/summer
+cph-dispatch demo --hours 48 --solver gurobi --prices --output results/runs/demo
+cph-dispatch compare --synthetic --hours 48 --solver gurobi --discount 5 \
+  --output results/runs/synthetic_compare
 ```
 
-An accepted solve writes `network.nc`, `dispatch.csv` and `summary.json`. The summary
-contains the scenario, versions, input hashes, objective components, solver gap/bound
-and independent feasibility checks. Prices are **conditional LP values with integer
-commitments fixed**. Raw MILP bus prices are cleared; use `--prices` to populate the
-network's bus prices and the CSV's upstream value column. Custom PTES modes are
-recorded in both the CSV and the links' status table.
+Always choose a fresh result directory. Accepted network/CSV/JSON trees are
+published atomically, and existing results are not overwritten.
 
-Read and inspect an exported network with ordinary PyPSA:
+## Prepare the 2024 inputs
+
+Original ERA5 files are retained in `../Data/`. Rebuild their temperature/COP
+profiles in the canonical generated-input location:
+
+```sh
+cph-dispatch profiles --year 2024 --era5-files ../Data/era5_land_t2m_2023_12_31.nc \
+  ../Data/era5_land_t2m_2024_*.nc --output data/processed/profiles_2024
+cph-dispatch prepare --year 2024 --repair
+```
+
+The existing local `data/processed/profiles_2024/` was relocated from the earlier
+`results/review_profiles_2024/` without changing its content. Skip regeneration if
+using that accepted cache. An ambient CSV with `time,temperature_c` and 23 preceding
+UTC hours is an alternative to `--era5-files`.
+
+Preparation is strict unless `--repair` is supplied; bounded repairs and downloads
+are hashed/logged. Prepared inputs without `--local-profiles` retain legacy COP
+mapping for historical benchmark reproduction. The current experiments instead
+supply the weather-derived profiles at solve time, preserving the original prepared
+input file and using actual UTC alignment:
+
+```sh
+cph-dispatch study --solver gurobi --study-spec config/tariff_findings_30mw.yaml \
+  --local-profiles data/processed/profiles_2024/local_profiles.csv \
+  --figures --output results/runs/findings_base
+cph-dispatch study --solver gurobi --study-spec config/tariff_findings_lossless_30mw.yaml \
+  --local-profiles data/processed/profiles_2024/local_profiles.csv \
+  --figures --output results/runs/findings_ptes_lossless
+```
+
+The snapshot also includes the exact executed specifications and configuration
+copies. Use those with `--config` when reproducing after defaults change.
+
+## Tariff comparison and accounting
+
+Each physical scenario reuses one coordinated schedule and one zero-credit local/
+corrective reference. Every candidate gets its own local response and corrective
+system solve. `study.csv` retains every candidate; `study.json` states the tested
+family, selection criterion and limitations. Inventories share fixed endpoints.
+
+The default discharge-service boundary bills HTF for direct heat and discharge,
+with upstream paying charging heat/charging pumping and HTF paying discharge
+pumping. This remains a contractual assumption. Curtailable charging is limited
+by the announced central schedule, and actual direct supply, discharge and HP heat
+remain fixed in corrective dispatch. That is an adaptation assumption, not a
+behavioural equilibrium or actual balancing-market settlement.
+
+Heat payments and discharge credits are transfers. They are excluded from system
+operating expenditure. HTF savings and upstream aggregate surplus changes reconcile
+to joint operating savings; revenue is not profit, and the aggregate is not a legal
+actor. Conditional marginal values are not contractual heat prices. See the
+[annual pricing design](docs/annual_tariff_study.md) and [formulation](docs/formulation.md).
+
+For a standalone supplied-credit comparison or reference ambiguity diagnostic:
+
+```sh
+cph-dispatch compare --start 2024-01-08T00:00Z --hours 168 --discount 5 \
+  --solver gurobi --prices --response-range --output results/runs/winter_compare
+cph-dispatch report --run results/runs/winter_compare \
+  --observations ../Data/ptes_operation_data_hourly.csv --observation-kind soc_proxy \
+  --output results/runs/winter_figures
+```
+
+`--response-range` adds two throughput-extremum solves within 0.01 DKK of accepted
+HTF expenditure. The recorded charge/discharge file is identified as SOC-difference
+proxies, not independent metered flows; reports compare it as historical context
+without inflating demand or forcing proxy operation.
+
+## Outputs and scientific limits
+
+Full runs in `results/` are ignored by Git. The compact, frozen report in `reports/`
+is intentionally versioned. It contains both hourly strengths and all constant
+controls, not just successful cases. To regenerate the combined figure from its
+saved table without downloading or solving:
 
 ```python
-import pypsa
-n = pypsa.Network("results/winter/network.nc")
-n.links_t.p1
-n.stores_t.e
-n.buses_t.marginal_price
-n.meta
+import pandas as pd
+from cph_dispatch.plotting import plot_tariff_findings
+
+plot_tariff_findings(
+    pd.read_csv("reports/selected_weeks_30mw/base.csv"),
+    "results/runs/redrawn_base_figure",
+)
 ```
 
-Snapshots inside PyPSA are timezone-naive **UTC**, explicitly labelled in metadata;
-CSV timestamps remain timezone-aware UTC. A network export preserves native
-components and results, not the custom Linopy constraint callbacks. To re-solve,
-use this package's builder and solve functions with the saved scenario and inputs.
+Accepted solves archive `network.nc`, `dispatch.csv`, `summary.json`, `inputs.csv`
+and `plants.csv`, including runtime/input hashes, configuration, feasibility and
+solver gaps. CSV timestamps are aware UTC; PyPSA snapshots are naive UTC. Reloading
+`network.nc` preserves results, not the custom Linopy callbacks; re-solving requires
+this builder and its constraints. `--prices` fixes accepted modes for a continuous
+conditional-value solve; raw MILP duals are not presented as valid prices.
 
-## Central scheduling, HTF response and upstream adjustment
+`--relax` is a diagnostic LP, not an integer schedule. Solver limits apply per call.
+The larger sensitivity design and annual/rolling extensions are not completed merely
+because their commands exist. Confirm real demand, metered flows, pumping, contracts,
+losses, endpoint treatment and HP restrictions before annual or societal-welfare claims.
 
-```sh
-cph-dispatch compare --synthetic --hours 72 --discount 50 --prices --output results/coupled_demo
-cph-dispatch compare --start 2024-01-08T00:00Z --hours 168 --discount 50 --output results/coupled_winter
-```
+## Code map
 
-The comparison performs five PyPSA solves: one coordinated schedule, zero-credit
-HTF response and corrective upstream dispatch, then the supplied-credit HTF response
-and its corrective dispatch. Each case has its own network/CSV/summary; the parent
-folder contains `comparison.json`. Optional price extraction adds a continuous solve.
-The 50 DKK/MWh value is an illustrative input, not a derived or optimal tariff.
-An hourly `discharge_discount_dkk_mwh` input column can supply a varying candidate;
-an explicit `--discount` overrides it. The reference always uses zero credit.
-
-The default **curtailable charging** policy treats the announced central charging
-schedule as an availability ceiling. The local solve chooses discharge and local
-supply with a feasible charging trajectory. Corrective dispatch holds actual direct
-supply, discharge and local HP heat fixed, and optimises compatible upstream charging
-within that same ceiling. This assumes upstream charging can be reduced after a
-local response; it is an analytical adaptation assumption requiring confirmation.
-The corrective network is the authoritative physical charging/inventory trajectory.
-All cases retain common initial and final inventories, without free depletion.
-
-This removes the old requirement to discharge almost the entire planned charge
-volume. The explicit `--charging-policy fixed` option retains the former experiment,
-where charging and the final inventory nearly determine throughput. It is useful
-for comparison but cannot establish freely chosen utilisation.
-
-Direct HTF heat pays the monthly reference price. Discharge pays that price minus
-the credit; charging heat belongs upstream. HTF expenditure and supplier local heat
-revenue are reported separately from upstream operating expenditure. Supplier revenue
-is not profit. A smaller HTF bill is not evidence of system savings: use corrective
-operating-cost differences and their solver gap bounds. With zero pumping cost and
-equal tariffs, HTF can be economically indifferent between discharge and direct heat;
-an arbitrary optimal schedule must not be called observed behaviour.
-
-Individual local solves remain available:
-
-```sh
-cph-dispatch solve --hours 168 --output results/central
-cph-dispatch solve --hours 168 --objective local --schedule results/central/dispatch.csv \\
-  --discount 50 --charging-policy curtailable --output results/local_response
-```
-
-## Annual solves and settings
-
-```sh
-cph-dispatch solve --relax --time-limit 120 --output results/annual_lp
-pip install -e '.[gurobi]'
-cph-dispatch solve --solver gurobi --time-limit 1800 --prices --output results/annual_gurobi
-```
-
-Gurobi needs a licence covering the full model size. See the validation record for
-which annual cases completed; small-case solver equivalence is not an annual result.
-Solver time limits apply per solve and are not strict process wall limits. For a hard
-local budget, wrap the command with a process timeout. `--relax` requests a labelled
-LP diagnostic, not an integer PTES operating schedule. `--mip-gap` changes the relative
-gap target; absolute gaps are also reported.
-
-Local HPs are dispatchable by default. `--hp-policy must_run` is an explicit full
-thermal-output scenario, assumed already operating at the start; actual must-run
-profiles still require stakeholder data. PTES power, losses, pumping and network
-losses remain configurable, provisional assumptions. The 12-hour full-charge to
-full-discharge rule is still not implemented because its operational definition
-requires clarification. CHP commitment and regional accumulator modes remain relaxed.
-
-## Code structure and migration
-
-| File | Responsibility |
+| Module | Responsibility |
 |---|---|
-| `src/cph_dispatch/data.py` | Public downloads, UTC alignment, bounded repairs and inherited templates |
-| `src/cph_dispatch/optimisation.py` | PyPSA components, custom constraints, solving and conditional prices |
-| `src/cph_dispatch/results.py` | Independent physical extraction and financial accounting |
-| `src/cph_dispatch/workflow.py` | Announced schedule, tariff responses and corrective dispatch |
-| `src/cph_dispatch/cli.py` | Commands, provenance and atomic network/CSV/JSON exports |
-| `config/base.yaml`, `config/plants.csv` | Explicit scenario and plant parameters |
-| `tests/` | Physical, economic, solver-equivalence and data regression checks |
+| `profiles.py`, `data.py` | Temperature/COP equations, public inputs, time alignment and repairs |
+| `optimisation.py` | Network construction, operational constraints, acceptance and conditional values |
+| `results.py` | Physical extraction, losses and independent financial accounts |
+| `workflow.py` | Coordinated schedule, local response, corrective dispatch and response range |
+| `tariffs.py`, `study.py` | Candidate prices, mean/bound controls and matched experiments |
+| `observations.py`, `analysis.py`, `plotting.py` | Evidence classification, reconciliation and figures |
+| `cli.py` | Commands, provenance and atomic exports |
 
-This implementation was transferred from `TomKae00/DynSys-Dynamic-Tariff` at
-`17c8261c10ad5fc8f31ca41464078f95959b360b` into the modelling repository.
-Its upstream PyPSA migration started at `c57c2d44b5f8db0a5347a836c683f66933f1916a`
-of that repository's Copenhagen extension. The original HTF constraints and inherited inputs trace back to
-`TomKae00/DynSys-PTES` at `48e49c0b8dc6415611cf0ed6ce985ea3b2d1ef50`.
-A pinned numeric fixture checks three objectives against the direct formulation,
-with bypass disabled to isolate framework equivalence. A separate test validates
-the corrected full heat-only bypass capacity. The prior interpretation had incorrectly
-used only the extra bypass capacity as a ceiling for the whole heat-only mode.
-The PyPSA first-hour storage loss is explicit, preserving the same physical inventory
-balance as the direct formulation. Input economics and demand assumptions are retained.
+The [data sources](docs/data_sources.md), [validation](docs/validation.md),
+[original migration audit](docs/research_workflow.md) and historical validation
+notes retain the model's provenance. Root legacy scripts remain unchanged and
+are used by temperature/COP parity tests. Manuscript work is in a separate repository.

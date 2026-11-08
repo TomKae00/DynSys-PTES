@@ -53,7 +53,9 @@ def test_dispatch_physics_and_accounting(config, plants, tmp_path):
         flow = d[column].to_numpy()
         assert np.all((flow < 1e-6) | (flow >= minimum - 1e-6))
         assert np.abs(np.diff(np.r_[0, flow])).max() <= 12 + 1e-6
-        assert flow.max() <= 23 + 1e-6
+        mode = "charge" if column == "ptes_charge_mw" else "discharge"
+        maximum = config["ptes"].get(mode + "_power_mw", config["ptes"]["power_mw"])
+        assert flow.max() <= maximum + 1e-6
     for lag in [1, 2]:
         assert np.all(
             d.ptes_charge_on.to_numpy()[:-lag] + d.ptes_discharge_on.to_numpy()[lag:] < 1.00001
@@ -147,7 +149,9 @@ def test_failure_is_explicit(config, plants, tmp_path):
     frame["htf_demand_mw"] = 500
     inputs, output = tmp_path / "infeasible.csv", tmp_path / "result"
     frame.to_csv(inputs)
-    assert main(["solve", "--inputs", str(inputs), "--output", str(output)]) == 1
+    assert (
+        main(["solve", "--solver", "highs", "--inputs", str(inputs), "--output", str(output)]) == 1
+    )
     assert not output.exists()
     frame["regional_demand_mw"] = 1
     with pytest.raises(ValueError, match="Regional demand smaller"):
@@ -186,7 +190,12 @@ def test_discharge_boundary_charging_schedule_and_bill(config, plants):
 
 
 def test_optional_gurobi_matches_highs(config, plants):
-    pytest.importorskip("gurobipy")
+    gurobipy = pytest.importorskip("gurobipy")
+    try:
+        with gurobipy.Env(params={"OutputFlag": 0}):
+            pass
+    except gurobipy.GurobiError as error:
+        pytest.skip(f"Optional Gurobi licence unavailable: {error}")
     frame = demo(8)
     config["solver"]["mip_rel_gap"] = 1e-8
     highs = solve(build(frame, config, plants), prices=True)
@@ -230,6 +239,10 @@ def test_direct_formulation_reference_objectives(config, plants):
     plants = plants.copy()
     plants.bypass_mw = 0
     config["solver"]["mip_rel_gap"] = 1e-8
+    # This pinned migration fixture used the former symmetric 23 MW scenario.
+    config["ptes"]["power_mw"] = 23.0
+    config["ptes"]["discharge_power_mw"] = 23.0
+    config["ptes"]["pump_mwh_el_per_mwh_heat"] = 0.0
     frame = demo(24)
     system = solve(build(frame, config, plants))
     assert system.raw.fun == pytest.approx(reference["system_objective_dkk"], rel=0, abs=0.1)

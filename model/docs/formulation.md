@@ -82,14 +82,18 @@ inventory bus accounts for lambda*E_initial; later losses use native standing_lo
 This keeps e_initial equal to the physical pre-loss inventory and preserves the
 same first-hour equation as the previous direct formulation.
 
-Default PTES settings are 3300 MWh, symmetric 23 MW power, 10/5 MW minimum charge/
+Default PTES settings are 3300 MWh, 30 MW charge and 30 MW discharge, 10/5 MW minimum charge/
 discharge, 12 MW/h ramps from initially idle operation, no simultaneous operation
-and two following hours without reversal. Power is delivered heat. A 30 MW scenario
-and asymmetric actual charge/discharge ratings require validation. No cyclic mode
+and two following hours without reversal. Power is delivered heat. The original
+symmetric 23 MW case remains a sensitivity; effective network limits require
+validation. No cyclic mode
 or ramp connection is imposed across the year boundary. Final flow is free but
 final inventory is fixed. HX direct flow has a 0.5 MW minimum; H+C<=100 MW is an
 assumed shared connection. The 12-hour full-charge/full-discharge restriction is
-not implemented. Loss 0.000275/h and zero pumping are provisional assumptions.
+not implemented. Loss 0.000275/h and pumping 0.005 MWh_el per charging/discharging
+MWh are provisional assumptions. The pumping coefficient applies per flow, with
+hourly electricity costs; the storage-wide Task 45 OPEX estimate does not calibrate
+or allocate those individual coefficients. See [the pumping evidence](annual_tariff_study.md).
 
 Native committable HP links use hourly COP, 25% minimum load, two-hour minimum up/
 down times, startup costs and an initially off state. Electrical link p_max_pu is
@@ -133,8 +137,10 @@ pairs. It reports corrective system operating-cost differences, HTF bills and su
 local heat revenue separately, with absolute solver gap bounds. Reference and
 candidate share the same inputs, schedule, constraints and endpoints. Revenue is
 not supplier profit. With zero pumping and equal tariffs, local operation can be
-indifferent; a selected optimum is not observed behaviour. The current implementation
-is a rational one-pass benchmark, not a behavioural equilibrium or tariff derivation.
+indifferent; a selected optimum is not observed behaviour. The `compare` workflow
+is a rational one-pass supplied-credit benchmark, not a behavioural equilibrium.
+The `study` workflow evaluates constant and derived conditional-value candidate
+families, including monthly mean controls; see [the derivation](research_workflow.md).
 Deviation charges, electricity imbalance settlement, terminal-value alternatives,
 rolling forecasts and repeated feedback remain research tasks.
 Corrective electricity purchases and sales use the same exogenous DK2 prices as
