@@ -1,0 +1,203 @@
+{
+  "base_30mw": {
+    "coordination_value_mdkk": 4.85836090400067,
+    "coordinated_cost_mdkk": -250.65968788532908,
+    "reference_cost_mdkk": -245.80132698132843,
+    "coordinated_discharge_gwh": 66.52746426286016,
+    "cases": {
+      "constant_5": {
+        "system_saving_mdkk": 3.361806253280566,
+        "htf_saving_mdkk": 0.28649152147879264,
+        "upstream_gain_mdkk": 3.0753147318017735,
+        "heat_revenue_change_mdkk": -0.31035955894043377,
+        "discharge_gwh": 62.20857113600284,
+        "cycles": 18.8510821624251,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 47,
+        "recovered_share": 0.6919630549702989
+      },
+      "hourly_5_g025": {
+        "system_saving_mdkk": 3.8302579086812556,
+        "htf_saving_mdkk": 0.4678861904154134,
+        "upstream_gain_mdkk": 3.362371718265844,
+        "heat_revenue_change_mdkk": -0.5073892648505528,
+        "discharge_gwh": 63.63764432592995,
+        "cycles": 19.284134644221197,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 50,
+        "recovered_share": 0.788384803921666
+      },
+      "monthly_response": {
+        "system_saving_mdkk": 0.8709103155257043,
+        "htf_saving_mdkk": 0.08618600703244098,
+        "upstream_gain_mdkk": 0.7847243084932636,
+        "heat_revenue_change_mdkk": -0.0004400461804195657,
+        "discharge_gwh": 11.629721570660342,
+        "cycles": 3.524158051715255,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 35,
+        "recovered_share": 0.1792601111227747
+      },
+      "reference": {
+        "system_saving_mdkk": 0.0,
+        "htf_saving_mdkk": 0.0,
+        "upstream_gain_mdkk": 0.0,
+        "heat_revenue_change_mdkk": 0.0,
+        "discharge_gwh": 29.784093801075016,
+        "cycles": 9.025482970022733,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 52,
+        "recovered_share": 0.0
+      },
+      "share_025": {
+        "system_saving_mdkk": 3.064851696952885,
+        "htf_saving_mdkk": 0.45256798975869633,
+        "upstream_gain_mdkk": 2.61228370719419,
+        "heat_revenue_change_mdkk": -0.42214408625551236,
+        "discharge_gwh": 40.270387765083,
+        "cycles": 12.20314780760091,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 49,
+        "recovered_share": 0.6308406801209642
+      },
+      "share_05": {
+        "system_saving_mdkk": 3.4511922049930486,
+        "htf_saving_mdkk": 0.9007221535360471,
+        "upstream_gain_mdkk": 2.550470051457003,
+        "heat_revenue_change_mdkk": -0.8803778785635985,
+        "discharge_gwh": 49.987138980173846,
+        "cycles": 15.147617872779954,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 47,
+        "recovered_share": 0.7103614311878574
+      },
+      "share_10": {
+        "system_saving_mdkk": 3.9310897333760226,
+        "htf_saving_mdkk": 1.8453521525632202,
+        "upstream_gain_mdkk": 2.0857375808128027,
+        "heat_revenue_change_mdkk": -1.8320669224847685,
+        "discharge_gwh": 63.27636334342661,
+        "cycles": 19.174655558614123,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 42,
+        "recovered_share": 0.8091390925978603
+      }
+    }
+  },
+  "compliance_30mw": {
+    "coordination_value_mdkk": 4.85836090400067,
+    "coordinated_cost_mdkk": -250.65968788532908,
+    "reference_cost_mdkk": -245.80132698132843,
+    "coordinated_discharge_gwh": 66.52746426286016,
+    "cases": {
+      "follow_0": {
+        "system_saving_mdkk": 4.2884041582999615,
+        "htf_saving_mdkk": -0.27691095888730294,
+        "upstream_gain_mdkk": 4.5653151171872635,
+        "heat_revenue_change_mdkk": 0.4303366875116308,
+        "discharge_gwh": 66.52746426285866,
+        "cycles": 20.159837655411714,
+        "weeks_htf_gain": 5,
+        "weeks_both_win": 5,
+        "recovered_share": 0.8826853836174724
+      },
+      "follow_hourly": {
+        "system_saving_mdkk": 4.2884041582999615,
+        "htf_saving_mdkk": 0.25658794235734617,
+        "upstream_gain_mdkk": 4.031816215942616,
+        "heat_revenue_change_mdkk": -0.10316221373301768,
+        "discharge_gwh": 66.52746426285866,
+        "cycles": 20.159837655411714,
+        "weeks_htf_gain": 40,
+        "weeks_both_win": 40,
+        "recovered_share": 0.8826853836174724
+      },
+      "monthly_response": {
+        "system_saving_mdkk": 0.8709103155257043,
+        "htf_saving_mdkk": 0.08618600703244098,
+        "upstream_gain_mdkk": 0.7847243084932636,
+        "heat_revenue_change_mdkk": -0.0004400461804195657,
+        "discharge_gwh": 11.629721570660342,
+        "cycles": 3.524158051715255,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 35,
+        "recovered_share": 0.1792601111227747
+      },
+      "reference": {
+        "system_saving_mdkk": 0.0,
+        "htf_saving_mdkk": 0.0,
+        "upstream_gain_mdkk": 0.0,
+        "heat_revenue_change_mdkk": 0.0,
+        "discharge_gwh": 29.784093801075016,
+        "cycles": 9.025482970022733,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 52,
+        "recovered_share": 0.0
+      }
+    }
+  },
+  "d23": {
+    "coordination_value_mdkk": 4.619054638757147,
+    "coordinated_cost_mdkk": -250.41876147428553,
+    "reference_cost_mdkk": -245.7997068355284,
+    "coordinated_discharge_gwh": 62.61628166820723,
+    "cases": {
+      "follow_0": {
+        "system_saving_mdkk": 4.043496844643283,
+        "htf_saving_mdkk": -0.2626649519514205,
+        "upstream_gain_mdkk": 4.306161796594703,
+        "heat_revenue_change_mdkk": 0.40797487210348954,
+        "discharge_gwh": 62.616281668205744,
+        "cycles": 18.974630808547197,
+        "weeks_htf_gain": 5,
+        "weeks_both_win": 5,
+        "recovered_share": 0.8753948937333355
+      },
+      "follow_hourly": {
+        "system_saving_mdkk": 4.043496844643283,
+        "htf_saving_mdkk": 0.22665484161178082,
+        "upstream_gain_mdkk": 3.8168420030315016,
+        "heat_revenue_change_mdkk": -0.08134492145971169,
+        "discharge_gwh": 62.616281668205744,
+        "cycles": 18.974630808547197,
+        "weeks_htf_gain": 40,
+        "weeks_both_win": 40,
+        "recovered_share": 0.8753948937333355
+      },
+      "hourly_5_g025": {
+        "system_saving_mdkk": 3.6121705810573466,
+        "htf_saving_mdkk": 0.43164044774304633,
+        "upstream_gain_mdkk": 3.1805301333142992,
+        "heat_revenue_change_mdkk": -0.46295382722358275,
+        "discharge_gwh": 59.19320154404447,
+        "cycles": 17.937333801225595,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 50,
+        "recovered_share": 0.7820151229103617
+      },
+      "monthly_response": {
+        "system_saving_mdkk": 0.8458767101514594,
+        "htf_saving_mdkk": 0.0852866691948492,
+        "upstream_gain_mdkk": 0.7605900409566096,
+        "heat_revenue_change_mdkk": -0.0004400461804065272,
+        "discharge_gwh": 11.580618485847436,
+        "cycles": 3.509278329044678,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 35,
+        "recovered_share": 0.1831276692537805
+      },
+      "reference": {
+        "system_saving_mdkk": 0.0,
+        "htf_saving_mdkk": 0.0,
+        "upstream_gain_mdkk": 0.0,
+        "heat_revenue_change_mdkk": 0.0,
+        "discharge_gwh": 29.784093801075016,
+        "cycles": 9.025482970022733,
+        "weeks_htf_gain": 52,
+        "weeks_both_win": 52,
+        "recovered_share": 0.0
+      }
+    }
+  },
+  "value_of_30mw_vs_23mw_mdkk": 0.24092641104354584
+}
