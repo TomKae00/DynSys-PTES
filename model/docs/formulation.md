@@ -88,8 +88,8 @@ and two following hours without reversal. Power is delivered heat. The original
 symmetric 23 MW case remains a sensitivity; effective network limits require
 validation. No cyclic mode
 or ramp connection is imposed across the year boundary. Final flow is free but
-final inventory is fixed. HX direct flow has a 0.5 MW minimum; H+C<=100 MW is an
-assumed shared connection. The 12-hour full-charge/full-discharge restriction is
+final inventory is fixed. HX direct flow has a 0.5 MW minimum and a 100 MW maximum (the HX station towards HTF); PTES charging is a separate branch and
+limited by its own 30 MW rating. The 12-hour full-charge/full-discharge restriction is
 not implemented. Loss 0.000275/h and pumping 0.005 MWh_el per charging/discharging
 MWh are provisional assumptions. The pumping coefficient applies per flow, with
 hourly electricity costs; the storage-wide Task 45 OPEX estimate does not calibrate

@@ -34,7 +34,7 @@ ptes:
   # Task 45's OPEX estimate covers the whole store; see docs/annual_tariff_study.md.
   pump_mwh_el_per_mwh_heat: 0.005
 hx:
-  capacity_mw: 100
+  capacity_mw: 100  # HX station towards HTF (direct supply only; charging is a separate branch)
   minimum_mw: 0.5
 heat_pumps:
   policy: endogenous  # set must_run for the stakeholder operating-policy sensitivity

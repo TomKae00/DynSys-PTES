@@ -527,9 +527,8 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
                 a.isel(snapshot=slice(None, -lag)) + future <= 1,
                 name=f"ptes_no_reversal_{name}_{lag}",
             )
-    if not replay:
-        # Assumed shared connection limit; measured 2024 operation exceeded it in cold weeks.
-        m.add_constraints(h + c <= cfg["hx"]["capacity_mw"], name="shared_htf_connection")
+    # The HX capacity limits direct supply to HTF only (link p_nom). PTES charging is a
+    # separate branch from the VEKS transmission line, limited by its own power rating.
     if not replay:
         m.add_constraints(
             m["Store-e"].sel(name="ptes").isel(snapshot=-1) == ptes["terminal_mwh"],
