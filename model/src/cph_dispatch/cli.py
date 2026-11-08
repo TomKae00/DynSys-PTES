@@ -95,7 +95,8 @@ def _write_outputs(output, solutions, *, provenance, plants_hash, comparison=Non
 def _run(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "command", choices=["prepare", "profiles", "solve", "demo", "compare", "study", "report"]
+        "command",
+        choices=["prepare", "profiles", "metered", "solve", "demo", "compare", "study", "report"],
     )
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--config", type=Path)
@@ -143,6 +144,14 @@ def _run(argv=None):
         "--response-range",
         action="store_true",
         help="Two extra solves bound near-optimal reference throughput",
+    )
+    parser.add_argument(
+        "--raw-ptes",
+        type=Path,
+        help="10-minute PTES operation CSV with metered E_charge/E_discharge",
+    )
+    parser.add_argument(
+        "--metered", type=Path, help="Hourly metered PTES CSV from the 'metered' command"
     )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args(argv)
@@ -195,6 +204,30 @@ def _run(argv=None):
             args.root, args.year, repair=args.repair, local_profiles=args.local_profiles
         )
         print(json.dumps({"hours": len(frame), "repaired_cells": len(report["repairs"])}))
+        return
+    if args.command == "metered":
+        from .observations import metered_ptes
+
+        if args.raw_ptes is None or args.observations is None:
+            raise ValueError(
+                "Metered requires --raw-ptes and --observations (hourly inventory CSV)"
+            )
+        metered = metered_ptes(args.raw_ptes, args.observations)
+        output = args.output or args.root / f"data/processed/ptes_metered_{args.year}.csv"
+        if output.exists():
+            raise ValueError("Metered output already exists; choose a new path")
+        output.parent.mkdir(parents=True, exist_ok=True)
+        metered.to_csv(output)
+        print(
+            json.dumps(
+                {
+                    "hours": len(metered),
+                    "charge_mwh": round(float(metered.metered_charge_mw.sum()), 1),
+                    "discharge_mwh": round(float(metered.metered_discharge_mw.sum()), 1),
+                    "output": str(output),
+                }
+            )
+        )
         return
     if args.command == "report":
         from .plotting import report
@@ -282,6 +315,12 @@ def _run(argv=None):
         profile_provenance = args.local_profiles.with_name("provenance.json")
         if profile_provenance.exists():
             provenance["local_profile_generation"] = json.loads(profile_provenance.read_text())
+    if args.metered is not None:
+        metered = pd.read_csv(args.metered, index_col=0)
+        metered.index = pd.to_datetime(metered.index, utc=True)
+        columns = ["metered_charge_mw", "metered_discharge_mw", "measured_inventory_mwh"]
+        frame = frame.join(metered[columns])
+        provenance["metered_ptes_sha256"] = hashlib.sha256(args.metered.read_bytes()).hexdigest()
     provenance["command_arguments"] = list(argv) if argv is not None else sys.argv[1:]
     quality_path = args.root / f"data/processed/quality_{args.year}.json"
     if not synthetic and args.inputs is None and quality_path.exists():

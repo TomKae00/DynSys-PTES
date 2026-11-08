@@ -54,6 +54,35 @@ def load_observations(path, *, kind):
     return result, metadata
 
 
+def metered_ptes(raw_path, inventory_path):
+    """Hourly metered PTES flows (UTC) from the 10-minute operation file.
+
+    E_charge/E_discharge are metered energy per 10-minute interval [MWh]; their
+    hourly sums are average MW. Inventory is the temperature-based energy content
+    at the end of each hour (the hourly file's Q_storage_mwh).
+    """
+    raw = pd.read_csv(raw_path, index_col=0, usecols=["time", "E_charge", "E_discharge"])
+    raw.index = pd.to_datetime(raw.index, utc=True)
+    if raw.index.has_duplicates or not np.isfinite(raw).all().all() or (raw < 0).any().any():
+        raise ValueError("Metered PTES energies must be unique, finite and nonnegative")
+    hourly = raw.resample("h").sum(min_count=1)
+    if hourly.isna().any().any():
+        raise ValueError("Metered PTES data has empty hours; no automatic filling")
+    inventory = pd.read_csv(inventory_path, index_col="time").Q_storage_mwh
+    inventory.index = pd.to_datetime(inventory.index, utc=True)
+    frame = pd.DataFrame(
+        {
+            "metered_charge_mw": hourly.E_charge,
+            "metered_discharge_mw": hourly.E_discharge,
+            "measured_inventory_mwh": inventory.reindex(hourly.index),
+        }
+    )
+    if frame.isna().any().any():
+        raise ValueError("Metered flows and measured inventory must cover the same UTC hours")
+    frame.index.name = "timestamp"
+    return frame
+
+
 def compare_observations(dispatch, observations, metadata):
     """Compare only matched hours; never scale demand or invent a fixed-dispatch replay."""
     matched = dispatch.index.intersection(observations.index)

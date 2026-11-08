@@ -3,6 +3,9 @@ year: 2024
 demand_boundary: assumed_gross_including_htf
 network_loss_fraction: 0.02  # scenario, not a calibrated loss estimate
 objective: system
+# Reference case: monthly_response (HTF's optimal response to today's tariff) or
+# metered_2024 (measured 2024 PTES operation, needs --metered).
+reference: monthly_response
 settlement_boundary: discharge_service
 response:
   charging_policy: curtailable  # announced charging is an upper bound; fixed reproduces the old experiment
@@ -24,6 +27,7 @@ ptes:
   loss_per_hour: 0.000275  # provisional effective loss, NOT a fitted parameter
   charge_efficiency: 1.0
   discharge_efficiency: 1.0
+  endpoints: fixed  # fixed: initial/terminal below; measured: metered inventory per period (needs --metered)
   initial_mwh: 1500
   terminal_mwh: 1500
   # Provisional user-selected coefficient PER charging/discharging MWh, not a fit.
@@ -66,7 +70,9 @@ upstream:
   waste_capacity_mw: 519.5  # ARC 190 + ARGO 136.5 + VF 192; alternatives not added
   waste_power_heat_ratio: 0.25  # aggregate approximation, sensitivity required
   waste_vom_dkk_mwh_heat: 10
-  waste_policy: observed_upper_bound  # historical aggregate output is availability, not dispatch
+  # observed_must_run: waste burned as observed (only surplus above the minimum need is cooled);
+  # observed_upper_bound: observed output as availability only (earlier default).
+  waste_policy: observed_must_run
   accumulators:
     AMV:
       energy_mwh: 1000

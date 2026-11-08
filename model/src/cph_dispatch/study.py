@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 from .tariffs import candidate_prices
-from .workflow import benefits, case_metrics, coordinated, response
+from .workflow import benefits, case_metrics, coordinated, historical, response
 
 
 def identifier(value):
@@ -50,11 +50,31 @@ def study_cases(frame, config, specification):
             if name in used:
                 raise ValueError("Duplicate study case: " + name)
             used.add(name)
-            yield (
-                name,
-                frame.loc[snapshots].copy(),
-                update_config(config, sensitivity.get("overrides", {})),
-            )
+            settings = update_config(config, sensitivity.get("overrides", {}))
+            if settings["ptes"].get("endpoints", "fixed") == "measured":
+                measured_endpoints(frame, snapshots, settings)
+            yield name, frame.loc[snapshots].copy(), settings
+
+
+def measured_endpoints(frame, snapshots, settings):
+    """Start and end every case at the measured PTES inventory of that period.
+
+    The measured value is the content at the end of an hour, so the start uses the
+    hour before the period (or the first hour where no earlier value exists).
+    """
+    if "measured_inventory_mwh" not in frame:
+        raise ValueError("Measured endpoints need the metered PTES data (--metered)")
+    inventory = frame.measured_inventory_mwh
+    before = snapshots[0] - pd.Timedelta(hours=1)
+    start = inventory.get(before, np.nan)
+    if not np.isfinite(start):
+        start = inventory.get(snapshots[0], np.nan)
+    end = inventory.get(snapshots[-1], np.nan)
+    if not np.isfinite([start, end]).all():
+        raise ValueError("Measured inventory missing at the period boundaries")
+    capacity = settings["ptes"]["energy_mwh"]
+    settings["ptes"]["initial_mwh"] = float(np.clip(start, 0, capacity))
+    settings["ptes"]["terminal_mwh"] = float(np.clip(end, 0, capacity))
 
 
 def evaluate_tariffs(frame, config, plants, specifications):
@@ -66,31 +86,46 @@ def evaluate_tariffs(frame, config, plants, specifications):
     names = [identifier(s["name"]) for s in specifications]
     if not names or len(set(names)) != len(names) or "reference" in names:
         raise ValueError("Supply unique tariff names, excluding reserved 'reference'")
-    prices = any(
+    metered = config.get("reference", "monthly_response") == "metered_2024"
+    prices = metered or any(
         s["family"] != "constant"
         or s.get("direct_basis", "monthly_reference") != "monthly_reference"
         for s in specifications
     )
     central = coordinated(frame, config, plants, prices=prices)
     local, corrective = response(frame, config, plants, central, 0.0)
-    reference = case_metrics(central, local, corrective)
+    monthly = case_metrics(central, local, corrective)
     solutions = {"central": central, "reference_local": local, "reference_corrective": corrective}
-    rows = []
-    # The zero-credit reference is itself eligible for selection.
-    rows.append(
-        {
-            "tariff": "reference",
-            "family": "constant",
-            "level": 0.0,
-            "scale": 0.0,
-            "direct_basis": "monthly_reference",
-            **reference,
-            **benefits(reference, reference),
-            "mean_credit_dkk_mwh": 0.0,
-            "mean_direct_price_dkk_mwh": float(frame.reference_tariff_dkk_mwh.mean()),
-            "mean_discharge_price_dkk_mwh": float(frame.reference_tariff_dkk_mwh.mean()),
-        }
-    )
+    flat = {
+        "family": "constant",
+        "level": 0.0,
+        "scale": 0.0,
+        "direct_basis": "monthly_reference",
+        "mean_credit_dkk_mwh": 0.0,
+        "mean_direct_price_dkk_mwh": float(frame.reference_tariff_dkk_mwh.mean()),
+        "mean_discharge_price_dkk_mwh": float(frame.reference_tariff_dkk_mwh.mean()),
+    }
+    reference = monthly
+    if metered:
+        # Reference = measured 2024 PTES operation under today's monthly tariff.
+        metered_local, metered_corrective = historical(frame, config, plants)
+        solutions["metered_local"], solutions["metered_corrective"] = (
+            metered_local,
+            metered_corrective,
+        )
+        reference = case_metrics(central, metered_local, metered_corrective)
+        # The replay need not end exactly at the measured level; value the difference
+        # at the coordinated schedule's final stored-heat value.
+        value = float(central.dispatch.conditional_inventory_value_dkk_mwh.iloc[-1])
+        adjustment = (reference["ptes_terminal_mwh"] - config["ptes"]["terminal_mwh"]) * value
+        reference["terminal_inventory_adjustment_dkk"] = adjustment
+        reference["corrective_system_cost_dkk"] -= adjustment
+        reference["system_cost_change_from_coordinated_dkk"] -= adjustment
+    rows = [{"tariff": "reference", **flat, **reference, **benefits(reference, reference)}]
+    if metered:
+        rows.append(
+            {"tariff": "monthly_response", **flat, **monthly, **benefits(reference, monthly)}
+        )
     for spec in specifications:
         pricing = candidate_prices(central, spec)
         credit = pricing.discharge_discount_dkk_mwh

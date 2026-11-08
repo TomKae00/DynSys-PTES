@@ -212,6 +212,19 @@ def build(frame, config, plants, *, fixed_local=None):
         carrier="heat",
     )
     _initial_loss(n, "ptes", "ptes_inventory", ptes["initial_mwh"], ptes["loss_per_hour"])
+    replay = bool(ptes.get("replay_metered", False))
+    if replay:
+        # Measured 2024 operation is replayed as observed; design limits do not apply.
+        for column in ["metered_charge_mw", "metered_discharge_mw"]:
+            if column not in d or not np.isfinite(d[column]).all() or (d[column] < 0).any():
+                raise ValueError("Metered replay needs complete nonnegative " + column)
+        ptes["charge_power_mw"] = max(
+            ptes.get("charge_power_mw", ptes["power_mw"]), float(d.metered_charge_mw.max()) + 1
+        )
+        ptes["discharge_power_mw"] = max(
+            ptes.get("discharge_power_mw", ptes["power_mw"]),
+            float(d.metered_discharge_mw.max()) + 1,
+        )
     adder = config["heat_pumps"]["electricity_adder_dkk_mwh"]
     pump = ptes["pump_mwh_el_per_mwh_heat"]
     charge_pumping = system or owned
@@ -405,8 +418,17 @@ def build(frame, config, plants, *, fixed_local=None):
         marginal_cost=up["electricity_adder_dkk_mwh"],
         carrier="heat",
     )
-    if up["waste_policy"] != "observed_upper_bound":
-        raise ValueError("Only observed_upper_bound waste policy is supported")
+    if up["waste_policy"] not in ("observed_upper_bound", "observed_must_run"):
+        raise ValueError("Waste policy must be observed_upper_bound or observed_must_run")
+    available = np.minimum(d.waste_available_mw / up["waste_capacity_mw"], 1.0)
+    minimum = 0.0
+    if up["waste_policy"] == "observed_must_run":
+        # Waste is burned as observed. Only heat exceeding the minimum upstream
+        # requirement (other demand plus HX warm-keeping) may be cooled instead.
+        need = (residual + config["hx"]["minimum_mw"]) / delivery
+        surplus = (d.waste_available_mw - need).clip(lower=0)
+        minimum = ((d.waste_available_mw - surplus) / up["waste_capacity_mw"]).clip(lower=0)
+        minimum = np.minimum(minimum, available)
     n.add("Bus", "waste_available", carrier="waste")
     n.add(
         "Generator",
@@ -424,7 +446,8 @@ def build(frame, config, plants, *, fixed_local=None):
         efficiency=1.0,
         efficiency2=up["waste_power_heat_ratio"],
         p_nom=up["waste_capacity_mw"],
-        p_max_pu=np.minimum(d.waste_available_mw / up["waste_capacity_mw"], 1.0),
+        p_max_pu=available,
+        p_min_pu=minimum,
         marginal_cost=up["waste_vom_dkk_mwh_heat"],
         carrier="heat",
     )
@@ -451,10 +474,34 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
     bounds = {"binary": True} if integer else {"lower": 0.0, "upper": 1.0}
     yc = m.add_variables(coords=[n.snapshots], name="ptes_charge_on", **bounds)
     yd = m.add_variables(coords=[n.snapshots], name="ptes_discharge_on", **bounds)
-    for label, flow, status, minimum in [
-        ("charge", c, yc, ptes["min_charge_mw"]),
-        ("discharge", d, yd, ptes["min_discharge_mw"]),
-    ]:
+    replay = bool(ptes.get("replay_metered", False))
+    if replay:
+        # Measured operation: flows fixed to meters, modes reported, no design rules.
+        inputs = n._cph_inputs
+        m.add_constraints(d == _series(n, inputs.metered_discharge_mw), name="metered_discharge")
+        m.add_constraints(c == _series(n, inputs.metered_charge_mw), name="metered_charge")
+        m.add_constraints(
+            yc == _series(n, (inputs.metered_charge_mw > 1e-6).astype(float)),
+            name="metered_charge_on",
+        )
+        m.add_constraints(
+            yd
+            == _series(
+                n,
+                ((inputs.metered_discharge_mw > 1e-6) & (inputs.metered_charge_mw <= 1e-6)).astype(
+                    float
+                ),
+            ),
+            name="metered_discharge_on",
+        )
+    for label, flow, status, minimum in (
+        []
+        if replay
+        else [
+            ("charge", c, yc, ptes["min_charge_mw"]),
+            ("discharge", d, yd, ptes["min_discharge_mw"]),
+        ]
+    ):
         maximum = ptes.get(label + "_power_mw", ptes["power_mw"])
         m.add_constraints(flow <= maximum * status, name="ptes_" + label + "_maximum")
         m.add_constraints(flow >= minimum * status, name="ptes_" + label + "_minimum")
@@ -467,8 +514,9 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
         m.add_constraints(
             flow.isel(snapshot=0) <= ptes["ramp_mw_h"], name="ptes_" + label + "_initial_idle"
         )
-    m.add_constraints(yc + yd <= 1, name="ptes_exclusive")
-    for lag in range(1, min(ptes["reversal_hours"] + 1, len(snapshots))):
+    if not replay:
+        m.add_constraints(yc + yd <= 1, name="ptes_exclusive")
+    for lag in range(1, 0 if replay else min(ptes["reversal_hours"] + 1, len(snapshots))):
         for name, a, b in [("cd", yc, yd), ("dc", yd, yc)]:
             future = b.isel(snapshot=slice(lag, None)).assign_coords(snapshot=n.snapshots[:-lag])
             m.add_constraints(
@@ -476,10 +524,11 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
                 name=f"ptes_no_reversal_{name}_{lag}",
             )
     m.add_constraints(h + c <= cfg["hx"]["capacity_mw"], name="shared_htf_connection")
-    m.add_constraints(
-        m["Store-e"].sel(name="ptes").isel(snapshot=-1) == ptes["terminal_mwh"],
-        name="ptes_terminal",
-    )
+    if not replay:
+        m.add_constraints(
+            m["Store-e"].sel(name="ptes").isel(snapshot=-1) == ptes["terminal_mwh"],
+            name="ptes_terminal",
+        )
     if cfg["heat_pumps"].get("policy", "endogenous") == "endogenous":
         on, start, stop = [m[k] for k in ["Link-status", "Link-start_up", "Link-shut_down"]]
         m.add_constraints(

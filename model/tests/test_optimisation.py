@@ -305,3 +305,36 @@ def test_curtailable_response_allows_lower_utilisation_and_accounts_upstream_cos
     assert report["candidate_vs_reference"]["system_operating_cost_saving_dkk"] == pytest.approx(
         expected
     )
+
+
+def test_waste_must_run_and_metered_replay(config, plants):
+    from cph_dispatch.workflow import historical
+
+    frame = demo(48)
+    # Waste must-run: output equals availability except for cooled surplus heat.
+    n = build(frame, config, plants)
+    result = solve(n)
+    d = result.dispatch
+    assert (d.waste_heat_mw <= d.waste_available_mw + 1e-6).all()
+    need = (d.regional_demand_mw - d.htf_demand_mw + config["hx"]["minimum_mw"]) / (
+        1 - config["network_loss_fraction"]
+    )
+    floor = d.waste_available_mw - (d.waste_available_mw - need).clip(lower=0)
+    assert (
+        d.waste_heat_mw >= floor.clip(upper=config["upstream"]["waste_capacity_mw"]) - 1e-6
+    ).all()
+
+    # Metered replay: flows follow the meters, no terminal inventory is imposed.
+    frame["metered_charge_mw"] = 0.0
+    frame["metered_discharge_mw"] = 0.0
+    frame.iloc[2:8, frame.columns.get_loc("metered_charge_mw")] = 31.0  # above the 30 MW design
+    frame.iloc[20:30, frame.columns.get_loc("metered_discharge_mw")] = 3.0  # below the 5 MW minimum
+    local, corrective = historical(frame, config, plants)
+    for solution in (local, corrective):
+        np.testing.assert_allclose(
+            solution.dispatch.ptes_charge_mw, frame.metered_charge_mw, atol=1e-6
+        )
+        np.testing.assert_allclose(
+            solution.dispatch.ptes_discharge_mw, frame.metered_discharge_mw, atol=1e-6
+        )
+    np.testing.assert_allclose(corrective.dispatch.hx_mw, local.dispatch.hx_mw, atol=1e-6)

@@ -46,6 +46,29 @@ def response(frame, config, plants, central, credit, *, direct_tariff=None):
     return local, corrective
 
 
+def historical(frame, config, plants):
+    """Measured operation: PTES flows fixed to meters; HTF chooses HX and HPs under
+    the monthly tariff; upstream is re-dispatched around it. No design limits,
+    operating rules or terminal inventory apply to the replayed PTES."""
+    inputs = frame.copy()
+    inputs["scheduled_ptes_charge_mw"] = inputs.metered_charge_mw
+    inputs["discharge_discount_dkk_mwh"] = 0.0
+    replay = deepcopy(config)
+    replay["ptes"]["replay_metered"] = True
+    replay.setdefault("response", {})["charging_policy"] = "fixed"
+    replay["discharge_discount_dkk_mwh"] = 0.0
+    local_config = deepcopy(replay)
+    local_config["objective"] = "local"
+    local_config["solver"]["mip_rel_gap"] = replay["response"].get(
+        "local_mip_rel_gap", replay["solver"]["mip_rel_gap"]
+    )
+    local = solve(build(inputs, local_config, plants))
+    system_config = deepcopy(replay)
+    system_config["objective"] = "system"
+    corrective = solve(build(inputs, system_config, plants, fixed_local=local.dispatch))
+    return local, corrective
+
+
 def case_metrics(central, local, corrective):
     actual = corrective.dispatch
     return {

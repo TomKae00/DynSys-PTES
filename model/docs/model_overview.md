@@ -48,7 +48,22 @@ It fixes HTF's HX, discharge and HP heat to the stage 3 values and re-optimises
 all upstream units and accumulators. Charging can still be reduced within the
 announced slots (e.g. if HTF discharged less, there is less to refill).
 
-The reference case is the same stages 3–4 with δ = 0 (today's monthly tariff).
+**Reference.** Two options (`reference` in the config):
+
+- `metered_2024` (paper default): the **measured 2024 operation**. PTES charging and
+  discharging are fixed to the metered hourly flows (no design limits or operating
+  rules apply to measured data); HTF chooses HX import and its HPs under the monthly
+  tariff; stage 4 re-dispatches Copenhagen around it. The model's monthly-tariff
+  response (δ = 0) is then reported as an extra row, `monthly_response`.
+- `monthly_response`: stages 3–4 with δ = 0 as the reference.
+
+**PTES end inventory.** With `ptes.endpoints: measured`, every case starts and ends
+each period at the measured 2024 inventory (not cyclic). If the metered replay ends
+slightly off that level under the model's loss rate, the difference is valued at the
+coordinated schedule's final stored-heat value (`terminal_inventory_adjustment_dkk`).
+
+**Waste.** `waste_policy: observed_must_run` burns waste as observed in 2024; only heat
+above Copenhagen's minimum need is cooled (340 h in 2024).
 
 ## The numbers in `study.csv`
 
@@ -75,6 +90,18 @@ Transfers cancel in ΔC_sys, so ΔB_HTF + ΔU = ΔC_sys exactly.
 
 `direct_basis: monthly_mean_matched_marginal` additionally makes direct HX heat
 hourly (τ + μ/r − monthly mean), so HTF's HPs see the system heat value.
+
+## Running the paper cases
+
+```sh
+# once: hourly metered PTES flows + measured inventory
+cph-dispatch metered --raw-ptes "../hoje Taastrup data/ptes_operation_data_hoje_taastrup_2024.csv" \
+  --observations ../Data/ptes_operation_data_hourly.csv
+# full year in one horizon (Gurobi)
+cph-dispatch study --solver gurobi --time-limit 7200 --study-spec config/paper_annual_2024.yaml \
+  --local-profiles data/processed/profiles_2024/local_profiles.csv \
+  --metered data/processed/ptes_metered_2024.csv --output results/runs/annual_2024
+```
 
 ## Running
 
