@@ -566,6 +566,10 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
             m.add_constraints(c == planned, name="fixed_central_charging")
         else:
             m.add_constraints(c <= planned, name="announced_charging_availability")
+        if response and cfg.get("response", {}).get("discharge_policy", "free") == "fixed":
+            # Full schedule compliance: HTF implements the scheduled discharge exactly.
+            scheduled = _series(n, n._cph_inputs.scheduled_ptes_discharge_mw)
+            m.add_constraints(d == scheduled, name="fixed_central_discharge")
     if cfg["objective"] == "system":
         peak = sum(
             link.sel(name=f + "_boiler") * cfg["upstream"][f + "_efficiency"]

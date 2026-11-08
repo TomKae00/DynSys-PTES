@@ -20,10 +20,17 @@ def coordinated(frame, config, plants, *, prices=False):
     return central
 
 
-def response(frame, config, plants, central, credit, *, direct_tariff=None):
-    """Local response and physical correction, keeping all actual local decisions fixed."""
+def response(frame, config, plants, central, credit, *, direct_tariff=None, follow_schedule=False):
+    """Local response and physical correction, keeping all actual local decisions fixed.
+
+    With follow_schedule, HTF implements the coordinated PTES charging and discharge
+    exactly and only chooses heat-exchanger import and local heat pumps."""
     inputs = frame.copy()
     inputs["scheduled_ptes_charge_mw"] = central.dispatch.ptes_charge_mw
+    inputs["scheduled_ptes_discharge_mw"] = central.dispatch.ptes_discharge_mw
+    if follow_schedule:
+        config = deepcopy(config)
+        config.setdefault("response", {}).update(charging_policy="fixed", discharge_policy="fixed")
     inputs["discharge_discount_dkk_mwh"] = credit
     if direct_tariff is not None:
         inputs["reference_tariff_dkk_mwh"] = direct_tariff

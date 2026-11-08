@@ -130,7 +130,13 @@ def evaluate_tariffs(frame, config, plants, specifications):
         pricing = candidate_prices(central, spec)
         credit = pricing.discharge_discount_dkk_mwh
         local, corrective = response(
-            frame, config, plants, central, credit, direct_tariff=pricing.reference_tariff_dkk_mwh
+            frame,
+            config,
+            plants,
+            central,
+            credit,
+            direct_tariff=pricing.reference_tariff_dkk_mwh,
+            follow_schedule=bool(spec.get("follow_schedule", False)),
         )
         name = spec["name"]
         solutions[name + "_local"], solutions[name + "_corrective"] = local, corrective
