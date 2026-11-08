@@ -56,7 +56,7 @@ ax.step(x, case.ptes_discharge_mwh / 1e3, where="mid", color=aqua, lw=1.2, label
 if measured:
     ax.step(x, reference.ptes_discharge_mwh / 1e3, where="mid", color=ink, lw=1.0, label="Measured 2024")
     ax.step(x, monthly.ptes_discharge_mwh / 1e3, where="mid", color=ink, lw=0.8, ls=":",
-            label="HTF optimum, monthly tariff")
+            label="Monthly-tariff response")
 else:
     ax.step(x, reference.ptes_discharge_mwh / 1e3, where="mid", color=ink, lw=1.0, label="HTF response, monthly tariff")
 ax.set_ylabel("PTES discharge\n[GWh/week]")
