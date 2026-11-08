@@ -18,7 +18,11 @@ ink, muted, grid = "#0b0b0b", "#52514e", "#e6e5e0"
 blue, orange, aqua = "#2a78d6", "#eb6834", "#1baf7a"
 
 table = pd.read_csv(study / "study.csv")
-table["share"] = table.tariff.map(lambda t: 0.0 if t == "reference" else float(t.split("_")[1]) / 10 ** (len(t.split("_")[1]) - 1))
+shares = {"monthly_response": 0.0, "share_025": 0.25, "share_05": 0.5, "share_10": 1.0}
+if "monthly_response" not in set(table.tariff):
+    shares = {"reference": 0.0, "share_01": 0.1, **shares}
+table = table[table.tariff.isin(shares)].copy()
+table["share"] = table.tariff.map(shares)
 annual = table.groupby("share").agg(
     system=("system_operating_cost_saving_dkk", "sum"),
     htf=("local_bill_saving_dkk", "sum"),
@@ -45,7 +49,7 @@ ax.plot(s, annual.htf / 1e6, color=blue, marker="o", ms=4, lw=1.4, label=r"HTF b
 ax.plot(s, annual.revenue / 1e6, color=orange, ls="--", lw=1.0, label="Upstream heat-revenue change")
 ax.axhline(0, color=muted, lw=0.6)
 ax.set_xlabel("Share $s$ of the storage value passed to HTF")
-ax.set_ylabel("Annual change vs.\nmonthly tariff [MDKK]")
+ax.set_ylabel("Annual change vs.\nmeasured 2024 [MDKK]")
 ax.legend(loc="upper left", bbox_to_anchor=(0, 1.02))
 ax.set_title("(a) Welfare and its distribution", loc="left")
 

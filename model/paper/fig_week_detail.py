@@ -39,7 +39,8 @@ for j, (week, title) in enumerate(weeks.items()):
     central = read(week, "central")
     hourly = read(week, "hourly_5_g025_corrective")
     constant = read(week, "constant_5_corrective")
-    reference = read(week, "reference_corrective")
+    measured = (study / week / "metered_corrective").exists()
+    reference = read(week, "metered_corrective" if measured else "reference_corrective")
     credit = pd.read_csv(study / week / "hourly_5_g025_local" / "inputs.csv",
                          index_col="timestamp", parse_dates=True).discharge_discount_dkk_mwh
     credit.index = credit.index.tz_convert("Europe/Copenhagen")
@@ -64,16 +65,15 @@ for j, (week, title) in enumerate(weeks.items()):
     ax.fill_between(central.index, net(central), step="post", color=grey, alpha=0.35, lw=0,
                     label="Coordinated schedule")
     ax.step(central.index, net(hourly), where="post", color=aqua, lw=1.2, label="HTF response, hourly credit")
-    ax.step(central.index, net(constant), where="post", color=violet, lw=0.9, ls=":",
-            label="HTF response, constant credit")
-    ax.step(central.index, net(reference), where="post", color=ink, lw=0.9, label="HTF response, monthly tariff")
+    ax.step(central.index, net(reference), where="post", color=ink, lw=0.9,
+            label="Measured 2024" if measured else "HTF response, monthly tariff")
     ax.set_ylim(-33, 33)
 
     ax = axes[3, j]
     hp = lambda f: f.city2_heat_mw + f.groundwater_heat_mw
     ax.fill_between(central.index, hp(central), step="post", color=grey, alpha=0.35, lw=0,
                     label="Coordinated schedule")
-    ax.step(central.index, hp(hourly), where="post", color=aqua, lw=1.2, label="HTF response")
+    ax.step(central.index, hp(hourly), where="post", color=aqua, lw=1.2, label="HTF, hourly credit")
     ax.set_ylim(0, 3.2)
     ax.set_xlim(central.index[0], central.index[-1])
     ax.xaxis.set_major_locator(mdates.HourLocator(byhour=12, tz=central.index.tz))

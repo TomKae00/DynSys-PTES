@@ -23,8 +23,11 @@ table = pd.read_csv(study / "study.csv")
 table["week"] = table.scenario.str.split("__").str[0]
 case = table[table.tariff == tariff].set_index("week").sort_index()
 reference = table[table.tariff == "reference"].set_index("week").sort_index()
+monthly = table[table.tariff == "monthly_response"].set_index("week").sort_index()
+measured = not monthly.empty
 central = pd.Series({w: pd.read_csv(study / f"{w}__base" / "central" / "dispatch.csv").ptes_discharge_mw.sum()
                      for w in case.index})
+base_label = "measured 2024" if measured else "monthly tariff"
 starts = pd.to_datetime([pd.read_csv(study / f"{w}__base" / "central" / "dispatch.csv", nrows=1).timestamp[0]
                          for w in case.index])
 
@@ -42,17 +45,22 @@ upstream = case.aggregate_upstream_operating_surplus_change_dkk / 1e3
 ax.bar(x, upstream, 0.8, color=orange, label="Upstream aggregate gain")
 ax.bar(x, htf, 0.8, bottom=upstream.clip(lower=0), color=blue, label="HTF bill saving")
 ax.step(x, reference.system_cost_change_from_coordinated_dkk / 1e3, where="mid", color=ink, lw=1.0,
-        label="Coordination value (monthly tariff vs. coordinated)")
-ax.set_ylabel("Weekly saving vs.\nmonthly tariff [kDKK]")
+        label=f"Coordination value ({base_label} vs. coordinated)")
+ax.set_ylabel(f"Weekly saving vs.\n{base_label} [kDKK]")
 ax.legend(loc="upper left", ncol=3, bbox_to_anchor=(0, 1.13))
 ax.set_title("(a) Operating saving and its distribution", loc="left", pad=16)
 
 ax = axes[1]
 ax.step(x, central / 1e3, where="mid", color=grey, lw=1.4, label="Coordinated schedule")
 ax.step(x, case.ptes_discharge_mwh / 1e3, where="mid", color=aqua, lw=1.2, label="HTF response, hourly credit")
-ax.step(x, reference.ptes_discharge_mwh / 1e3, where="mid", color=ink, lw=1.0, label="HTF response, monthly tariff")
+if measured:
+    ax.step(x, reference.ptes_discharge_mwh / 1e3, where="mid", color=ink, lw=1.0, label="Measured 2024")
+    ax.step(x, monthly.ptes_discharge_mwh / 1e3, where="mid", color=ink, lw=0.8, ls=":",
+            label="HTF optimum, monthly tariff")
+else:
+    ax.step(x, reference.ptes_discharge_mwh / 1e3, where="mid", color=ink, lw=1.0, label="HTF response, monthly tariff")
 ax.set_ylabel("PTES discharge\n[GWh/week]")
-ax.legend(loc="upper left", ncol=3, bbox_to_anchor=(0, 1.13))
+ax.legend(loc="upper left", ncol=4, bbox_to_anchor=(0, 1.13))
 ax.set_title("(b) PTES use", loc="left", pad=16)
 months = [i for i in range(len(starts)) if i == 0 or starts[i].month != starts[i - 1].month]
 ax.set_xticks(months, [starts[i].strftime("%b") for i in months])
