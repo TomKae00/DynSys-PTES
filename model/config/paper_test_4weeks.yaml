@@ -1,0 +1,8 @@
+# Smoke test of a longer horizon before the annual run (4 weeks, April 2024).
+periods:
+  - {name: april4w, start: '2024-04-01T00:00:00Z', hours: 672}
+sensitivities:
+  - name: base
+tariffs:
+  - {name: hourly_5_g025, family: bounded_mean_matched_value, level: 5, scale: 0.25, lower: 0, upper: 10}
+  - {name: share_05, family: shared_value, scale: 0.5}

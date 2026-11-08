@@ -1,0 +1,32 @@
+{
+  "path": "Data/ptes_operation_data_hourly.csv",
+  "sha256": "17789854e5f278e534e6f428b0794c254be95126dc627c7d4136fbdefb40cf5e",
+  "declared_kind": "soc_proxy",
+  "flows_match_inventory_difference": true,
+  "hours": 8784,
+  "timezone": "UTC",
+  "interpretation": "Inventory-difference proxy: includes losses/temperature effects, not metered throughput",
+  "role": "Historical proxy audit; not a metered-flow replay or annual economic result",
+  "energy_capacity_mwh": 3300,
+  "proxy_charge_mwh": 32306.77988302125,
+  "proxy_discharge_mwh": 31776.69021610028,
+  "proxy_equivalent_discharge_cycles": 9.629300065484934,
+  "user_reported_cycles_to_verify": 8,
+  "danish_year_hours_without_recorded_data": 1,
+  "recorded_hours_outside_danish_year": 1,
+  "hours_proxy_charge_above_model_limit": 26,
+  "hours_proxy_discharge_above_model_limit": 4,
+  "task45_source": "https://iea-es.org/task-45/qa-bank/",
+  "task45_conditional_storage_wide_pumping_dkk_per_discharge_mwh": 11.129704428904429,
+  "pump_coefficient_per_charge_and_discharge_flow": 0.005,
+  "limitations": [
+    "Flow columns are inventory differences and include loss/measurement effects",
+    "Reported operating cycles need not equal equivalent full discharge cycles",
+    "Task 45 OPEX does not calibrate the selected per-flow electricity coefficient"
+  ],
+  "capacity_check_limits_mw": {
+    "charging": 30,
+    "discharging": 30
+  },
+  "capacity_check_note": "Proxy limit checks updated for current 30/30 MW defaults; original 23 MW charging audit retained in archive"
+}

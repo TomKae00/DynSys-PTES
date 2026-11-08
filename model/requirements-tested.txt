@@ -1,0 +1,12 @@
+# Direct dependencies of the tested Python 3.12 environment, not a cross-platform lock.
+numpy==2.3.5
+pandas==2.2.3
+scipy==1.17.0
+pypsa==1.0.4
+linopy==0.5.8
+xarray==2025.6.1
+highspy==1.15.1
+PyYAML==6.0.3
+pytest==8.4.2
+ruff==0.17.4
+# Optional backend tested separately: gurobipy==13.0.3

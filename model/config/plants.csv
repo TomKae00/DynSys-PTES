@@ -1,0 +1,6 @@
+name,kind,heat_mw,power_mw,fuel_mw,cm,cv,eta_el,eta_bypass,bypass_mw,fuel_dkk_mwh,vom_dkk_mwh_heat,availability,source
+AMV1,backpressure,250,68,338,0.272,0,0.20118343195,0.94082840237,68,240,4,0.9,FFH50_7_base
+AMV4,backpressure,400,150,487,0.375,0,0.30800821355,1.12936344969,150,160,12,0.9,FFH50_7_base
+AVV1,extraction,370,260,652,0.587,0.116,0.3985,0,0,240,12,0.9,FFH50_7_base
+AVV2,extraction,450,345,804,0.608,0.159,0.4291,0,0,225,12,0.9,FFH50_7_base
+KKV8,backpressure,51,8.5,56.666666667,0.166666666667,0,0.15,1.05,8.5,160,12,0.9,FFH50_7_base

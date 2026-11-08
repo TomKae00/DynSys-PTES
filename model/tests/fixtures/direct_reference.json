@@ -1,0 +1,33 @@
+{
+  "source_commit": "c57c2d44b5f8db0a5347a836c683f66933f1916a",
+  "method": "Direct SciPy reference; 24h synthetic demo, gap 1e-8. Bypass disabled to isolate framework parity from the separately tested bypass-capacity correction.",
+  "system_objective_dkk": 1121839.740589779,
+  "legacy_owned_objective_dkk": 243290.53020543957,
+  "fixed_response_objective_dkk": 240578.47858389598,
+  "scheduled_charge_mw": [
+    12.000000010311423,
+    23.0,
+    23.0,
+    23.0,
+    23.0,
+    23.0,
+    23.0,
+    23.0,
+    23.0,
+    22.99999998910892,
+    11.999999984016085,
+    0.0,
+    6.467939479936457e-15,
+    0.0,
+    7.105427357601002e-14,
+    0.0,
+    0.0,
+    0.0,
+    -2.0600054995156825e-10,
+    2.2737367544323206e-13,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}

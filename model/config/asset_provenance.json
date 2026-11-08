@@ -1,0 +1,13 @@
+{
+  "source_workbook_url": "https://varmeplanhovedstaden.dk/wp-content/uploads/2022/03/FFH50-forudsaetninger-FINAL.xlsx",
+  "sha256": "10440150b4212f39ddcdea89810f472c0db3be02c6e8314c73ba05544d633c60",
+  "capacity_table": "7_V\u00e6rksdata grundlast",
+  "peak_table": "7_V\u00e6rksdata spidslast",
+  "normalisation": "Manual design-point transcription. Efficiencies for backpressure units use power/fuel and heat-only/fuel capacities. Alternative ARC/AVV2 modes are not independent capacity.",
+  "scenario_fields": [
+    "fuel_dkk_mwh",
+    "vom_dkk_mwh_heat",
+    "availability"
+  ],
+  "note": "Planning assumptions, not audited as-built 2024 capacity. See docs/data_sources.md."
+}

@@ -1,0 +1,265 @@
+{
+  "validation_date": "2026-11-05",
+  "framework": "PyPSA",
+  "source_branch_commit": "c57c2d44b5f8db0a5347a836c683f66933f1916a",
+  "tests": "17 passed in the complete final local run; optional Gurobi available locally. Hosted CI is tracked on the PR.",
+  "cases": {
+    "winter_pypsa": {
+      "framework": "PyPSA",
+      "objective_kind": "system",
+      "objective_dkk": 30155992.33942936,
+      "hours": 168,
+      "solver_status": 0,
+      "solver_backend": "highs",
+      "mip_gap": 4.08771033082435e-06,
+      "mip_dual_bound_dkk": 30155869.07046794,
+      "absolute_optimality_gap_dkk": 123.26896141842008,
+      "variables": 8232,
+      "constraints": 21839,
+      "max_constraint_violation": 7.499920684495009e-10,
+      "max_bound_violation": 5.773159728050814e-15,
+      "max_integer_violation": 4.9404924595819466e-14,
+      "ptes_charge_mwh": 1533.999999999999,
+      "ptes_discharge_mwh": 1506.5878904848762,
+      "ptes_equivalent_cycles": 0.45654178499541703,
+      "ptes_terminal_mwh": 1500.0,
+      "price_method": "Continuous PyPSA/Linopy solve with all commitment decisions fixed",
+      "runtime": {
+        "python": "3.12.14",
+        "numpy": "2.3.5",
+        "pandas": "2.2.3",
+        "pypsa": "1.0.4",
+        "linopy": "0.5.8",
+        "xarray": "2025.6.1",
+        "highs": "1.15.1"
+      },
+      "input_provenance": {
+        "kind": "prepared_inputs",
+        "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af"
+      },
+      "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+      "operating_cost_breakdown_dkk": {
+        "fuel": 112161905.19814867,
+        "variable_om": 3359342.823418518,
+        "hp_startups": 225.22858389599998,
+        "electricity_spot_imports": 869411.3816688985,
+        "electricity_adders": 149397.67879196582,
+        "electricity_sales_credit": -86384289.97118258
+      }
+    },
+    "summer_pypsa": {
+      "framework": "PyPSA",
+      "objective_kind": "system",
+      "objective_dkk": -16761010.457379159,
+      "hours": 168,
+      "solver_status": 0,
+      "solver_backend": "highs",
+      "mip_gap": 5.788674709188099e-07,
+      "mip_dual_bound_dkk": -16761020.159782892,
+      "absolute_optimality_gap_dkk": 9.702403733506799,
+      "variables": 8232,
+      "constraints": 21839,
+      "max_constraint_violation": 7.567280135845067e-13,
+      "max_bound_violation": 5.773159728050814e-15,
+      "max_integer_violation": 5.773159728050814e-15,
+      "ptes_charge_mwh": 1254.0000000000016,
+      "ptes_discharge_mwh": 1205.1017912417851,
+      "ptes_equivalent_cycles": 0.3651823609823591,
+      "ptes_terminal_mwh": 1500.0,
+      "price_method": "Continuous PyPSA/Linopy solve with all commitment decisions fixed",
+      "runtime": {
+        "python": "3.12.14",
+        "numpy": "2.3.5",
+        "pandas": "2.2.3",
+        "pypsa": "1.0.4",
+        "linopy": "0.5.8",
+        "xarray": "2025.6.1",
+        "highs": "1.15.1"
+      },
+      "input_provenance": {
+        "kind": "prepared_inputs",
+        "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af"
+      },
+      "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+      "operating_cost_breakdown_dkk": {
+        "fuel": 24906956.7469468,
+        "variable_om": 563604.4896554459,
+        "hp_startups": 0.0,
+        "electricity_spot_imports": -4.4150109175279225e-11,
+        "electricity_adders": -8.215861717187096e-12,
+        "electricity_sales_credit": -42231571.69398141
+      }
+    },
+    "annual_lp_pypsa": {
+      "framework": "PyPSA",
+      "objective_kind": "system",
+      "objective_dkk": -249925959.48820633,
+      "hours": 8784,
+      "solver_status": 0,
+      "solver_backend": "highs",
+      "mip_gap": 0.0,
+      "mip_dual_bound_dkk": -249925959.48820633,
+      "absolute_optimality_gap_dkk": 0.0,
+      "variables": 430416,
+      "constraints": 1141919,
+      "max_constraint_violation": 4.026162514492171e-09,
+      "max_bound_violation": 0.0,
+      "max_integer_violation": 0.0,
+      "ptes_charge_mwh": 83830.53300135172,
+      "ptes_discharge_mwh": 80438.15135584044,
+      "ptes_equivalent_cycles": 24.375197380557708,
+      "ptes_terminal_mwh": 1500.0,
+      "runtime": {
+        "python": "3.12.14",
+        "numpy": "2.3.5",
+        "pandas": "2.2.3",
+        "pypsa": "1.0.4",
+        "linopy": "0.5.8",
+        "xarray": "2025.6.1",
+        "highs": "1.15.1"
+      },
+      "input_provenance": {
+        "kind": "prepared_inputs",
+        "sha256": "1609049b63f5d91f9bc974dcdc0a414f9ebd5dd928abac71fea4138ab60466af"
+      },
+      "plant_input_sha256": "3544ec0408643a0f1b320cd1564520dd719dd2eb34861bcc6783dca5bfc2c78d",
+      "operating_cost_breakdown_dkk": {
+        "fuel": 2577333783.680433,
+        "variable_om": 91654637.11646849,
+        "hp_startups": 11512.035647304001,
+        "electricity_spot_imports": 13346157.097350555,
+        "electricity_adders": 16464978.777293116,
+        "electricity_sales_credit": -2948737028.1954365
+      }
+    },
+    "pypsa_workflow_final": {
+      "framework": "PyPSA",
+      "charging_policy": "curtailable",
+      "coordinated_objective_dkk": 1884492.3739144378,
+      "cases": {
+        "reference": {
+          "local_expenditure_dkk": 480931.7285838958,
+          "supplier_local_heat_revenue_dkk": 463103.9999999996,
+          "corrective_system_cost_dkk": 1892748.4672508934,
+          "system_cost_change_from_coordinated_dkk": 8256.093336455524,
+          "ptes_charge_mwh": 148.05912485333687,
+          "ptes_discharge_mwh": 128.0,
+          "charging_curtailed_mwh": 288.94087514666313,
+          "missed_scheduled_discharge_mwh": 299.67183395340976,
+          "ptes_terminal_mwh": 1500.0
+        },
+        "candidate": {
+          "local_expenditure_dkk": 460148.1368862255,
+          "supplier_local_heat_revenue_dkk": 442320.4083023293,
+          "corrective_system_cost_dkk": 1888013.7744570323,
+          "system_cost_change_from_coordinated_dkk": 3521.4005425944924,
+          "ptes_charge_mwh": 437.0,
+          "ptes_discharge_mwh": 415.67183395340953,
+          "charging_curtailed_mwh": 0.0,
+          "missed_scheduled_discharge_mwh": 2.646771690706373e-13,
+          "ptes_terminal_mwh": 1500.0
+        }
+      },
+      "candidate_vs_reference": {
+        "system_operating_cost_saving_dkk": 4734.6927938610315,
+        "local_bill_saving_dkk": 20783.591697670287,
+        "supplier_local_heat_revenue_change_dkk": -20783.591697670287,
+        "combined_system_solver_gap_bound_dkk": 1.9948846944607794,
+        "system_difference_exceeds_gap_bound": true
+      },
+      "limitations": [
+        "One-pass rational response benchmark; not a behavioural or market-equilibrium model",
+        "Candidate discount is supplied, not an optimally derived tariff",
+        "Curtailable charging assumes upstream adaptation within the announced charging ceiling",
+        "Reference can be economically indifferent when pumping is zero and tariffs are equal",
+        "Supplier local heat revenue is not supplier profit; imbalance/deviation charges are not included"
+      ]
+    },
+    "coupled_winter_pypsa": {
+      "framework": "PyPSA",
+      "charging_policy": "curtailable",
+      "coordinated_objective_dkk": 12265387.587355051,
+      "cases": {
+        "reference": {
+          "local_expenditure_dkk": 1027860.3921226077,
+          "supplier_local_heat_revenue_dkk": 986941.5139139796,
+          "corrective_system_cost_dkk": 12266449.476188375,
+          "system_cost_change_from_coordinated_dkk": 1061.8888333234936,
+          "ptes_charge_mwh": 139.80345068641265,
+          "ptes_discharge_mwh": 120.88289108051958,
+          "charging_curtailed_mwh": 378.1965493135874,
+          "missed_scheduled_discharge_mwh": 392.8716622145156,
+          "ptes_terminal_mwh": 1500.0
+        },
+        "candidate": {
+          "local_expenditure_dkk": 1002772.6644578559,
+          "supplier_local_heat_revenue_dkk": 961853.7862492278,
+          "corrective_system_cost_dkk": 12265387.587355053,
+          "system_cost_change_from_coordinated_dkk": 1.862645149230957e-09,
+          "ptes_charge_mwh": 518.0,
+          "ptes_discharge_mwh": 501.7545532950347,
+          "charging_curtailed_mwh": 0.0,
+          "missed_scheduled_discharge_mwh": 5.364597654988756e-13,
+          "ptes_terminal_mwh": 1500.0
+        }
+      },
+      "candidate_vs_reference": {
+        "system_operating_cost_saving_dkk": 1061.888833321631,
+        "local_bill_saving_dkk": 25087.727664751816,
+        "supplier_local_heat_revenue_change_dkk": -25087.727664751816,
+        "combined_system_solver_gap_bound_dkk": 27.347028989344835,
+        "system_difference_exceeds_gap_bound": true
+      },
+      "limitations": [
+        "One-pass rational response benchmark; not a behavioural or market-equilibrium model",
+        "Candidate discount is supplied, not an optimally derived tariff",
+        "Curtailable charging assumes upstream adaptation within the announced charging ceiling",
+        "Reference can be economically indifferent when pumping is zero and tariffs are equal",
+        "Supplier local heat revenue is not supplier profit; imbalance/deviation charges are not included"
+      ]
+    },
+    "annual_milp_pypsa": {
+      "status": "external_timeout_without_accepted_export",
+      "hours_requested": 8784,
+      "solver_time_limit_s": 60,
+      "process_budget_s": 150,
+      "exit_code": 124,
+      "note": "No accepted annual integer network or schedule exported; not a proof of infeasibility."
+    }
+  },
+  "equivalence_fixture": {
+    "source_commit": "c57c2d44b5f8db0a5347a836c683f66933f1916a",
+    "method": "Direct SciPy reference; 24h synthetic demo, gap 1e-8. Bypass disabled to isolate framework parity from the separately tested bypass-capacity correction.",
+    "system_objective_dkk": 1121839.740589779,
+    "legacy_owned_objective_dkk": 243290.53020543957,
+    "fixed_response_objective_dkk": 240578.47858389598,
+    "scheduled_charge_mw": [
+      12.000000010311423,
+      23.0,
+      23.0,
+      23.0,
+      23.0,
+      23.0,
+      23.0,
+      23.0,
+      23.0,
+      22.99999998910892,
+      11.999999984016085,
+      0.0,
+      6.467939479936457e-15,
+      0.0,
+      7.105427357601002e-14,
+      0.0,
+      0.0,
+      0.0,
+      -2.0600054995156825e-10,
+      2.2737367544323206e-13,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "equivalence_tolerance_dkk": 0.1,
+  "quality_report_sha256": "6002407b5a41b4f4fe02a84be8b9a447804c74c94d344897a847e872d3203214"
+}
