@@ -202,6 +202,7 @@ def build(frame, config, plants, *, fixed_local=None):
         carrier="heat",
     )
     ptes = config["ptes"]
+    replay = bool(ptes.get("replay_metered", False))
     n.add(
         "Store",
         "ptes",
@@ -209,10 +210,13 @@ def build(frame, config, plants, *, fixed_local=None):
         e_nom=ptes["energy_mwh"],
         e_initial=ptes["initial_mwh"],
         standing_loss=ptes["loss_per_hour"],
+        # A replay only books measured flows. Measured content is relative to 48.5 C,
+        # so small excursions beyond the design range are not infeasible there.
+        e_min_pu=-1.0 if replay else 0.0,
+        e_max_pu=2.0 if replay else 1.0,
         carrier="heat",
     )
     _initial_loss(n, "ptes", "ptes_inventory", ptes["initial_mwh"], ptes["loss_per_hour"])
-    replay = bool(ptes.get("replay_metered", False))
     if replay:
         # Measured 2024 operation is replayed as observed; design limits do not apply.
         for column in ["metered_charge_mw", "metered_discharge_mw"]:
