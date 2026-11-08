@@ -1,7 +1,7 @@
 # One-at-a-time sensitivities, 52 weeks of 2024 vs measured operation (run locally with Gurobi).
 # Base values: min flows 10/5 MW, pumping 0.005 MWh_el/MWh, HP electricity adder 125 DKK/MWh.
-# co2_on_peak_fuels: EUA ~65 EUR/t (485 DKK/t) added to gas (0.202 t/MWh) and oil (0.266 t/MWh);
-# biomass CHP fuels are zero-rated in the EU ETS and unchanged. Only meaningful if base prices exclude CO2.
+# Gas 350 DKK/MWh is consistent with the 2024 TTF average (~34 EUR/MWh) plus EU ETS (~65 EUR/t), so CO2 is
+# treated as included; Danish heat taxes are not included.
 periods:
 - {name: w01, start: '2024-01-01T00:00:00Z', hours: 168}
 - {name: w02, start: '2024-01-08T00:00:00Z', hours: 168}
@@ -62,8 +62,6 @@ sensitivities:
   overrides: {reference: metered_2024, ptes.endpoints: measured, ptes.pump_mwh_el_per_mwh_heat: 0.0025}
 - name: pump_010
   overrides: {reference: metered_2024, ptes.endpoints: measured, ptes.pump_mwh_el_per_mwh_heat: 0.01}
-- name: co2_on_peak_fuels
-  overrides: {reference: metered_2024, ptes.endpoints: measured, upstream.gas_dkk_mwh_fuel: 448, upstream.oil_dkk_mwh_fuel: 729}
 - name: hp_adder_250
   overrides: {reference: metered_2024, ptes.endpoints: measured, heat_pumps.electricity_adder_dkk_mwh: 250}
 tariffs:
