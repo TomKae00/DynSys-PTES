@@ -18,7 +18,7 @@ ink, muted, grid = "#0b0b0b", "#52514e", "#e6e5e0"
 blue, orange, aqua = "#2a78d6", "#eb6834", "#1baf7a"
 
 table = pd.read_csv(study / "study.csv")
-shares = {"monthly_response": 0.0, "share_025": 0.25, "share_05": 0.5, "share_10": 1.0}
+shares = {"share_025": 0.25, "share_05": 0.5, "share_10": 1.0}
 if "monthly_response" not in set(table.tariff):
     shares = {"reference": 0.0, "share_01": 0.1, **shares}
 table = table[table.tariff.isin(shares)].copy()
@@ -50,14 +50,14 @@ ax.plot(s, annual.revenue / 1e6, color=orange, ls="--", lw=1.0, label="Upstream 
 ax.axhline(0, color=muted, lw=0.6)
 ax.set_xlabel("Share $s$ of the storage value passed to HTF")
 ax.set_ylabel("Annual change vs.\nmeasured 2024 [MDKK]")
-ax.legend(loc="upper left", bbox_to_anchor=(0, 1.02))
+ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=2)
 ax.set_title("(a) Welfare and its distribution", loc="left")
 
 ax = axes[1]
 ax.plot(s, annual.discharge / 3300, color=aqua, marker="o", ms=4, lw=1.4)
 ax.set_xlabel("Share $s$")
 ax.set_ylabel("Equivalent full cycles [-]", color=ink)
-ax.set_ylim(0, None)
+ax.set_ylim(0, 22)
 ax.set_title("(b) PTES use", loc="left")
 for a in axes:
     a.grid(axis="y", color=grid, lw=0.6)
