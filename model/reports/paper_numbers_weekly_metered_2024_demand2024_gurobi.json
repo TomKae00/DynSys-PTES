@@ -1,0 +1,117 @@
+{
+  "weeks": 52,
+  "coordination_value_mdkk": 5.180112265452255,
+  "max_reconciliation_residual_dkk": 6.984919309616089e-10,
+  "discharge_gwh": {
+    "coordinated": 70.10800735998518,
+    "measured": 29.78409380107501
+  },
+  "hp_heat_gwh": {
+    "coordinated": 10.10564741348123,
+    "measured": 17.063795,
+    "hourly": 17.04043
+  },
+  "tariffs": {
+    "constant_5": {
+      "system_saving_mdkk": 3.702553641564212,
+      "htf_saving_mdkk": 0.29969257947347633,
+      "upstream_gain_mdkk": 3.402861062090736,
+      "heat_revenue_change_mdkk": -0.3279447180851564,
+      "discharge_gwh": 65.77822664903165,
+      "cycles": 19.932795954252015,
+      "weeks_both_win": 47,
+      "recovered_share": 0.7147632043146378,
+      "solver_gap_mdkk": 3.91155481338501e-13
+    },
+    "hourly_5_g025": {
+      "system_saving_mdkk": 4.212859255103937,
+      "htf_saving_mdkk": 0.5003225051616431,
+      "upstream_gain_mdkk": 3.7125367499422954,
+      "heat_revenue_change_mdkk": -0.5527448102402354,
+      "discharge_gwh": 68.29429090046177,
+      "cycles": 20.695239666806597,
+      "weeks_both_win": 49,
+      "recovered_share": 0.813275666475566,
+      "solver_gap_mdkk": 0.0005518392439652234
+    },
+    "monthly_response": {
+      "system_saving_mdkk": 0.9170184916152772,
+      "htf_saving_mdkk": 0.08695545465200342,
+      "upstream_gain_mdkk": 0.8300630369632734,
+      "heat_revenue_change_mdkk": -2.328306436538696e-16,
+      "discharge_gwh": 11.628315429780589,
+      "cycles": 3.52373194841836,
+      "weeks_both_win": 36,
+      "recovered_share": 0.17702676015945684,
+      "solver_gap_mdkk": 0.009604519335649441
+    },
+    "reference": {
+      "system_saving_mdkk": 0.0,
+      "htf_saving_mdkk": 0.0,
+      "upstream_gain_mdkk": 0.0,
+      "heat_revenue_change_mdkk": 0.0,
+      "discharge_gwh": 29.784093801075016,
+      "cycles": 9.025482970022733,
+      "weeks_both_win": 52,
+      "recovered_share": 0.0,
+      "solver_gap_mdkk": 5.215406417846679e-13
+    },
+    "share_025": {
+      "system_saving_mdkk": 3.441073034986852,
+      "htf_saving_mdkk": 0.48844491221602837,
+      "upstream_gain_mdkk": 2.9526281227708253,
+      "heat_revenue_change_mdkk": -0.478198088993809,
+      "discharge_gwh": 44.8625826123455,
+      "cycles": 13.59472200374106,
+      "weeks_both_win": 49,
+      "recovered_share": 0.6642854167343852,
+      "solver_gap_mdkk": 0.017504596812520642
+    },
+    "share_05": {
+      "system_saving_mdkk": 3.767975755780226,
+      "htf_saving_mdkk": 0.9868529469641536,
+      "upstream_gain_mdkk": 2.78112280881607,
+      "heat_revenue_change_mdkk": -0.9924777607263054,
+      "discharge_gwh": 54.42091569700141,
+      "cycles": 16.491186574848914,
+      "weeks_both_win": 48,
+      "recovered_share": 0.7273926823767898,
+      "solver_gap_mdkk": 0.02228455069417879
+    },
+    "share_10": {
+      "system_saving_mdkk": 4.210010525822008,
+      "htf_saving_mdkk": 2.0243142887899856,
+      "upstream_gain_mdkk": 2.1856962370320234,
+      "heat_revenue_change_mdkk": -2.04905013709445,
+      "discharge_gwh": 67.18561930255682,
+      "cycles": 20.35927857653237,
+      "weeks_both_win": 43,
+      "recovered_share": 0.8127257306564278,
+      "solver_gap_mdkk": 0.0012063589121811091
+    }
+  },
+  "validation_twh": {
+    "CHP": [
+      5.770584116924874,
+      5.69417344712398
+    ],
+    "Waste incineration": [
+      2.5048229104101183,
+      2.508272309594495
+    ],
+    "Peak boilers": [
+      0.41625669298350493,
+      0.4953742441063741
+    ],
+    "Electric boilers and heat pumps": [
+      0.17649221465706513,
+      0.11348401747586043
+    ],
+    "Other (surplus heat, biogas, solar)": [
+      0.0,
+      0.11462337811416734
+    ]
+  },
+  "validation_hours": 8736,
+  "validation_chp_hourly_correlation": 0.9216765906839339
+}
