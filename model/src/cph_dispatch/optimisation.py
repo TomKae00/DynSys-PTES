@@ -526,16 +526,14 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
         ).assign_coords(snapshot=n.snapshots[1:])
         m.add_constraints(change <= ptes["ramp_mw_h"], name="ptes_" + label + "_ramp_up")
         m.add_constraints(change >= -ptes["ramp_mw_h"], name="ptes_" + label + "_ramp_down")
+        # Across a horizon boundary only ramping up is limited: a new horizon may stop
+        # the store at once, since the previous plan could not see whether continuing
+        # is feasible (e.g. a full store still charging in its last hour).
         previous = float(ptes.get("initial_" + label + "_mw", 0.0))
         m.add_constraints(
             flow.isel(snapshot=0) <= previous + ptes["ramp_mw_h"],
             name="ptes_" + label + "_initial_ramp_up",
         )
-        if previous > ptes["ramp_mw_h"]:
-            m.add_constraints(
-                flow.isel(snapshot=0) >= previous - ptes["ramp_mw_h"],
-                name="ptes_" + label + "_initial_ramp_down",
-            )
     if not replay:
         m.add_constraints(yc + yd <= 1, name="ptes_exclusive")
     for lag in range(1, 0 if replay else min(ptes["reversal_hours"] + 1, len(snapshots))):

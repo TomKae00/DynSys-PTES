@@ -17,8 +17,8 @@ def test_carried_state_constrains_the_first_hours(config, plants):
     )
     d = solve(build(frame, config, plants)).dispatch
     ramp = config["ptes"]["ramp_mw_h"]
-    # Ramp relative to the flow before the horizon, and no charging during the lock-out.
-    assert d.ptes_discharge_mw.iloc[0] >= 29.0 - ramp - 1e-6
+    # Ramp-up relative to the flow before the horizon, no charging during the lock-out.
+    assert d.ptes_discharge_mw.iloc[0] <= 29.0 + ramp + 1e-6
     assert (d.ptes_charge_mw.iloc[: config["ptes"]["reversal_hours"]] <= 1e-6).all()
     assert (d.ptes_discharge_mw.diff().abs().iloc[1:] <= ramp + 1e-6).all()
 
@@ -94,3 +94,15 @@ def test_rolling_cases_are_consistent(config, plants):
     )
     bill = hourly_htf_bill(results["hourly"], config)
     np.testing.assert_allclose(bill.htf_bill_dkk, results["hourly"].htf_bill_dkk)
+
+
+def test_full_store_still_charging_can_stop(config, plants):
+    frame = demo(24)
+    config["ptes"].update(
+        initial_mwh=config["ptes"]["energy_mwh"],
+        terminal_value_dkk_mwh=0.0,
+        initial_charge_mw=30.0,
+        previous_charge_on=[1.0, 1.0],
+    )
+    d = solve(build(frame, config, plants)).dispatch
+    assert d.ptes_charge_mw.iloc[0] <= 1e-6
