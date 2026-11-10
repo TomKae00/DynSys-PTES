@@ -1,6 +1,6 @@
 # Daily rolling planning over 2024 with a 24-hour look-ahead, as the PTES was planned
 # for most of 2024. Compares the modelled no-credit operation with the measured one.
-period: {start: '2024-01-01T00:00:00Z', hours: 8784}
+period: {start: '2024-01-01T00:00:00Z', hours: 8783}  # overlap of inputs (Danish calendar year) and metered data (UTC year)
 rolling: {horizon_hours: 24, step_hours: 24, terminal: mean_value}
 overrides: {reference: metered_2024}
 tariffs:

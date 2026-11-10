@@ -3,7 +3,7 @@
 # day is implemented. Heat left in the PTES at the end of the look-ahead is valued at
 # the previous plan's mean delivered-heat value. Planning uses actual 2024 data
 # (perfect foresight within each window) until forecasts are available.
-period: {start: '2024-01-01T00:00:00Z', hours: 8784}
+period: {start: '2024-01-01T00:00:00Z', hours: 8783}  # overlap of inputs (Danish calendar year) and metered data (UTC year)
 rolling: {horizon_hours: 168, step_hours: 24, terminal: mean_value}
 overrides: {reference: metered_2024}
 tariffs:
