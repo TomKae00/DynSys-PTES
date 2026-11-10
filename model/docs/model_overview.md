@@ -137,3 +137,20 @@ cph-dispatch rolling --solver gurobi --study-spec config/paper_rolling_2024.yaml
 Outputs: `rolling.csv` (annual totals and stakeholder effects relative to the reference),
 `<case>/dispatch.csv` (implemented hours with hourly system cost and HTF bill) and
 `<case>/plans.csv` (daily plan diagnostics).
+
+
+## Weather-adjusted HTF demand (`cph-dispatch demand`)
+
+The inherited 2019 HTF profile is transferred to the model year: daily mean demand is
+fitted as base load plus heating degrees below a fitted heating limit (2019 ERA5-Land
+temperatures), applied to the model-year temperatures, given the 2019 hourly shape of
+the same month and day type, and scaled to a known annual total (default 377,274 MWh,
+heat supplied to HTF's network in 2024).
+
+```sh
+cph-dispatch demand --era5-files <era5_land_t2m_2019_*.nc> \
+  --local-profiles data/processed/profiles_2024/local_profiles.csv \
+  --output data/processed/htf_demand_2024
+# then add to study or rolling runs:
+#   --htf-demand data/processed/htf_demand_2024/htf_demand.csv
+```

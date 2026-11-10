@@ -105,6 +105,7 @@ def _run(argv=None):
             "compare",
             "study",
             "rolling",
+            "demand",
             "report",
         ],
     )
@@ -163,10 +164,19 @@ def _run(argv=None):
     parser.add_argument(
         "--metered", type=Path, help="Hourly metered PTES CSV from the 'metered' command"
     )
+    parser.add_argument(
+        "--htf-demand", type=Path, help="Hourly UTC HTF demand CSV from the 'demand' command"
+    )
+    parser.add_argument(
+        "--total-mwh", type=float, default=377274.0, help="Annual HTF demand target for 'demand'"
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args(argv)
     logging.getLogger("pypsa").setLevel(logging.INFO if args.verbose else logging.WARNING)
     logging.getLogger("linopy").setLevel(logging.INFO if args.verbose else logging.WARNING)
+    if args.command == "demand":
+        _demand(args)
+        return
     if args.command == "profiles":
         sources = args.era5_files or ([args.ambient_csv] if args.ambient_csv else [])
         if not sources:
@@ -325,6 +335,13 @@ def _run(argv=None):
         profile_provenance = args.local_profiles.with_name("provenance.json")
         if profile_provenance.exists():
             provenance["local_profile_generation"] = json.loads(profile_provenance.read_text())
+    if args.htf_demand is not None:
+        demand = pd.read_csv(args.htf_demand, index_col=0).htf_demand_mw
+        demand.index = pd.to_datetime(demand.index, utc=True)
+        if not frame.index.isin(demand.index).all():
+            raise ValueError("HTF demand file does not cover the input horizon")
+        frame["htf_demand_mw"] = demand.reindex(frame.index)
+        provenance["htf_demand_sha256"] = hashlib.sha256(args.htf_demand.read_bytes()).hexdigest()
     if args.metered is not None:
         metered = pd.read_csv(args.metered, index_col=0)
         metered.index = pd.to_datetime(metered.index, utc=True)
@@ -506,3 +523,30 @@ def _rolling(args, frame, config, plants, output, provenance):
             output.rmdir()
         staging.rename(output)
     print(table.to_string(index=False))
+
+
+def _demand(args):
+    """Weather-adjusted HTF demand for the model year from the inherited 2019 profile."""
+    from .demand import transfer
+
+    if not args.era5_files or args.local_profiles is None:
+        raise ValueError("Demand needs --era5-files (source year) and --local-profiles (model year)")
+    path = args.root / "data/legacy/htf_demand_2019.csv"
+    source = pd.read_csv(path, index_col=0).demand_mw
+    source_temperature = read_era5(args.era5_files)
+    target = pd.read_csv(args.local_profiles, index_col=0).ambient_temperature_c
+    target.index = pd.to_datetime(target.index, utc=True)
+    demand, report = transfer(
+        source, source_temperature, target, year_index(args.year), total_mwh=args.total_mwh
+    )
+    output = args.output or args.root / f"data/processed/htf_demand_{args.year}"
+    output.mkdir(parents=True, exist_ok=True)
+    if any(output.iterdir()):
+        raise ValueError("Demand output must be empty")
+    demand.to_csv(output / "htf_demand.csv", index_label="timestamp")
+    report["sources"] = {
+        str(p.resolve()): hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in [path, args.local_profiles, *args.era5_files]
+    }
+    (output / "provenance.json").write_text(json.dumps(report, indent=2))
+    print(json.dumps({k: v for k, v in report.items() if k != "sources"}, indent=2))
