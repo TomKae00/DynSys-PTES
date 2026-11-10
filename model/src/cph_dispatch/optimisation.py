@@ -190,14 +190,20 @@ def build(frame, config, plants, *, fixed_local=None):
     tariff = d.reference_tariff_dkk_mwh
     discount = d.get("discharge_discount_dkk_mwh", config["discharge_discount_dkk_mwh"])
     hx = config["hx"]
+    # Direct supply must be able to cover HTF's peak on its own, so that the PTES is
+    # not used merely to cover peaks; it stands for HX plus local peak capacity.
+    hx_capacity = hx["capacity_mw"]
+    if hx.get("cover_peak", True):
+        hx_capacity = max(hx_capacity, float(d.htf_demand_mw.max()) + hx["minimum_mw"])
+    n._cph_hx_capacity = hx_capacity
     n.add(
         "Link",
         "hx",
         bus0="heat_cph",
         bus1="heat_htf",
         efficiency=delivery,
-        p_nom=hx["capacity_mw"] / delivery,
-        p_min_pu=hx["minimum_mw"] / hx["capacity_mw"],
+        p_nom=hx_capacity / delivery,
+        p_min_pu=hx["minimum_mw"] / hx_capacity,
         marginal_cost=0 if system else tariff,
         carrier="heat",
     )
@@ -307,7 +313,7 @@ def build(frame, config, plants, *, fixed_local=None):
             "Generator",
             "external_heat",
             bus="heat_cph",
-            p_nom=2 * hx["capacity_mw"] + ptes["power_mw"],
+            p_nom=2 * hx_capacity + ptes["power_mw"],
             marginal_cost=0.0,
             carrier="heat",
         )

@@ -36,6 +36,9 @@ ptes:
 hx:
   capacity_mw: 100  # HX station towards HTF (direct supply only; charging is a separate branch)
   minimum_mw: 0.5
+  # Raise the HX capacity to HTF's peak demand where needed, so that the PTES is never
+  # discharged only to cover a peak (stands for HX plus local peak capacity).
+  cover_peak: true
 heat_pumps:
   policy: endogenous  # set must_run for the stakeholder operating-policy sensitivity
   city2:

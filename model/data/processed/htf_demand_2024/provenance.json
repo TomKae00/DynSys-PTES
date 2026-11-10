@@ -1,0 +1,28 @@
+{
+  "base_mw": 13.821752666581265,
+  "slope_mw_per_k": 3.842709768686652,
+  "heating_limit_c": 16.25,
+  "r2": 0.7547489251991081,
+  "days": 365,
+  "source_total_mwh": 347986.9657379041,
+  "weather_adjusted_total_mwh": 344284.9595862611,
+  "target_total_mwh": 377274.0,
+  "scale_factor": 1.0958189996257257,
+  "sources": {
+    "/home/claude/repos/DynSys-PTES/model/data/legacy/htf_demand_2019.csv": "c9c503184d33d15b18fbe013520ac0c11c6e5c420113a8b7a6ecf1152ac02166",
+    "/home/claude/repos/DynSys-PTES/model/data/processed/profiles_2024/local_profiles.csv": "68fcff6843f6ecdaf742d6952e3b798bb03afce77dff7d3398f0310aa3a8acd3",
+    "/home/claude/work/era5_2019/era5_land_t2m_2018_12_31.nc": "093c9ab878facb8f1c46ec11ae6f6fce0f4d2cbf7a17d850722d579a08b09b5a",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_01.nc": "a95c5a9617f68422b587119f77926236d8a6bdbd1e2a4cd2bc2dd4d032a65d54",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_02.nc": "c52f264eed2ec3585f3245a032c8aae1ca71dbd48862a267ac00e5293ae6fa25",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_03.nc": "35a5ed0bb2f6887119ac2797919bda1b4898c7fa53e9a801f49bb75cd126de81",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_04.nc": "96fb47e57202394b817e1ba6ae2435b19d80c61764775957a4be2ecbc828e023",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_05.nc": "90639948b91a0334f8c035c40c51a969f733367ca5bb64a05d6242950f105ab9",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_06.nc": "f77d5eeb9b4cbd780e5f2afbf28132d9a9c88a6f27fef2d371b251d8121d267c",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_07.nc": "66879d9263aa289dfaec7f26b553ba6739dcdc18420bcc1418aea2387f7b3040",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_08.nc": "3a6bd830fd0c2e56fafe73558b3d61af5cbd0e67b63a1c972c89cfcb191768b1",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_09.nc": "391cff4f83e925635d6cb2d94212860188b7e60727a124f5f8d9eb54b94cc6a5",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_10.nc": "c04278877db7f31a82b07868145b4bc552eff893f12aa0b6e0a5e3a2252075d6",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_11.nc": "7b0796730ea21c626b3d9d39dd93a3565af9700eb1443d81e11e27a1b40d0577",
+    "/home/claude/work/era5_2019/era5_land_t2m_2019_12.nc": "7b00630d59f1b17cf9788b0845d50a2eb6c09098d1d6ca1f350d165c92202ad5"
+  }
+}
