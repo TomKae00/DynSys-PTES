@@ -192,7 +192,11 @@ def summarise(n, d):
             )
             contributions[component + ":" + name] = float((dispatch[name] * cost).sum())
     contributions["HP startup costs"] = starts
-    if not np.isclose(sum(contributions.values()), n.objective, rtol=1e-8, atol=1e-4):
+    # A valued terminal inventory enters the solver objective as a credit; operating
+    # cost excludes it.
+    terminal_credit = getattr(n, "_cph_terminal_value", 0.0) * float(d.ptes_energy_mwh.iloc[-1])
+    operating = float(n.objective) + terminal_credit
+    if not np.isclose(sum(contributions.values()), operating, rtol=1e-8, atol=1e-4):
         raise RuntimeError("Independent component accounting does not match the PyPSA objective")
     summary = {
         "framework": "PyPSA",
@@ -202,7 +206,8 @@ def summarise(n, d):
             if cfg["objective"] == "system"
             else "HTF expenditure, including heat transfers"
         ),
-        "objective_dkk": float(n.objective),
+        "objective_dkk": operating,
+        "terminal_value_credit_dkk": terminal_credit,
         "hours": len(d),
         "variables": int(n.model.nvars),
         "constraints": int(n.model.ncons),
@@ -287,11 +292,11 @@ def summarise(n, d):
             ),
             "electricity_sales_credit": -float((power * d.electricity_dkk_mwh).sum()),
         }
-        if not np.isclose(sum(breakdown.values()), n.objective, rtol=1e-8, atol=1e-4):
+        if not np.isclose(sum(breakdown.values()), operating, rtol=1e-8, atol=1e-4):
             raise RuntimeError("Independent economic accounting does not match the PyPSA objective")
         summary["operating_cost_breakdown_dkk"] = breakdown
         summary["aggregate_upstream_operating_cost_dkk"] = (
-            float(n.objective) - local_electricity - starts
+            operating - local_electricity - starts
         )
         summary["max_upstream_heat_balance_residual_mw"] = float(
             d.upstream_heat_balance_residual_mw.abs().max()
@@ -314,3 +319,63 @@ def summarise(n, d):
             "Upstream CHP commitment and accumulator modes remain continuous"
         )
     return summary
+
+
+def hourly_system_cost(d, cfg, plants):
+    """Hourly system operating cost with the same components as the summary breakdown."""
+    hp, up = cfg["heat_pumps"], cfg["upstream"]
+    fuel = sum(d[p.name + "_fuel_mw"] * p.fuel_dkk_mwh for p in plants.itertuples())
+    fuel = fuel + sum(
+        d[f + "_boiler_heat_mw"] / up[f + "_efficiency"] * up[f + "_dkk_mwh_fuel"]
+        for f in ["gas", "oil", "bio"]
+    )
+    variable = sum(d[p.name + "_heat_mw"] * p.vom_dkk_mwh_heat for p in plants.itertuples())
+    variable = variable + sum(
+        d[f + "_boiler_heat_mw"] * up["boiler_vom_dkk_mwh"]
+        for f in ["gas", "oil", "bio", "electric"]
+    )
+    variable = variable + d.waste_heat_mw * up["waste_vom_dkk_mwh_heat"]
+    upstream_el = (
+        d.electric_boiler_heat_mw / up["electric_efficiency"]
+        + d.regional_hp_heat_mw / up["heat_pump_cop"]
+    )
+    local_el = d.local_hp_electricity_mw + d.ptes_pump_electricity_mw
+    power = sum(d[p + "_power_mw"] for p in plants.name) + d.waste_heat_mw * up[
+        "waste_power_heat_ratio"
+    ]
+    starts = sum(
+        d[name + "_start"] * hp[name]["capacity_mw"] * hp["startup_dkk_per_mw"]
+        for name in ["city2", "groundwater"]
+        if name + "_start" in d
+    )
+    return (
+        fuel
+        + variable
+        + (upstream_el + local_el) * d.electricity_dkk_mwh
+        + upstream_el * up["electricity_adder_dkk_mwh"]
+        + local_el * hp["electricity_adder_dkk_mwh"]
+        - power * d.electricity_dkk_mwh
+        + starts
+    )
+
+
+def hourly_htf_bill(d, cfg):
+    """Hourly HTF expenditure under the discharge-service settlement."""
+    hp = cfg["heat_pumps"]
+    discount = d.get("discharge_discount_dkk_mwh", 0.0)
+    heat = (d.hx_mw + d.ptes_discharge_mw) * d.reference_tariff_dkk_mwh
+    credit = d.ptes_discharge_mw * discount
+    electricity = (
+        d.local_hp_electricity_mw + d.ptes_discharge_mw * cfg["ptes"]["pump_mwh_el_per_mwh_heat"]
+    ) * (d.electricity_dkk_mwh + hp["electricity_adder_dkk_mwh"])
+    starts = sum(
+        d[name + "_start"] * hp[name]["capacity_mw"] * hp["startup_dkk_per_mw"]
+        for name in ["city2", "groundwater"]
+        if name + "_start" in d
+    )
+    return pd.DataFrame(
+        {
+            "htf_bill_dkk": heat - credit + electricity + starts,
+            "supplier_heat_revenue_dkk": heat - credit,
+        }
+    )

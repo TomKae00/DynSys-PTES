@@ -1,0 +1,7 @@
+# Daily rolling planning over 2024 with a 24-hour look-ahead, as the PTES was planned
+# for most of 2024. Compares the modelled no-credit operation with the measured one.
+period: {start: '2024-01-01T00:00:00Z', hours: 8784}
+rolling: {horizon_hours: 24, step_hours: 24, terminal: mean_value}
+overrides: {reference: metered_2024}
+tariffs:
+  - {name: hourly_5_g025, family: bounded_mean_matched_value, level: 5, scale: 0.25, lower: 0, upper: 10}

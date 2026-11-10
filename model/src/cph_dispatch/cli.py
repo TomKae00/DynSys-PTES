@@ -96,7 +96,17 @@ def _run(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "command",
-        choices=["prepare", "profiles", "metered", "solve", "demo", "compare", "study", "report"],
+        choices=[
+            "prepare",
+            "profiles",
+            "metered",
+            "solve",
+            "demo",
+            "compare",
+            "study",
+            "rolling",
+            "report",
+        ],
     )
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--config", type=Path)
@@ -330,6 +340,11 @@ def _run(argv=None):
     output = args.output or args.root / "results" / args.command
     if output.exists() and any(output.iterdir()):
         raise ValueError("Output directory already contains results; choose an empty directory")
+    if args.command == "rolling":
+        if args.study_spec is None:
+            raise ValueError("Rolling requires --study-spec")
+        _rolling(args, frame, config, plants, output, provenance)
+        return
     if args.command == "study":
         if args.study_spec is None:
             raise ValueError("Study requires --study-spec")
@@ -435,3 +450,59 @@ def main(argv=None):
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def _rolling(args, frame, config, plants, output, provenance):
+    """Daily rolling-horizon study: reference, coordinated schedule and tariff cases."""
+    from .rolling import COORDINATED, REFERENCE, run_case, summarise
+    from .study import update_config
+
+    spec = yaml.safe_load(args.study_spec.read_text())
+    provenance["study_spec_sha256"] = hashlib.sha256(args.study_spec.read_bytes()).hexdigest()
+    start = pd.Timestamp(spec["period"]["start"])
+    if start.tzinfo is None:
+        raise ValueError("Rolling period start must include a timezone")
+    snapshots = pd.date_range(start.tz_convert("UTC"), periods=int(spec["period"]["hours"]), freq="h")
+    if not snapshots.isin(frame.index).all():
+        raise ValueError("Rolling period is outside the complete input horizon")
+    inputs = frame.loc[snapshots].copy()
+    settings = update_config(config, spec.get("overrides", {}))
+    rolling = spec.get("rolling", {})
+    cases = [(REFERENCE, None), (COORDINATED, None)] + [(t["name"], t) for t in spec["tariffs"]]
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    def progress(case, timestamp):
+        if timestamp.dayofweek == 0 and timestamp.hour == 0:
+            print(json.dumps({"case": case, "day": str(timestamp.date())}), flush=True)
+
+    results = {}
+    with TemporaryDirectory(prefix=".rolling-", dir=output.parent) as temporary:
+        staging = Path(temporary)
+        for name, tariff in cases:
+            realized, plans = run_case(
+                inputs, settings, plants, name, rolling=rolling, spec=tariff, progress=progress
+            )
+            folder = staging / name
+            folder.mkdir()
+            realized.to_csv(folder / "dispatch.csv", index_label="timestamp")
+            if not plans.empty:
+                plans.to_csv(folder / "plans.csv", index=False)
+            results[name] = realized
+        table = summarise(results, settings)
+        table.to_csv(staging / "rolling.csv", index=False)
+        (staging / "rolling.json").write_text(
+            json.dumps(
+                {
+                    "specification": spec,
+                    "coordination_value_dkk": table.attrs["coordination_value_dkk"],
+                    "terminal_value_dkk_mwh": table.attrs["terminal_value_dkk_mwh"],
+                    "provenance": provenance,
+                },
+                indent=2,
+                default=str,
+            )
+        )
+        if output.exists():
+            output.rmdir()
+        staging.rename(output)
+    print(table.to_string(index=False))

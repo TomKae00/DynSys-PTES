@@ -272,12 +272,16 @@ def build(frame, config, plants, *, fixed_local=None):
         committed = hp.get("policy", "endogenous") == "endogenous"
         if hp.get("policy", "endogenous") not in ("endogenous", "must_run"):
             raise ValueError("Heat pump policy must be endogenous or must_run")
+        # A rolling horizon carries the previous status and hours in that status;
+        # by default each horizon starts with the unit off and free to start.
+        initially_on = bool(spec.get("initial_on", False))
+        hours_in_state = int(spec.get("hours_in_state", hp["minimum_down_hours"]))
         commitment = (
             {
                 "min_up_time": hp["minimum_up_hours"],
                 "min_down_time": hp["minimum_down_hours"],
-                "up_time_before": 0,
-                "down_time_before": hp["minimum_down_hours"],
+                "up_time_before": hours_in_state if initially_on else 0,
+                "down_time_before": 0 if initially_on else hours_in_state,
                 "start_up_cost": spec["capacity_mw"] * hp["startup_dkk_per_mw"],
             }
             if committed
@@ -456,7 +460,7 @@ def build(frame, config, plants, *, fixed_local=None):
         carrier="heat",
     )
     for name, spec in up["accumulators"].items():
-        _storage(n, name, spec, "heat_cph", initial=spec["energy_mwh"] / 2)
+        _storage(n, name, spec, "heat_cph", initial=spec.get("initial_mwh", spec["energy_mwh"] / 2))
     if "efficiency2" in n.links:
         n.links["efficiency2"] = n.links.efficiency2.fillna(0.0)
     return n
@@ -509,15 +513,23 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
         maximum = ptes.get(label + "_power_mw", ptes["power_mw"])
         m.add_constraints(flow <= maximum * status, name="ptes_" + label + "_maximum")
         m.add_constraints(flow >= minimum * status, name="ptes_" + label + "_minimum")
+        # Ramp limits between consecutive hours of the horizon; the first hour is
+        # limited relative to the flow before the horizon (zero unless carried).
+        change = flow.isel(snapshot=slice(1, None)) - flow.isel(
+            snapshot=slice(None, -1)
+        ).assign_coords(snapshot=n.snapshots[1:])
+        m.add_constraints(change <= ptes["ramp_mw_h"], name="ptes_" + label + "_ramp_up")
+        m.add_constraints(change >= -ptes["ramp_mw_h"], name="ptes_" + label + "_ramp_down")
+        previous = float(ptes.get("initial_" + label + "_mw", 0.0))
         m.add_constraints(
-            flow.diff("snapshot") <= ptes["ramp_mw_h"], name="ptes_" + label + "_ramp_up"
+            flow.isel(snapshot=0) <= previous + ptes["ramp_mw_h"],
+            name="ptes_" + label + "_initial_ramp_up",
         )
-        m.add_constraints(
-            flow.diff("snapshot") >= -ptes["ramp_mw_h"], name="ptes_" + label + "_ramp_down"
-        )
-        m.add_constraints(
-            flow.isel(snapshot=0) <= ptes["ramp_mw_h"], name="ptes_" + label + "_initial_idle"
-        )
+        if previous > ptes["ramp_mw_h"]:
+            m.add_constraints(
+                flow.isel(snapshot=0) >= previous - ptes["ramp_mw_h"],
+                name="ptes_" + label + "_initial_ramp_down",
+            )
     if not replay:
         m.add_constraints(yc + yd <= 1, name="ptes_exclusive")
     for lag in range(1, 0 if replay else min(ptes["reversal_hours"] + 1, len(snapshots))):
@@ -527,18 +539,45 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
                 a.isel(snapshot=slice(None, -lag)) + future <= 1,
                 name=f"ptes_no_reversal_{name}_{lag}",
             )
+    if not replay:
+        # Modes of the hours before the horizon (most recent last), carried by a
+        # rolling horizon, extend the lock-out across the horizon boundary.
+        reversal = ptes["reversal_hours"]
+        for label, own, history in [
+            ("charge", yc, ptes.get("previous_discharge_on", [])),
+            ("discharge", yd, ptes.get("previous_charge_on", [])),
+        ]:
+            history = list(history)[-reversal:]
+            for back, active in enumerate(reversed(history), start=1):
+                blocked = reversal - back + 1
+                if active > 0.5 and blocked > 0:
+                    m.add_constraints(
+                        own.isel(snapshot=slice(0, min(blocked, len(snapshots)))) == 0,
+                        name=f"ptes_boundary_{label}_lock_{back}",
+                    )
     # The HX capacity limits direct supply to HTF only (link p_nom). PTES charging is a
     # separate branch from the VEKS transmission line, limited by its own power rating.
+    n._cph_terminal_value = 0.0
     if not replay:
-        m.add_constraints(
-            m["Store-e"].sel(name="ptes").isel(snapshot=-1) == ptes["terminal_mwh"],
-            name="ptes_terminal",
-        )
+        final = m["Store-e"].sel(name="ptes").isel(snapshot=-1)
+        value = ptes.get("terminal_value_dkk_mwh")
+        if value is None:
+            m.add_constraints(final == ptes["terminal_mwh"], name="ptes_terminal")
+        else:
+            # Rolling planning: heat left at the horizon end is valued instead of fixed.
+            n._cph_terminal_value = float(value)
+            m.add_objective(m.objective.expression - float(value) * final, overwrite=True)
     if cfg["heat_pumps"].get("policy", "endogenous") == "endogenous":
         on, start, stop = [m[k] for k in ["Link-status", "Link-start_up", "Link-shut_down"]]
+        names = on.coords["name"].values
+        before = xr.DataArray(
+            [float(cfg["heat_pumps"][str(k)].get("initial_on", False)) for k in names],
+            coords={"name": names},
+            dims="name",
+        )
         m.add_constraints(
-            on.isel(snapshot=0) - start.isel(snapshot=0) + stop.isel(snapshot=0) == 0,
-            name="hp_initial_off_transition",
+            on.isel(snapshot=0) - start.isel(snapshot=0) + stop.isel(snapshot=0) == before,
+            name="hp_initial_transition",
         )
         current = n.snapshots[1:]
         previous = on.isel(snapshot=slice(None, -1)).assign_coords(snapshot=current)

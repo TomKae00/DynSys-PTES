@@ -112,3 +112,28 @@ cph-dispatch study --solver highs --study-spec config/paper_weekly_2024.yaml \
 ```
 
 One 168 h week with three tariffs takes about 30–40 s with HiGHS.
+
+
+## Rolling planning (`cph-dispatch rolling`)
+
+The weekly study plans each week with perfect foresight. The rolling study imitates
+daily planning instead: every day the coordinated schedule is solved over the coming
+`horizon_hours` (168 by default) from the actual state, and only the first
+`step_hours` (24) are implemented. For tariff cases the credit is derived from that
+day's plan, HTF responds over the same window (ending at the planned PTES content), and
+the upstream system is re-dispatched around HTF's decisions. Each case keeps its own
+state: PTES content, last flows and modes (ramp and lock-out across days), accumulator
+content and heat-pump status. Heat left in the PTES at the end of the look-ahead is
+valued at the previous plan's mean delivered-heat value (`terminal: mean_value`), or
+fixed to the measured content (`terminal: measured`). The reference replays the
+metered flows through the same daily loop.
+
+```sh
+cph-dispatch rolling --solver gurobi --study-spec config/paper_rolling_2024.yaml \
+  --local-profiles data/processed/profiles_2024/local_profiles.csv \
+  --metered data/processed/ptes_metered_2024.csv --output results/runs/rolling_2024
+```
+
+Outputs: `rolling.csv` (annual totals and stakeholder effects relative to the reference),
+`<case>/dispatch.csv` (implemented hours with hourly system cost and HTF bill) and
+`<case>/plans.csv` (daily plan diagnostics).

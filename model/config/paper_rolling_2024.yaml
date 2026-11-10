@@ -1,0 +1,14 @@
+# Daily rolling planning over 2024 with a seven-day look-ahead (current practice).
+# Each day the coordinated schedule is planned from the actual state; only the first
+# day is implemented. Heat left in the PTES at the end of the look-ahead is valued at
+# the previous plan's mean delivered-heat value. Planning uses actual 2024 data
+# (perfect foresight within each window) until forecasts are available.
+period: {start: '2024-01-01T00:00:00Z', hours: 8784}
+rolling: {horizon_hours: 168, step_hours: 24, terminal: mean_value}
+overrides: {reference: metered_2024}
+tariffs:
+  - {name: constant_5, family: constant, level: 5}
+  - {name: hourly_5_g025, family: bounded_mean_matched_value, level: 5, scale: 0.25, lower: 0, upper: 10}
+  - {name: share_10, family: shared_value, scale: 1.0}
+  - {name: follow_0, family: constant, level: 0, follow_schedule: true}
+  - {name: follow_hourly, family: bounded_mean_matched_value, level: 5, scale: 0.25, lower: 0, upper: 10, follow_schedule: true}
