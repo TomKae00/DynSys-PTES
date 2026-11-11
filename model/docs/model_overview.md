@@ -134,6 +134,12 @@ cph-dispatch rolling --solver gurobi --study-spec config/paper_rolling_2024.yaml
   --metered data/processed/ptes_metered_2024.csv --output results/runs/rolling_2024
 ```
 
+Each case is saved as soon as it finishes; rerunning the same command with the same
+`--output` resumes and skips finished cases. If the upstream re-dispatch of a day cannot be
+solved, it is retried with HTF's decisions fixed within ±0.001 MW; if that also fails, the
+day implements the coordinated plan, which is logged (`fallback:` line, `plans.csv`) and
+counted (`fallback_days` in `rolling.csv`).
+
 Outputs: `rolling.csv` (annual totals and stakeholder effects relative to the reference),
 `<case>/dispatch.csv` (implemented hours with hourly system cost and HTF bill) and
 `<case>/plans.csv` (daily plan diagnostics).
