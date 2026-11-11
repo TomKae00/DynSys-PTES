@@ -153,16 +153,29 @@ def run_case(frame, config, plants, case, *, rolling, spec=None, progress=None):
                     np.clip(central.dispatch.ptes_energy_mwh.iloc[-1], 0, config["ptes"]["energy_mwh"])
                 )
                 local_cfg["ptes"]["terminal_value_dkk_mwh"] = None
-                _, realized = response(
-                    window,
-                    local_cfg,
-                    plants,
-                    central,
-                    pricing.discharge_discount_dkk_mwh,
-                    direct_tariff=pricing.reference_tariff_dkk_mwh,
-                    follow_schedule=bool(spec.get("follow_schedule", False)),
-                )
-                implemented = realized.dispatch
+                try:
+                    _, realized = response(
+                        window,
+                        local_cfg,
+                        plants,
+                        central,
+                        pricing.discharge_discount_dkk_mwh,
+                        direct_tariff=pricing.reference_tariff_dkk_mwh,
+                        follow_schedule=bool(spec.get("follow_schedule", False)),
+                    )
+                    implemented = realized.dispatch
+                except RuntimeError as error:
+                    # Rare numerical or boundary failures: implement the coordinated plan
+                    # for this day (HTF follows the schedule) and record it.
+                    implemented = central.dispatch.copy()
+                    implemented["discharge_discount_dkk_mwh"] = (
+                        pricing.discharge_discount_dkk_mwh.to_numpy()
+                    )
+                    plans[-1]["fallback"] = str(error)
+                    print(
+                        f"fallback: case {case}, day {window.index[0].date()}: {error}",
+                        flush=True,
+                    )
         day = implemented.iloc[: min(step, len(window))].copy()
         state = advance(state, day, config)
         days.append(day)
@@ -173,6 +186,7 @@ def run_case(frame, config, plants, case, *, rolling, spec=None, progress=None):
     realized["system_cost_dkk"] = hourly_system_cost(realized, config, plants)
     realized["htf_bill_dkk"] = costs.htf_bill_dkk
     realized["supplier_heat_revenue_dkk"] = costs.supplier_heat_revenue_dkk
+    realized.attrs["fallback_days"] = sum(1 for plan in plans if plan.get("fallback"))
     return realized, pd.DataFrame(plans)
 
 
@@ -217,6 +231,9 @@ def summarise(results, config):
                 "equivalent_cycles": float(d.ptes_discharge_mw.sum() / config["ptes"]["energy_mwh"]),
                 "ptes_end_mwh": float(d.ptes_energy_mwh.iloc[-1]),
                 "local_hp_heat_mwh": float((d.city2_heat_mw + d.groundwater_heat_mw).sum()),
+                "fallback_days": int(
+                    d.attrs.get("fallback_days", 0)
+                ),
                 "weeks": int(weekly_bill.size),
                 "weeks_both_gain": both,
             }

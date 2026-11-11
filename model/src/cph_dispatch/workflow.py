@@ -46,11 +46,35 @@ def response(frame, config, plants, central, credit, *, direct_tariff=None, foll
     local = solve(build(inputs, local_config, plants))
     system_config = deepcopy(config)
     system_config["objective"] = "system"
-    corrective = solve(build(inputs, system_config, plants, fixed_local=local.dispatch))
+    corrective, tolerance = _corrective(inputs, system_config, plants, local)
     for column in ["hx_mw", "ptes_discharge_mw", "city2_heat_mw", "groundwater_heat_mw"]:
-        if not np.allclose(local.dispatch[column], corrective.dispatch[column], atol=1e-5):
+        if not np.allclose(
+            local.dispatch[column], corrective.dispatch[column], atol=max(1e-5, 2 * tolerance)
+        ):
             raise RuntimeError("Corrective solve changed an actual local decision")
     return local, corrective
+
+
+RETRY_TOLERANCE_MW = 1e-3
+
+
+def _corrective(inputs, system_config, plants, local):
+    """Upstream re-dispatch with HTF's decisions fixed; one retry with a narrow band.
+
+    Fixing values from another solve exactly can sit on a solver tolerance limit and be
+    reported infeasible; the retry keeps them within RETRY_TOLERANCE_MW instead.
+    """
+    try:
+        return solve(build(inputs, system_config, plants, fixed_local=local.dispatch)), 0.0
+    except RuntimeError:
+        network = build(
+            inputs,
+            system_config,
+            plants,
+            fixed_local=local.dispatch,
+            fixed_tolerance=RETRY_TOLERANCE_MW,
+        )
+        return solve(network), RETRY_TOLERANCE_MW
 
 
 def historical(frame, config, plants):
@@ -72,7 +96,7 @@ def historical(frame, config, plants):
     local = solve(build(inputs, local_config, plants))
     system_config = deepcopy(replay)
     system_config["objective"] = "system"
-    corrective = solve(build(inputs, system_config, plants, fixed_local=local.dispatch))
+    corrective, _ = _corrective(inputs, system_config, plants, local)
     return local, corrective
 
 

@@ -106,3 +106,42 @@ def test_full_store_still_charging_can_stop(config, plants):
     )
     d = solve(build(frame, config, plants)).dispatch
     assert d.ptes_charge_mw.iloc[0] <= 1e-6
+
+
+def test_failed_day_falls_back_to_plan(config, plants, monkeypatch):
+    import cph_dispatch.rolling as rolling_module
+
+    frame = demo(48)
+    frame["measured_inventory_mwh"] = 1500.0
+    calls = {"n": 0}
+    original = rolling_module.response
+
+    def flaky(*args, **kwargs):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("No accepted solution: test")
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(rolling_module, "response", flaky)
+    spec = {"name": "c", "family": "constant", "level": 5}
+    d, plans = run_case(
+        frame, config, plants, "c", rolling={"horizon_hours": 48, "step_hours": 24}, spec=spec
+    )
+    assert len(d) == 48 and d.attrs["fallback_days"] == 1
+    assert plans.fallback.notna().sum() == 1
+    assert (d.discharge_discount_dkk_mwh.iloc[:24] == 5).all()
+
+
+def test_corrective_retry_band_keeps_local_decisions(config, plants):
+    from cph_dispatch.workflow import coordinated, response
+
+    frame = demo(24)
+    central = coordinated(frame, config, plants, prices=True)
+    local, corrective = response(frame, config, plants, central, 5.0)
+    system = dict(config, objective="system")
+    banded = solve(build(frame.assign(scheduled_ptes_charge_mw=central.dispatch.ptes_charge_mw,
+                                      scheduled_ptes_discharge_mw=central.dispatch.ptes_discharge_mw,
+                                      discharge_discount_dkk_mwh=5.0),
+                         system, plants, fixed_local=local.dispatch, fixed_tolerance=1e-3))
+    np.testing.assert_allclose(banded.dispatch.hx_mw, local.dispatch.hx_mw, atol=2e-3)
+    assert abs(banded.summary["objective_dkk"] - corrective.summary["objective_dkk"]) < 50

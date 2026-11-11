@@ -355,7 +355,7 @@ def _run(argv=None):
     path = args.root / "config/plants.csv"
     plants = pd.read_csv(path)
     output = args.output or args.root / "results" / args.command
-    if output.exists() and any(output.iterdir()):
+    if args.command != "rolling" and output.exists() and any(output.iterdir()):
         raise ValueError("Output directory already contains results; choose an empty directory")
     if args.command == "rolling":
         if args.study_spec is None:
@@ -492,36 +492,47 @@ def _rolling(args, frame, config, plants, output, provenance):
         if timestamp.dayofweek == 0 and timestamp.hour == 0:
             print(json.dumps({"case": case, "day": str(timestamp.date())}), flush=True)
 
+    # Each finished case is written at once; a rerun with the same output folder
+    # resumes and skips cases whose dispatch already exists.
+    output.mkdir(parents=True, exist_ok=True)
+    if (output / "rolling.csv").exists():
+        raise ValueError("Output directory already contains a finished rolling study")
     results = {}
-    with TemporaryDirectory(prefix=".rolling-", dir=output.parent) as temporary:
-        staging = Path(temporary)
-        for name, tariff in cases:
+    for name, tariff in cases:
+        folder = output / name
+        path = folder / "dispatch.csv"
+        if path.exists():
+            realized = pd.read_csv(path, index_col=0)
+            realized.index = pd.to_datetime(realized.index, utc=True)
+            if (folder / "plans.csv").exists():
+                plans = pd.read_csv(folder / "plans.csv")
+                if "fallback" in plans:
+                    realized.attrs["fallback_days"] = int(plans.fallback.notna().sum())
+            print(json.dumps({"case": name, "resumed": True}), flush=True)
+        else:
             realized, plans = run_case(
                 inputs, settings, plants, name, rolling=rolling, spec=tariff, progress=progress
             )
-            folder = staging / name
-            folder.mkdir()
-            realized.to_csv(folder / "dispatch.csv", index_label="timestamp")
+            folder.mkdir(exist_ok=True)
             if not plans.empty:
                 plans.to_csv(folder / "plans.csv", index=False)
-            results[name] = realized
-        table = summarise(results, settings)
-        table.to_csv(staging / "rolling.csv", index=False)
-        (staging / "rolling.json").write_text(
-            json.dumps(
-                {
-                    "specification": spec,
-                    "coordination_value_dkk": table.attrs["coordination_value_dkk"],
-                    "terminal_value_dkk_mwh": table.attrs["terminal_value_dkk_mwh"],
-                    "provenance": provenance,
-                },
-                indent=2,
-                default=str,
-            )
+            realized.to_csv(folder / ".dispatch.csv", index_label="timestamp")
+            (folder / ".dispatch.csv").rename(path)
+        results[name] = realized
+    table = summarise(results, settings)
+    table.to_csv(output / "rolling.csv", index=False)
+    (output / "rolling.json").write_text(
+        json.dumps(
+            {
+                "specification": spec,
+                "coordination_value_dkk": table.attrs["coordination_value_dkk"],
+                "terminal_value_dkk_mwh": table.attrs["terminal_value_dkk_mwh"],
+                "provenance": provenance,
+            },
+            indent=2,
+            default=str,
         )
-        if output.exists():
-            output.rmdir()
-        staging.rename(output)
+    )
     print(table.to_string(index=False))
 
 

@@ -132,7 +132,7 @@ def _storage(n, name, spec, heat_bus, *, initial):
     )
 
 
-def build(frame, config, plants, *, fixed_local=None):
+def build(frame, config, plants, *, fixed_local=None, fixed_tolerance=0.0):
     """Return a real PyPSA Network; its timezone-naive snapshots explicitly denote UTC."""
     config = deepcopy(config)
     validate_inputs(frame, config, plants)
@@ -140,6 +140,7 @@ def build(frame, config, plants, *, fixed_local=None):
     n.set_snapshots(frame.index.tz_convert("UTC").tz_localize(None).rename("snapshot"))
     n._cph_inputs, n._cph_config, n._cph_plants = frame.copy(), config, plants.copy()
     n._cph_fixed_local = fixed_local
+    n._cph_fixed_tolerance = float(fixed_tolerance)
     if fixed_local is not None:
         cols = ["hx_mw", "ptes_discharge_mw", "city2_heat_mw", "groundwater_heat_mw"]
         if (
@@ -644,14 +645,22 @@ def add_constraints(n, snapshots, *, relax=False, fixed_modes=None):
             )
     if n._cph_fixed_local is not None:
         fixed = n._cph_fixed_local
+        tolerance = getattr(n, "_cph_fixed_tolerance", 0.0)
+
+        def fix(expr, values, name):
+            target = _series(n, values)
+            if tolerance > 0:
+                # Retry setting: HTF's decisions are kept within a narrow band.
+                m.add_constraints(expr <= target + tolerance, name=name + "_upper")
+                m.add_constraints(expr >= target - tolerance, name=name + "_lower")
+            else:
+                m.add_constraints(expr == target, name=name)
+
         for expr, column in [(h, "hx_mw"), (d, "ptes_discharge_mw")]:
-            m.add_constraints(expr == _series(n, fixed[column]), name="actual_" + column)
+            fix(expr, fixed[column], "actual_" + column)
         for name in ["city2", "groundwater"]:
             cop = _series(n, n._cph_inputs[cfg["heat_pumps"][name]["cop_column"]])
-            m.add_constraints(
-                link.sel(name=name) * cop == _series(n, fixed[name + "_heat_mw"]),
-                name="actual_" + name,
-            )
+            fix(link.sel(name=name) * cop, fixed[name + "_heat_mw"], "actual_" + name)
     for name, values in (fixed_modes or {}).items():
         m.add_constraints(m[name] == values, name="fixed_mode_" + name)
 
@@ -742,7 +751,11 @@ def conditional_prices(n, solution=None):
         else {}
     )
     price_network = build(
-        n._cph_inputs, n._cph_config, n._cph_plants, fixed_local=n._cph_fixed_local
+        n._cph_inputs,
+        n._cph_config,
+        n._cph_plants,
+        fixed_local=n._cph_fixed_local,
+        fixed_tolerance=getattr(n, "_cph_fixed_tolerance", 0.0),
     )
     _optimise(price_network, relax=True, fixed_modes=modes)
     feasibility(price_network)
