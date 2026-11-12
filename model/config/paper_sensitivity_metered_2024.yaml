@@ -1,7 +1,6 @@
-# One-at-a-time sensitivities, 52 weeks of 2024 vs measured operation (run locally with Gurobi).
-# Base values: min flows 10/5 MW, pumping 0.005 MWh_el/MWh, HP electricity adder 125 DKK/MWh.
-# Gas 350 DKK/MWh is consistent with the 2024 TTF average (~34 EUR/MWh) plus EU ETS (~65 EUR/t), so CO2 is
-# treated as included; Danish heat taxes are not included.
+# One-at-a-time sensitivities (weekly study, measured reference, 2024 demand).
+# Base: min flows 10/5 MW, pumping 0.005 MWh_el/MWh, HP adder 125 DKK/MWh, gas 350 DKK/MWh,
+# network loss 2 %, PTES loss 0.000275 /h. Run with --htf-demand data/processed/htf_demand_2024/htf_demand.csv
 periods:
 - {name: w01, start: '2024-01-01T00:00:00Z', hours: 168}
 - {name: w02, start: '2024-01-08T00:00:00Z', hours: 168}
@@ -64,7 +63,19 @@ sensitivities:
   overrides: {reference: metered_2024, ptes.endpoints: measured, ptes.pump_mwh_el_per_mwh_heat: 0.01}
 - name: hp_adder_250
   overrides: {reference: metered_2024, ptes.endpoints: measured, heat_pumps.electricity_adder_dkk_mwh: 250}
+- name: gas_minus25
+  overrides: {reference: metered_2024, ptes.endpoints: measured, upstream.gas_dkk_mwh_fuel: 262.5}
+- name: gas_plus25
+  overrides: {reference: metered_2024, ptes.endpoints: measured, upstream.gas_dkk_mwh_fuel: 437.5}
+- name: netloss_1
+  overrides: {reference: metered_2024, ptes.endpoints: measured, network_loss_fraction: 0.01}
+- name: netloss_4
+  overrides: {reference: metered_2024, ptes.endpoints: measured, network_loss_fraction: 0.04}
+- name: ptes_loss_half
+  overrides: {reference: metered_2024, ptes.endpoints: measured, ptes.loss_per_hour: 0.0001375}
+- name: ptes_loss_double
+  overrides: {reference: metered_2024, ptes.endpoints: measured, ptes.loss_per_hour: 0.00055}
 tariffs:
 - {name: constant_5, family: constant, level: 5}
 - {name: hourly_5_g025, family: bounded_mean_matched_value, level: 5, scale: 0.25, lower: 0, upper: 10}
-- {name: follow_0, family: constant, level: 0, follow_schedule: true}
+- {name: share_10, family: shared_value, scale: 1.0}
