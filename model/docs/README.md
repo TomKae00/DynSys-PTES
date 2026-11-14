@@ -10,6 +10,7 @@
 | [Validation](validation.md) | Current checks and the distinction between numerical and empirical validation |
 | [Migration audit](research_workflow.md) | Trace of the original temperature/COP/comparison logic and earlier diagnostics |
 | [Historical validation](history/validation_before_cleanup_2026-11-08.md) | Preserved pre-cleanup numerical records; not the current results summary |
+| [Storyline and workshop plan](storyline_and_workshop.md) | Paper storyline, positioning against earlier work, claims and the evidence they need, workshop on 3 December |
 
 Source-of-truth configuration is indexed in [config/README.md](../config/README.md).
 Generated run locations are indexed in [results/README.md](../results/README.md).
